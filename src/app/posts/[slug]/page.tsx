@@ -1,16 +1,22 @@
 import { getAllPosts, getPost } from "../../libs/readFile";
 
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
-
 import { BASE_PATH } from "@/app/libs/constant";
 
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { getData } from "@/app/libs/getData";
 
-const PostPage = ({ params: { slug } }: Params) => {
+interface PostPageProps {
+  params: { slug: string };
+}
+
+const PostPage = ({ params: { slug } }: PostPageProps) => {
   const post = getData({ params: `${BASE_PATH}/${slug}` });
 
   return post?.content ? (
-    <MDXRemote source={post.content} />
+    <>
+      {/* @ts-expect-error Server Component */}
+      <MDXRemote source={post.content} />
+    </>
   ) : (
     <div>페이지를 찾을 수 없습니다.</div>
   );
@@ -28,12 +34,4 @@ export const generateStaticParams = () => {
   });
 
   return posts;
-};
-
-export const getData = ({ params }: { params: string }) => {
-  const [findPost] = getAllPosts()
-    .map(({ slug }) => getPost(slug))
-    .filter((value) => value?.slug === params);
-
-  return findPost;
 };

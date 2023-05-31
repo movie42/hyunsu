@@ -1,7 +1,6 @@
 import "@/app/styles/globals.css";
-import { getAllPosts, getPost } from "./libs/readFile";
 import Post from "./components/Post";
-import styled from "styled-components";
+import { getPageURL } from "./libs/url";
 
 export default function Home() {
   const data = getPageURL();
@@ -24,14 +23,3 @@ export default function Home() {
     </div>
   );
 }
-
-export const getPageURL = () => {
-  const data = getAllPosts().map(({ slug }) => {
-    const file = getPost(slug);
-    return {
-      ...file
-    };
-  });
-
-  return data;
-};

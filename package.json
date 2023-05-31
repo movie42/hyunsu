@@ -19,6 +19,8 @@
     "dayjs": "^1.11.7",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
+    "eslint-plugin-mdx": "^2.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "glob": "^10.2.6",
     "gray-matter": "^4.0.3",
     "next": "13.4.3",
@@ -29,10 +31,11 @@
     "rehype-prism-plus": "^1.5.1",
     "rehype-slug": "^5.1.0",
     "remark-gfm": "^3.0.1",
-    "styled-components": "^5.3.11",
+    "styled-components": "6.0.0-rc.2",
     "typescript": "5.0.4"
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "prettier": "^2.8.8"
   }
 }
