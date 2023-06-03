@@ -1,5 +1,5 @@
 ---
-slug: "/나의_블로그와_FOUC"
+slug: "/FOUC"
 date: "2022-08-22"
 title: "나의 블로그에서 FOUC 없애기"
 tags: ["FOUC", "gatsby", "front-end"]
@@ -37,11 +37,11 @@ module.exports = {
     {
       resolve: `gatsby-plugin-typography`,
       options: {
-        pathToConfigModule: `src/utils/typography`,
-      },
+        pathToConfigModule: `src/utils/typography`
+      }
     },
-    `gatsby-plugin-styled-components`,
-  ],
+    `gatsby-plugin-styled-components`
+  ]
 };
 ```
 
@@ -59,11 +59,11 @@ const typography = new Typography({
     { name: "Noto Sans KR", styles: [100, 500, 900] },
     {
       name: "JetBrains Mono",
-      styles: [200],
-    },
+      styles: [200]
+    }
   ],
   headerFontFamily: ["Noto Sans KR", "sans-serif"],
-  bodyFontFamily: ["Noto Sans KR", "sans-serif"],
+  bodyFontFamily: ["Noto Sans KR", "sans-serif"]
 });
 
 export default typography;

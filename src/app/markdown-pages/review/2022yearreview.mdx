@@ -148,7 +148,7 @@ export interface LoginData {
   <iframe src="https://stackblitz.com/edit/react-ts-xwrtlb?file=Components/Button.tsx"></iframe>
 </div>
 
-나는 나름대로 스타일을 지정하는 역할은 스타일 컴포넌트에 위임했다. 그냥 일반적으로 적용되는 스타일만 지정했다. 기능은 React.ButtonHTMLAttributes<HTMLButtonElement>를 확장해서 Button 컴포넌트가 기본적으로 가지고 있는 속성을 사용하도록 지정했다. 이렇게 설계를 했을 때 스타일의 변경을 위해서 따로 size, padding, color와 같은 Props를 지정할 필요가 없다. 그냥 디자인 혹은 기획 단계에서 컬러, 에러, 취소, 확인 등과 같은 역할을 미리 정해놓고 theme을 지정한 뒤에 그것을 가져다 쓰면 될 것이다. 이건 button을 가지고 생각한 단순한 회고에 불과하다. 조금 더 유연한 컴포넌트의 설계를 위해서 설계에 대해서 진지해질 필요가 있다고 생각하게 되었다.
+나는 나름대로 스타일을 지정하는 역할은 스타일 컴포넌트에 위임했다. 그냥 일반적으로 적용되는 스타일만 지정했다. 기능은 React.ButtonHTMLAttributes\<HTMLButtonElement>를 확장해서 Button 컴포넌트가 기본적으로 가지고 있는 속성을 사용하도록 지정했다. 이렇게 설계를 했을 때 스타일의 변경을 위해서 따로 size, padding, color와 같은 Props를 지정할 필요가 없다. 그냥 디자인 혹은 기획 단계에서 컬러, 에러, 취소, 확인 등과 같은 역할을 미리 정해놓고 theme을 지정한 뒤에 그것을 가져다 쓰면 될 것이다. 이건 button을 가지고 생각한 단순한 회고에 불과하다. 조금 더 유연한 컴포넌트의 설계를 위해서 설계에 대해서 진지해질 필요가 있다고 생각하게 되었다.
 
 > 더 알아보기
 > [FECONF 2022 [B1] 디자인 시스템, 형태를 넘어서](https://youtu.be/21eiJc90ggo)  

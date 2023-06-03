@@ -1,5 +1,5 @@
 ---
-slug: "/react/React와_History_API_사용하여_SPA_Router_기능_만들어보기"
+slug: "/react/react_and_historyApi"
 date: "2022-10-06"
 title: "React와 History API 사용하여 SPA Router 기능 만들어보기"
 tags: ["frontend", "react", "history api", "SPA", "router"]
@@ -60,8 +60,14 @@ const AppRouters = () => {
   return (
     <Router>
       <>
-        <Route path="/" component={<Main />} />
-        <Route path="/about" component={<About />} />
+        <Route
+          path="/"
+          component={<Main />}
+        />
+        <Route
+          path="/about"
+          component={<About />}
+        />
       </>
     </Router>
   );
@@ -186,7 +192,10 @@ export default Route;
 function Router() {
   return (
     <Routes>
-      <Route pathname="/" element={<Main />} />
+      <Route
+        pathname="/"
+        element={<Main />}
+      />
     </Routes>
   );
 }
@@ -243,7 +252,12 @@ interface IRoutesProps {
 
 const Router = ({ children }: IRoutesProps) => {
   const [location, setLocation] = useState({ pathName: "/" });
-  return <LocationContext.Provider children={children} value={{ location }} />;
+  return (
+    <LocationContext.Provider
+      children={children}
+      value={{ location }}
+    />
+  );
 };
 
 export default Router;
@@ -370,8 +384,14 @@ Routes로 Route를 감싸야하는 이유는 **그렇게 설계 되었기 때문
 function Router() {
   return (
     <Routes>
-      <Route path="/main" element={<MainLayout />}>
-        <Route path="next" element={<Next />} />
+      <Route
+        path="/main"
+        element={<MainLayout />}
+      >
+        <Route
+          path="next"
+          element={<Next />}
+        />
       </Route>
     </Routes>
   );

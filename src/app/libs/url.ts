@@ -8,5 +8,9 @@ export const getPageURL = () => {
     };
   });
 
-  return data;
+  const newDate = data.sort((a, b) => {
+    return new Date(b?.date).valueOf() - new Date(a?.date).valueOf();
+  });
+
+  return newDate;
 };

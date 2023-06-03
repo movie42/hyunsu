@@ -62,13 +62,13 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: {
-    main: "./src/js/main.js",
+    main: "./src/js/main.js"
   },
   output: {
     filename: "js/[name].js",
     path: path.resolve(__dirname, "dist"),
-    clean: true,
-  },
+    clean: true
+  }
 };
 ```
 
@@ -81,7 +81,7 @@ const common = require("./webpack.common.js");
 module.exports = merge(common, {
   mode: "development",
   devtool: "inline-source-map",
-  watch: true,
+  watch: true
 });
 ```
 
@@ -92,7 +92,7 @@ const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
-  mode: "production",
+  mode: "production"
 });
 ```
 
@@ -116,7 +116,7 @@ document.querySelector("body").innerHTML = `
 npm run dev
 ```
 
-터미널에서 webpack 5.67.0 compiled <span style="color:green;">successfully</span> in 62 ms라는 메시지를 보았다.
+터미널에서 webpack 5.67.0 compiled \<span style="color:green;">successfully\</span> in 62 ms라는 메시지를 보았다.
 
 1. html 파일을 열어서 '안녕'이 제대로 출력되는지 확인해본다.
 2. dist/js/main.js를 열어서 컴파일된 main.js를 확인본다.
@@ -162,13 +162,13 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: {
-    main: "./src/js/main.js",
+    main: "./src/js/main.js"
   },
   output: {
     filename: "js/[name].js",
     path: path.resolve(__dirname, "dist"),
-    clean: true,
-  },
+    clean: true
+  }
 };
 ```
 
@@ -187,7 +187,7 @@ const config = require("./webpack.config");
 module.exports = merge(config, {
   mode: "development",
   devtool: "inline-source-map",
-  watch: true,
+  watch: true
 });
 ```
 

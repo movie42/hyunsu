@@ -29,7 +29,7 @@ tags: ["docker", "oracle", "deploy"]
 
 오라클 클라우드는 AWS, Azure, Heroku 등과 같은 클라우드 컴퓨터 서비스다. 그냥 개념상 서버로 사용할 컴퓨터를 빌려주는 서비스라고 생각하면 된다. 여기에 내가 가입을 하고 빌리고 싶은 컴퓨터를 빌려서 서버를 다른 사람들이 사용 할 수 있는 웹 어플리케이션을 배포를 할 수 있다. 그러니까 이게 얼마나 매력적인것이냐고 한다면 내가 만든 어플리케이션에 다른 사람이 도메인을 입력하고 사용할 수도 있다. 그런데 처음 하면 모르는게 정말 많이 나온다. 그래도 하나 해결하고 에러 만나고 하나 해결하고 에러 만나다보면 결국 어플리케이션을 배포할 수 있다. 도메인을 치고 내 어플리케이션에 접속했을 때 그 기분은... 좋다.
 
-오라클 클라우드는 Cloud Free Tier가 상시 무료다. 무료 기간이 정해져있지 않다. 그래서 숨만 쉬어도 돈이 나가는 AWS에서 옮기기로 했다. 오라클 클라우드 초반 세팅(네트워킹 설정, 인스턴스 설정 등)은 [{Tip&Tech - Linux, MySQL} 오라클 클라우드 무료 서버 사용하기, @시코-시니어코딩](https://www.youtube.com/watch?v=wLgHEn2vcPo)을 보는 것이 좋다. 동영상에서는 CentOS 8으로 OS를 설정하는데 나는 Ubuntu 20.04를 사용하기로 했다.
+오라클 클라우드는 Cloud Free Tier가 상시 무료다. 무료 기간이 정해져있지 않다. 그래서 숨만 쉬어도 돈이 나가는 AWS에서 옮기기로 했다. 오라클 클라우드 초반 세팅(네트워킹 설정, 인스턴스 설정 등)은 [Tip&Tech - Linux, MySQL 오라클 클라우드 무료 서버 사용하기, @시코-시니어코딩](https://www.youtube.com/watch?v=wLgHEn2vcPo)을 보는 것이 좋다. 동영상에서는 CentOS 8으로 OS를 설정하는데 나는 Ubuntu 20.04를 사용하기로 했다.
 
 ssh키를 발급 받았다면 ssh 접속을 하면 된다.
 
@@ -114,7 +114,7 @@ $ systemctl stop nginx
 오라클 클라우드 상시 무료 컴퓨터는 1G의 메모리를 가지고 있다. 그래서 docker container를 몇 개 실행 하다보면 컴퓨터가 멈춰 버린다. 그래서 메모리 스왑을 해서 사용해야한다. 성능 저하가 발생할 수 있다고 하는데 아마도 큰 영향이 없을 것이다. 아래 블로그 포스팅에서 잘 설명되어있으니까 보고 따라하면 된다. 스왑 용량은 자기가 지정하기 나름인데 나는 4G를 했다.
 
 > 참고  
-> [[Tip] Ubuntu 20.04 Swap 메모리 설정하기, FacerAin](https://facerain.club/swap-memory/)
+> [Tip Ubuntu 20.04 Swap 메모리 설정하기, FacerAin](https://facerain.club/swap-memory/)
 
 # Docker 이미지 만들기
 
@@ -619,7 +619,7 @@ AWS Lambda는 사용량에 따라서 요금을 받는다고 알려져 있는데 
 - [14.4 Docker를 사용하여 MySQL 설치하고 접속하기, poiemaweb](https://poiemaweb.com/docker-mysql)
 - [Adding Custom Environment Variables : WARNING: Do not store any secrets (such as private API keys) in your React app!, CRA Documents](https://create-react-app.dev/docs/adding-custom-environment-variables/)
 - [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
-- [[Tip] Ubuntu 20.04 Swap 메모리 설정하기, FacerAin](https://facerain.club/swap-memory/)
+- [Tip Ubuntu 20.04 Swap 메모리 설정하기, FacerAin](https://facerain.club/swap-memory/)
 - [우분투(Ubuntu) 설치된 패키지 목록 확인하기, Dream House](http://www.dreamy.pe.kr/zbxe/CodeClip/3770251)
 - [Linux, sudo 없이 명령어 실행하기 (예:docker), shanepark](https://shanepark.tistory.com/250)
 - [[MYSQL] 1. 계정 생성 / 권한 부여, J Log](https://velog.io/@ejayjeon/MYSQL-1.-%EA%B3%84%EC%A0%95-%EC%83%9D%EC%84%B1-%EA%B6%8C%ED%95%9C-%EB%B6%80%EC%97%AC)
@@ -630,4 +630,4 @@ AWS Lambda는 사용량에 따라서 요금을 받는다고 알려져 있는데 
 - [가장 쉽게 배우는 도커, 얄팍한 코딩사전](https://www.youtube.com/watch?v=hWPv9LMlme8)
 - [nginx 입문용 자료, 악분 일상](https://www.youtube.com/watch?v=hA0cxENGBQQ)
 - [아파치, NginX, 톰캣이 뭔가요? (+ 웹서버, WAS, 로드밸런싱, 프록시), 얄팍한 코딩사전](https://www.youtube.com/watch?v=Zimhvf2B7Es&t=257s)
-- [{Tip&Tech - Linux, MySQL} 오라클 클라우드 무료 서버 사용하기, @시코-시니어코딩](https://www.youtube.com/watch?v=wLgHEn2vcPo)
+- [Tip&Tech - Linux, MySQL 오라클 클라우드 무료 서버 사용하기, @시코-시니어코딩](https://www.youtube.com/watch?v=wLgHEn2vcPo)

@@ -51,7 +51,7 @@ const editor = new Editor({
   el: document.querySelector("#editorSection"),
   previewStyle: "vertical",
   height: "500px",
-  initialEditType: "markdown",
+  initialEditType: "markdown"
 });
 ```
 
@@ -87,7 +87,7 @@ const editor = new Editor({
   el: document.querySelector("#editorSection"),
   previewStyle: "vertical",
   height: "500px",
-  initialEditType: "markdown",
+  initialEditType: "markdown"
 });
 
 // 이벤트 리스터에 보낼 함수
@@ -101,7 +101,7 @@ async function handleEditor(e) {
   const data = await fetch("/test", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ headTitle, editorBody }),
+    body: JSON.stringify({ headTitle, editorBody })
   });
 }
 
@@ -116,7 +116,7 @@ btn.addEventListener("click", handleEditor);
 import Viewer from "@toast-ui/editor/dist/toastui-editor-viewer";
 
 const viewer = new Viewer({
-  el: document.querySelector("#viewer"),
+  el: document.querySelector("#viewer")
 });
 ```
 
@@ -153,7 +153,7 @@ Expressjs에서 pug 템플리트 엔진으로 사용할 수 있다. 문제는 #v
 > 그럼 getHTML() 인스턴스로 하면되지 않을까?
 > editor.js에서 getMarkdown() 인스턴스로 데이터를 받아 보내서 이런 문제가 생기는 것으로 판단하고 getHTML()로 했지만 pug가 괄호 안에 데이터를 담는다. 하지만 데이터 베이스에 저장 될 때 없던 에디터의 내용을 담은 주석이 자동으로 생성되서 괄호 안에 담기고 때문에 정상적으로 스타일링 되는 곳과 주석이 뒤죽박죽 섞여서 내용이 두 번 반복된다.
 
-알고보니 Pug의 문제였다. 데이터 베이스에서 불러온 객체를 HTML 테그에 따로 담지 않으면 '<>' 안에 데이터가 담겨서 나왔다. 토스트 UI 에디터의 뷰어는 지정된 엘리먼트 내에서 자동으로 HTML 태그를 생성해서 마크 다운을 HTML 태그로 바꿔 스타일링 해준다. 따라서 <>가 있으면 안된다. 그럼 문제의 괄호를 제거할 수 있는 방법은 없는 걸까? 일단... pug가 괄호를 생성하는 부분을 찾아서 pug팀에 요청해보는것도 방법이지만... 그럴 필요는 없다.
+알고보니 Pug의 문제였다. 데이터 베이스에서 불러온 객체를 HTML 테그에 따로 담지 않으면 '\<>' 안에 데이터가 담겨서 나왔다. 토스트 UI 에디터의 뷰어는 지정된 엘리먼트 내에서 자동으로 HTML 태그를 생성해서 마크 다운을 HTML 태그로 바꿔 스타일링 해준다. 따라서 \<>가 있으면 안된다. 그럼 문제의 괄호를 제거할 수 있는 방법은 없는 걸까? 일단... pug가 괄호를 생성하는 부분을 찾아서 pug팀에 요청해보는것도 방법이지만... 그럴 필요는 없다.
 
 ## 해결방법
 
@@ -173,13 +173,13 @@ const getData = async () => {
 
   const data = await fetch(`/api/${id}/notice-data`, {
     headers: { "Content-Type": "application/json" },
-    method: "GET",
+    method: "GET"
   });
 
   const response = await data.json();
 
   const {
-    notice: { paragraph },
+    notice: { paragraph }
   } = response;
 
   // Toast UI Viewer에서 제공하는 인스턴스
@@ -194,7 +194,7 @@ getData();
 ```javascript
 export const getParagraph = async (req, res) => {
   const {
-    params: { id },
+    params: { id }
   } = req;
   try {
     const notice = await Notice.findById(id);
