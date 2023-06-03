@@ -1,12 +1,10 @@
 {
-  "name": "movie42.github.io",
+  "name": "hyunsu",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://movi42.github.io",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
-    "server": "npx http-server out",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
