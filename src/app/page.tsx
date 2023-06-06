@@ -1,3 +1,4 @@
+import { HomeContainer } from "./components/Container/HomeContainer";
 import Post from "./components/Post";
 import { getPageURL } from "./libs/url";
 
@@ -5,7 +6,7 @@ export default function Home() {
   const data = getPageURL();
 
   return (
-    <div>
+    <HomeContainer>
       <ul className="post-container">
         {data?.map(
           (post, index) =>
@@ -19,6 +20,6 @@ export default function Home() {
             )
         )}
       </ul>
-    </div>
+    </HomeContainer>
   );
 }

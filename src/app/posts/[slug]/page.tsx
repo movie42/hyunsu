@@ -15,6 +15,11 @@ const PostPage = ({ params: { slug } }: PostPageProps) => {
 
   return post?.content ? (
     <PostContainer>
+      <h1>{post.title}</h1>
+      <div>
+        <span>{post.date}</span>
+        <span>{post.tags}</span>
+      </div>
       {/* @ts-expect-error Server Component */}
       <MDXRemote source={post.content} />
     </PostContainer>

@@ -11,4 +11,9 @@ export const PostContainer = styled.div`
     font-size: 1.3rem;
     line-height: 2.3rem;
   }
+
+  p > img {
+    width: 100%;
+    max-width: 1020px;
+  }
 `;
