@@ -283,7 +283,7 @@ const Group = () => {
 
     if (e.key === "ArrowUp") {
       setSelectedNodeId(() => String(selectId));
-      setCount(pre => {
+      setCount((pre) => {
         if (pre <= 0) {
           return select.length - 1;
         }
@@ -294,7 +294,7 @@ const Group = () => {
 
     if (e.key === "ArrowDown") {
       setSelectedNodeId(() => String(selectId));
-      setCount(pre => {
+      setCount((pre) => {
         if (pre >= select.length - 1) {
           return 0;
         }
@@ -307,12 +307,12 @@ const Group = () => {
   return (
     <Form
       onSubmit={onSubmitNewPeopleName}
-      onKeyDown={e => handleSearchBoxWithKey(e)}
+      onKeyDown={(e) => handleSearchBoxWithKey(e)}
     >
       // 생략
       <SearchingBox ref={searchingListNodes}>
         {isSearchingBoxError && <span>이미 참가하고 있습니다.</span>}
-        {searchPerson?.map(value => (
+        {searchPerson?.map((value) => (
           <SearchingItem
             key={value._id}
             data-id={value._id}
@@ -370,13 +370,13 @@ const handleSearchBoxWithKey = useCallback(
   (e: React.KeyboardEvent<HTMLFormElement>) => {
     const length = searchingListNodes.current?.childNodes.length;
     if (e.key === "ArrowUp") {
-      setCount(pre => pre - 1);
+      setCount((pre) => pre - 1);
       if (count < 0 && length) {
         setCount(length - 1);
       }
     }
     if (e.key === "ArrowDown") {
-      setCount(pre => pre + 1);
+      setCount((pre) => pre + 1);
       if (length && count >= length - 1) {
         setCount(0);
       }
@@ -438,12 +438,12 @@ interface Props {
 }
 
 const defaultValue: Props = {
-  isLogin: false,
+  isLogin: false
 };
 
 const someState = atom<Props>({
   key: "some",
-  default: defaultValue,
+  default: defaultValue
 });
 
 const [state, setState] = useReocilState(someState);
@@ -545,9 +545,9 @@ return response.json();
 
 ```tsx
 mutate(data, {
-  onError: error => {
+  onError: (error) => {
     setError(error.message);
-  },
+  }
 });
 ```
 

@@ -1,4 +1,3 @@
-import "@/app/styles/globals.css";
 import Post from "./components/Post";
 import { getPageURL } from "./libs/url";
 

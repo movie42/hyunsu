@@ -1,4 +1,11 @@
 import StyledComponentsRegistry from "./registry";
+import { GlobalStyle } from "./styles/globalStyle";
+
+import localFont from "@next/font/local";
+
+export const SUIT = localFont({
+  src: "../../public/font/SUIT-Variable.woff2"
+});
 
 export default function RootLayout({
   children
@@ -7,8 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+      <body className={SUIT.className}>
+        <StyledComponentsRegistry>
+          <GlobalStyle />
+          {children}
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
