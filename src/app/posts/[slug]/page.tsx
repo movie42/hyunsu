@@ -4,7 +4,12 @@ import { BASE_PATH } from "@/app/libs/constant";
 
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getData } from "@/app/libs/getData";
-import { PostContainer } from "@/app/components/PostContainer";
+import {
+  InfoContainer,
+  PostContainer,
+  Title
+} from "@/app/components/PostContainer";
+import Link from "next/link";
 
 interface PostPageProps {
   params: { slug: string };
@@ -15,13 +20,22 @@ const PostPage = ({ params: { slug } }: PostPageProps) => {
 
   return post?.content ? (
     <PostContainer>
-      <h1>{post.title}</h1>
-      <div>
-        <span>{post.date}</span>
-        <span>{post.tags}</span>
+      <InfoContainer>
+        <Title>{post.title}</Title>
+        <div>
+          <span>{post.date}</span>
+          <div>
+            {post.tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </div>
+        </div>
+        <Link href={"/"}>뒤로가기</Link>
+      </InfoContainer>
+      <div className="post-content">
+        {/* @ts-expect-error Server Component */}
+        <MDXRemote source={post.content} />
       </div>
-      {/* @ts-expect-error Server Component */}
-      <MDXRemote source={post.content} />
     </PostContainer>
   ) : (
     <div>페이지를 찾을 수 없습니다.</div>
