@@ -89,76 +89,9 @@ export const PostContainer = styled.div`
       }
     }
 
-    pre {
-      margin: 1rem auto;
-      padding: 1rem 2rem;
-      background-color: #1b1e2b;
-      border-radius: 0.8rem;
-      code {
-        font-family: "JetBrains Mono", monospace;
-
-        font-size: 1.6rem;
-        letter-spacing: -0.01rem;
-        background-color: #1b1e2b;
-        color: ${(props) => props.theme.basicColor};
-        text-shadow: none;
-        color: #75beff;
-        .token {
-          background-color: #1b1e2b;
-          color: #cccccc;
-          &.function {
-            color: #75beff;
-          }
-          &.function-variable {
-            color: #f07178;
-          }
-          &.keyword {
-            color: #c792ea;
-          }
-          &.constant {
-            color: #8002e6;
-          }
-          &.operator {
-            color: #c792ea;
-          }
-
-          &.punctuation {
-            color: #cccccc;
-          }
-          &.template-string {
-            color: #80cbc4;
-          }
-          &.string {
-            color: #c3e88d;
-          }
-          &.number {
-            color: #f07178;
-          }
-          &.boolean {
-            color: #ffad33;
-          }
-          &.comment {
-            font-style: italic;
-            color: #cccccc80;
-          }
-          .attr-name {
-            color: #c792ea;
-          }
-          .tag {
-            color: #f14c4c;
-          }
-          .class-name {
-            color: #ffad33;
-          }
-
-          &.literal-property {
-            color: #ffad33;
-            &.property {
-              color: #ffad33;
-            }
-          }
-        }
-      }
+    code {
+      font-size: 1.6rem;
+      letter-spacing: -0.01rem;
     }
     @media (max-width: 450px) {
       h1,

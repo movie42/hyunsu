@@ -29,7 +29,7 @@ IPTV는 업데이트를 자주했다. 하지만 셋업 박스는 소프트웨어
 
 첫 째로, 아직 미생이지만 그래도 나는 웹 개발을 하고 있다. 그럼 그 안에서 웹 접근성을 지키기 위한 노력을 먼저 해야겠다. 최근에 아이콘 버튼을 만들 때, 스크린 리더기가 읽을 수 있는 버튼을 만들기 위해 코드를 개선했다. 때론 UI에 글자 없는 Icon만 있는 버튼이 있는데 글자를 숨기더라도 스크린 리더기가 순서에 맞춰 읽을 수 있도록 글자만 숨기도록 했다.
 
-```tsx
+```IconButton.tsx
 interface IconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   ReactIcon: IconType;

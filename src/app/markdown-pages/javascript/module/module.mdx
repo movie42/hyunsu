@@ -21,7 +21,7 @@ function 키워드가 맨 앞에 올 경우 자바스크립트는 함수 선언�
 
 - IIFE 예제
 
-```javascript
+```js {}
 (function (arr) {
   let newArr = arr.map((value) => value + 1);
 })(list);
@@ -113,9 +113,11 @@ export { add, multi, sub, divid as otherDivid };
 2. export default는 한 모듈 안에서 한번만 사용 가능하다
 
    .
+
 3. export 하려는 항목을 모아 객체와 같은 형태로 내보낼 수도 있다
 
    .
+
 4. export 하기 전에 as를 사용하여 export 하려는 대상의 이름을 변경할 수도 있다
 
    .

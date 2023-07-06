@@ -10,6 +10,11 @@ import {
   Title
 } from "@/app/components/PostContainer";
 import Link from "next/link";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import remarkToc from "remark-toc";
+import { mdxComponents } from "./components/mdxComponets";
 
 interface PostPageProps {
   params: { slug: string };
@@ -34,7 +39,16 @@ const PostPage = ({ params: { slug } }: PostPageProps) => {
       </InfoContainer>
       <div className="post-content">
         {/* @ts-expect-error Server Component */}
-        <MDXRemote source={post.content} />
+        <MDXRemote
+          source={post.content}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm, remarkToc],
+              rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings]
+            }
+          }}
+          components={mdxComponents}
+        />
       </div>
     </PostContainer>
   ) : (

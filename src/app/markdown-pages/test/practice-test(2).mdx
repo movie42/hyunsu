@@ -21,7 +21,7 @@ import { atom } from "recoil";
 
 export enum State {
   TODO = "todo",
-  DONE = "done",
+  DONE = "done"
 }
 
 export interface ToDo {
@@ -32,7 +32,7 @@ export interface ToDo {
 
 export const todoState = atom<ToDo[]>({
   key: "todo",
-  default: [],
+  default: []
 });
 ```
 
@@ -51,8 +51,11 @@ const TodoItemContainer = () => {
 
   return (
     <ul data-testid="todo-list-container">
-      {todos.map(todo => (
-        <TodoItem key={todo.id} todo={todo} />
+      {todos.map((todo) => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+        />
       ))}
     </ul>
   );
@@ -74,20 +77,20 @@ it("recoil state 상태 테스트", async () => {
   const query = {
     id: "15251",
     name: "달리기",
-    state: State.TODO,
+    state: State.TODO
   };
 
   const { result } = renderHook(
     () => {
       const setTodos = useSetRecoilState(todoState);
       useEffect(() => {
-        setTodos(pre => [...pre, query]);
+        setTodos((pre) => [...pre, query]);
       }, [setTodos]);
 
       return useRecoilValue(todoState);
     },
     {
-      wrapper: RecoilRoot,
+      wrapper: RecoilRoot
     }
   );
 
@@ -135,12 +138,12 @@ const TodoItemContainer = () => {
   const [todos, setTodos] = useRecoilState(todoState);
 
   const handleRemoveItem = (id: ToDo["id"]) => {
-    setTodos(pre => pre.filter(item => item.id !== id));
+    setTodos((pre) => pre.filter((item) => item.id !== id));
   };
 
   return (
     <ul data-testid="todo-list-container">
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <TodoItem
           key={todo.id}
           todo={todo}
@@ -174,7 +177,7 @@ interface IInjectTestingRecoilStateProps {
 }
 
 const InjectTestingRecoilState = ({
-  todos,
+  todos
 }: IInjectTestingRecoilStateProps) => {
   const setTodos = useSetRecoilState(todoState);
   useEffect(() => {
