@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MDXComponents } from "mdx/types";
 import { Fira_Code } from "@next/font/google";
+import { AnchorHTMLAttributes } from "react";
 
 const font = Fira_Code({ subsets: ["latin"] });
 
@@ -110,7 +111,7 @@ Code.extensions = [
 ];
 
 export const mdxComponents: MDXComponents = {
-  a: ({ children, ...props }) => {
+  a: ({ children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => {
     return (
       <Link
         {...props}
@@ -120,7 +121,7 @@ export const mdxComponents: MDXComponents = {
       </Link>
     );
   },
-  img: ({ props }) => {
+  img: ({ props }: any) => {
     return <Image {...props} />;
   },
   pre: Code

@@ -27,16 +27,23 @@ export const PostContainer = styled.div`
       word-spacing: -2px;
       margin-bottom: 2rem;
     }
+
+    a {
+      display: block;
+      color: ${({ theme }) => theme.hlColor};
+    }
+
     p {
       font-size: 2rem;
       line-height: 3.5rem;
       word-spacing: -2px;
       padding-bottom: 3rem;
+      a {
+        display: inline;
+        color: ${({ theme }) => theme.hlColor};
+      }
     }
 
-    a {
-      display: block;
-    }
     img {
       width: 100%;
       max-width: 1020px;
