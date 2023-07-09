@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MDXComponents } from "mdx/types";
 import { Fira_Code } from "@next/font/google";
 import { AnchorHTMLAttributes } from "react";
+import Canvas from "@/app/components/Animation/Canvas";
 
 const font = Fira_Code({ subsets: ["latin"] });
 
@@ -124,5 +125,6 @@ export const mdxComponents: MDXComponents = {
   img: ({ props }: any) => {
     return <Image {...props} />;
   },
-  pre: Code
+  pre: Code,
+  Canvas
 };
