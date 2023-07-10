@@ -1,13 +1,84 @@
 ---
 slug: "/animation/canvas"
 date: "2023-07-09"
-title: "Canvas"
+title: "나의 Canvas Diary"
 tags: ["animation", "canvas"]
-draft: true
 ---
 
-# 왜
+시간이 벌써 7월이다. canvas를 배워보자 배워보자 생각만 하고 시작을 못했다.
+MDN 문서를 보고 canvas를 처음부터 전부 다 훑다 보면 포기를 할 것 같아 그냥 내가 원하는 것부터 차근 차근 구현하면서
+기능을 알아보기로 했다. 포토샵도 이렇게 배웠으니까 비슷하지 않을까.
 
-# 왜 안되...
+# Canvas 위에 움직이는 공을 그리기
 
 <Canvas />
+
+```Canvas.tsx
+const Canvas = () => {
+  const containerRef = useRef<HTMLCanvasElement>(null);
+
+  const handleDraw = () => {
+    const canvas = containerRef.current;
+    const position = { x: 60, y: 60 };
+    const velocity = { x: 10, y: 10 };
+    const rad = 30;
+    if (!canvas) return;
+    let innerWidth = canvas.width;
+    let innerHeight = canvas.height;
+    canvas.width = 1000;
+    canvas.height = 500;
+
+    const context = canvas.getContext("2d");
+
+    if (!context) return;
+
+    const draw = () => {
+      context.fillStyle = "#0efccc";
+      context.beginPath();
+      context.arc(position.x, position.y, rad, 0, 2 * Math.PI);
+      context.fill();
+    };
+
+    const update = () => {
+      if (position.x + rad > innerWidth || position.x - rad < 0) {
+        velocity.x = -velocity.x;
+      }
+
+      if (position.y + rad > innerHeight || position.y - rad < 0) {
+        velocity.y = -velocity.y;
+      }
+
+      position.x += velocity.x;
+      position.y += velocity.y;
+    };
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      context.clearRect(0, 0, innerWidth, innerHeight);
+      draw();
+      update();
+    };
+
+    animate();
+  };
+
+  useEffect(() => {
+    handleDraw();
+  }, []);
+
+  return (
+    <Box>
+      <Container ref={containerRef} />;
+    </Box>
+  );
+};
+
+export default Canvas;
+
+```
+
+React에서 Canvas를 다루는 것은 생각보다 쉽지 않았다. 상태를 훅으로 관리하고 싶었는데
+useState로 position과 velocity를 가지고 있는데 함수 안에서 변화량을 감지하지 못한다.
+그래서 함수 내부에 따로 변수를 선언해서 animate라는 곳에서 draw를 계속 호출하게 하였다.
+아마도 이렇게 되는 이유는 함수가 선언된 위치와 관계가 있지 않을까? 함수 외부에서는 state가 변하는 것을 볼 수 있지만 draw 함수 내부에서는 이전 값이 계속 들어온다.
+클로저와 관계가 있을 것 같은데 정확한 원인은 모르겠다.
