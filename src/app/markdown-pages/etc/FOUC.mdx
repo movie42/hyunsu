@@ -110,7 +110,10 @@ export default Layout;
 
 # FOUC 해결 과정
 
-![FOUC](../../images/blink.gif)
+<img
+  alt="FOUC"
+  src="/images/blink.gif"
+/>
 
 원티드 2주간 챌린지가 끝나면서 마지막 특강 시간에 나의 블로그의 FOUC에 대해 알게 되었다. 깜박임이 발생했던 것을 몰랐던 것은 아니지만 이 문제가 뭔지 정확하게 정의할 수 없었고 해결을 위해 시간을 쓰는게 아까웠다. 시간을 절약하기 위해 갯츠비로 블로그를 만들었기 때문에 뭔가 시간이 아까웠다. 하지만 멘토님이 문제를 정확하게 정의를 해주었기 때문에 해결을 안 할 수가 없었다. 문제가 정의 됐는데도 해결을 위해 노력하지 않으면 개발자로써 자존심이 좀 상한다고 해야할까? 그래서 이틀간 갯츠비에서 FOUC 문제를 해결하기 위해 공부했던 것과 과정 등을 적어보려고한다.
 
@@ -153,11 +156,17 @@ FOUC는 멘토님이 주신 [참고 링크](https://ko.wikipedia.org/wiki/FOUC)�
 
 구글에서 바로 [해결 책](https://medium.com/@mikaelagurney/removing-fouc-in-a-gatsby-project-66034b8590b1)을 얻어서 코드에 적용했다. 하지만 FOUC는 없어지지 않았다. 정확히 말하자면 50%만 해결되었다. GlobalStyle이 나중에 적용되었고 여전히 FOUC가 발생하고 있었다. 그러다 [유튜브에서 SSR](https://www.youtube.com/watch?v=G_dVwrhvkBI)에 Globalstyle을 적용하면 된다고 하길래 그렇게 했다. 그리고 대 참사가 발생했다. 페이지를 불러오는데 7초나 걸렸다. 말이 안된다. 겨우 텍스트를 불러오는데 7초를 쓰다니!!
 
-![7초 로딩 실화냐](../../images/srr_AdobeExpress.gif)
+<img
+  alt="7초 로딩 실화냐"
+  src="/images/srr_AdobeExpress.gif"
+/>
 
 처음에는 SSR이 원인일 것이라고 생각도 못한채 하루 종일 갯츠비 최적화를 뒤적거렸다. 당장 화면에서 이미지를 불러오는 것이 느리니까 이미지를 StaticImage로 불러왔다가 또 스타일이 적용이 안돼서 왔다 갔다....
 
-![ssr을 적용했더니 성능이](../../images/ssr.png)
+<img
+  alt="ssr을 적용했더니 성능이"
+  src="/images/ssr.png"
+/>
 
 성능 측정을 해보니 60점이 나왔다. 첫번째 컨텐츠를 불러오는 시간에서 가장 낮은 점수를 받았다. 그러다가 다른 사람이 만든 갯츠비 페이지를 가보았다. 대부분 개발자 페이지였는데 예전에 갯츠비를 처음 접할 때 김정환이라는 분의 유튭을 봤던 기억이 났다. 그래서 구글을 통해서 그분의 [블로그](https://jeonghwan-kim.github.io/)를 가보았다. 일단 컨텐츠를 불러오는 속도가 매우 빨랐다. FOUC도 없었다. 그래서 바로 깃헙으로 가서 코드를 살펴보았다.
 
@@ -165,7 +174,10 @@ FOUC는 멘토님이 주신 [참고 링크](https://ko.wikipedia.org/wiki/FOUC)�
 
 당신이 오늘 접속한 나의 블로그에 FOUC가 없었다면 결론적으로 해결 됐다고 볼 수 있다. 성능 측정에 좋은 점수를 받은 것은 덤이다.
 
-![따라만들기 이후](../../images/copyblogcode.png)
+<img
+  alt="따라 만들기 이후"
+  src="/images/copyblogcode.png"
+/>
 
 ## 마무리
 

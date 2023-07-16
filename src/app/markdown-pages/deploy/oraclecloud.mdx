@@ -1,5 +1,4 @@
 ---
-slug: "/deploy/docker-first-time"
 date: "2022-10-20"
 title: "도커로 배포한 썰"
 tags: ["docker", "oracle", "deploy"]
@@ -122,7 +121,10 @@ Docker는 컨테이너로 리눅스 응용 프로그램을 실행 시키는 방�
 
 cli로도 설치할 수 있지만 나는 [Docker](https://www.docker.com/) 공식 페이지에서 내 OS에 맞는 도커 데스크탑 어플리케이션을 다운 받았다. 이게 편하다.
 
-![docker 웹 페이지](../../images/docker1.png)
+<img
+  alt="docker 웹 페이지"
+  src="/images/docker1.png"
+/>
 
 설치가 끝나면 docker cli도 사용이 가능하다.
 
@@ -130,7 +132,10 @@ cli로도 설치할 수 있지만 나는 [Docker](https://www.docker.com/) 공�
 
 도커 이미지를 만들어야할 환경에서 Dockerfile을 만들자. 만들고 나면 위의 이미지처럼 고래 모양 아이콘을 가진 Dockerfile이 만들어진다.
 
-![docker 웹 페이지](../../images/docker2.png)
+<img
+  alt="docker 웹 페이지"
+  src="/images/docker2.png"
+/>
 
 도커 파일을 작성해보자.
 
@@ -248,11 +253,17 @@ docker 이미지가 정상적으로 동작하는 것을 확인 했다면 이제 
 
 docker에 로그인을 하면 docker hub에 접속할 수 있다.
 
-![docker hub](../../images/docker3.png)
+<img
+  alt="docker hub"
+  src="/images/docker3.png"
+/>
 
 여기에서 create repository 버튼을 누르면 레포지토리를 만들 수 있다.
 
-![docker hub](../../images/docker4.png)
+<img
+  alt="docker hub"
+  src="/images/docker4.png"
+/>
 
 만들고 나면 내 아이디 옆에 레포지토리 이름이 생긴다. 아이디가 qq1234 레포지토리 이름이 myapp이면 qq1234/myapp으로 생성됐을 것이다. 그럼 이제 hub에 push를 할 준비를 마쳤다. 터미널에서 다음 명령어를 입력해보자.
 
@@ -445,7 +456,10 @@ exit
 
 그럼 마지막으로 외부에서 접속이 되는지 확인해보자. 데이터 베이스 어플리케이션을 사용해서 접속해본다. 나는 [Sequel Ace](https://apps.apple.com/kr/app/sequel-ace/id1518036000?mt=12)를 사용했다.
 
-![sequel ace](../../images/mysql.png)
+<img
+  alt="sequel ace"
+  src="/images/mysql.png"
+/>
 
 앞에서 만들었던 대로 입력을 하면된다.
 
@@ -456,7 +470,10 @@ exit
 
 그리고 접속을 하면 짜잔! 아무런 테이블이 없는 비어있는 데이터 베이스에 접속 할 수 있다.
 
-![sequel ace - access](../../images/mysql2.png)
+<img
+  alt="sequel ace - access"
+  src="/images/mysql2.png"
+/>
 
 # React App과 Nginx
 
@@ -587,13 +604,19 @@ Dockerfile을 작성할 때, 원하는 경로안에 ssl cert 파일을 옮겨준
 
 이미지를 만들고난 뒤 로컬에서 실행해보자. 정상적으로 실행이 되는 것까지 확인을 했다면 서버에서 pull을 해서 실행한다. 실행을 할 때, 80과 443 포트를 다 연결해준다. 그리고 실행을 하면 웹 어플이 정상적으로 동작하는 것을 확인 할 수 있다.
 
-![최종](../../images/docker5.png)
+<img
+  alt="최종"
+  src="/images/docker5.png"
+/>
 
 # 마무리
 
 이번에는 도커를 사용해서 서버에 배포를 해보았다. 배우고 배포하고 ssl 등록해서 최종 https로 도매인을 실행시키기까지 3일 걸렸다. 귀찮아서 도큐멘트를 작성하지 않는 과거의 나를 보면서 미래의 나가 메시지를 보내지 않기를 바란다.
 
-![인터스텔라](https://t2.daumcdn.net/thumb/R720x0/?fname=http://t1.daumcdn.net/brunch/service/user/30m2/image/Dr18F4ruMP0NfONQIvIdzLuXFME.gif)
+<img
+  alt="인터스텔라"
+  src="https://t2.daumcdn.net/thumb/R720x0/?fname=http://t1.daumcdn.net/brunch/service/user/30m2/image/Dr18F4ruMP0NfONQIvIdzLuXFME.gif"
+/>
 
 docker는 배우는게 조금 까다로워 보일 수 있지만 컨테이너 단위로 어플리케이션을 실행하고 중단하고 삭제하고 다시 설치할 수 있다는 장점이 있었다. AWS에서 서버 배포할 때 킹 받는 포인트가 많았는데 이번에 그런 포인트가 많이 없어서 좋았다. gitactions를 사용한 CI/CD와 AWS lambda에도 배포를 하려고했지만 조금 쉬었다 가기로 했다.
 
@@ -607,7 +630,7 @@ AWS Lambda는 사용량에 따라서 요금을 받는다고 알려져 있는데 
 
 #### 이미지
 
-- [인터스텔라 짤, 공감신문](https://t2.daumcdn.net/thumb/R720x0/?fname=http://t1.daumcdn.net/brunch/service/user/30m2/image/Dr18F4ruMP0NfONQIvIdzLuXFME.gif)
+- [인터스텔라 짤, 공감신문](https://t2.daumcdn.net/thumb/R720x0/?fname=http://t1.daumcdn.net/brunch/service/user/30m2/image/Dr18F4ruMP0NfONQIvIdzLuXFME.gif />
 
 #### 문서
 

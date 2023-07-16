@@ -172,7 +172,7 @@ export default abstract class Server<ServerOptions extends Options = Options> {
   };
   public constructor(options: ServerOptions) {
     this.renderOpts = {
-      buildId: this.buildId,
+      buildId: this.buildId
     };
     this.buildId = this.getBuildId();
   }
