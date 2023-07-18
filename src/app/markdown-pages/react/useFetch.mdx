@@ -60,7 +60,10 @@ const useFetchGET = ({ url }: IUseFetchProps): IReturnValue => {
 export default useFetchGET;
 ```
 
-![typescript error](../../images/typescript_error.png)
+<img
+  alt="typescript error"
+  src="/images/typescript_error.png"
+/>
 
 위와 같이 마우스를 올리면 어떤 점이 불만인지 알려준다. 위의 메시지는 message는 null이어야하는데 any가 되었기 때문에 그렇게 해서는 안된다고 이야기하는 것이다. 아마도 useState에서 null로 지정을 했기 때문에 error는 항상 null이어야한다고 추론하는 것 같다. 하지만 error가 발생했을 경우 객체 형태로 message를 저장하도록 코드를 만들었기 때문에 에러가 발생한 것이다. 그래서 형태를 정확하게 지정해줄 필요가 있는데 이럴때는 제네릭을 사용해서 데이터의 형태를 정확하게 알려주면 된다.
 
@@ -88,7 +91,7 @@ export interface IUseFetchReturnValue {
 }
 
 export const useFetch = ({
-  URL,
+  URL
 }: IFetchProps): [IUseFetchReturnValue, Function] => {
   const [response, setResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -128,10 +131,10 @@ export const useFetch = ({
     const response = await fetch("/getCSRFToken", {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       credentials: "include",
-      mode: "cors",
+      mode: "cors"
     });
     const result = await response.json();
     setCsrfToken(result.CSRFToken);
@@ -190,7 +193,7 @@ let tuple: [string, number] = ["취준생", 35];
 
 ```tsx
 export const useFetch = ({
-  URL,
+  URL
 }: IFetchProps): [IUseFetchReturnValue, Function] => {};
 ```
 
