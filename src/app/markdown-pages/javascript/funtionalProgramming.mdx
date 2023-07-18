@@ -1,0 +1,202 @@
+---
+date: "2023-07-18"
+title: "디자인 시스템과 함수형 프로그래밍"
+tags: ["javascript", "funtional programming", "design system"]
+---
+
+최근까지 [SICP](https://book.interpark.com/product/BookDisplay.do?_method=detail&sc.saNo=001&sc.prdNo=356237144)라는 책으로 공부를 했다.
+나름 한다고 했지만 책이 내용이 너무 어려워서 건질 수 있는 것이 많이 없었다.
+하지만 3장까지 읽고 1장부터 2장 중반까지 문제를 풀면서 나름대로 인사이트를 얻을 수 있었다.
+하지만 결국 스터디를 같이 하는 친구에게 중단하자고 말했다. 그리고 다시 [함수형 프로그래밍 강의](https://www.inflearn.com/course/functional-es6/dashboard)를 듣기로 했다.
+그래도 그동안 공부한 것을 나름 내 코드에 적용해보려고 많은 노력을 했다.
+이 글을 읽는 분들이 많은 것을 얻어가지 못하겠지만 그래도 디자인 시스템을 만들면서 나와 같은 고민을 한 사람에게 조금이나마 도움이 되면 좋겠다.
+
+> 이 글의 예시는 React와 타입스크립트를 사용하는 사람들이 보면 좋다.
+
+# 아토믹 디자인 패턴
+
+아토믹 디자인 패턴은 화학의 원자가 결합해 분자가 되고 분자가 결합해 화합물을 만드는 모형을 디자인 시스템에 적용한 것이라 생각하면 된다.
+토이 프로젝트를 하면서 아토믹 디자인 패턴을 적용해본 결과 Atom, Molecular, Organic을 정의하기 어려웠다.
+원티드 강의를 들으면서 질문 시간에 포코님에게 아토믹 디자인 패턴의 Molecular와 Organic을 나누는 기준에 대해서 인사이트를 얻고 싶었다.
+포코님은 회사 도메인에 따라 다르게 가져갈 수 있다고 했다. 그래서 그 인사이트를 바탕으로 버튼 만들기를 예시로 정리해보고자 한다.
+
+# Atom - Button
+
+버튼은 종류가 다양하다. 하지만 이 예시에서는 그냥 단순한 버튼을 만들어보려고 한다.
+
+```Button.tsx
+import React from "react";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    children:ReactNode;
+}
+
+const Button = ({children, ...rest}:ButtonProps) => {
+    return <button {...rest}>{children}</button>
+}
+
+export default Button;
+```
+
+나는 단순한 버튼을 만들때 이렇게 만든다. 만약 styled-components를 함께 쓴다면 이 버튼을
+외부에서 위임 받아 스타일링을 해줄 수도 있고 기본 스타일을 적용할 수 있다.
+
+이 버튼을 사용할 때는 불러와서 사용하면 된다.
+
+```SomeContainer.tsx
+import Button from "./Atom/Button"
+
+const SomeContainer = ()=>{
+    const handleSayHello = () => {
+        console.log('안녕')
+    }
+    return <Button onClick={handleSayHello}>안녕</Button>
+}
+
+```
+
+버튼은 보통 클릭이나 터지 용도로 쓰기 때문에 이벤트 함수는 onClick을 많이 쓴다. 하지만 나는 Button.tsx에서 ButtonHTMLAttributes를 확장해서 설계했기 때문에
+onChange, onTransition, onSubmit 같은 이벤트도 전달해서 사용할 수 있다. 그 밖에 HTML이 가진 속성을 props로 전달이 가능하다.
+button을 설계할 때 스타일 요소를 props로 받는 경우가 있는데 이건 상황에 따라 다르지만 왠만하면 스타일은 styled-components나 css에 위임하는게 더 좋다고 생각한다.
+어쨌든 Atomic Design Pattern을 사용할 때 단순한 형태의 버튼은 이렇게 쉽게 값을 주고 받을 수 있다. 여기까지는 너무 쉽고 폴더도 적고 파일도 적고 직관적이어서 쉽게 느껴진다.
+
+**_하지만 Molecular가 등장한다면 어떨까?_**
+
+<a href="https://namu.wiki/w/%EB%93%9C%EB%9D%BC%EA%B5%B0%20%EB%86%80%EC%9D%B4">
+  <img
+    src="https://i.namu.wiki/i/U9o_OyMjNtY7rFTkX3cTScLFQf-vcHWI92cWQTvS5BqxLtwN93s-jVAO7Nlwq4z08rkgpi_vdCyEwyxS8VWRyHkmHbdMtNXRE5bZYmjuknhpxlEtnDu3WkN8ZWCe_ru5XOEqJ0GJ6pnnMaN3_H3T8w.webp"
+    alt="드라군 놀이"
+  />
+</a>
+
+- 드라군 놀이 [출처 : 나무위키]
+
+# Molecular - Button Group
+
+여기서 만들 버튼 그룹은 모달을 위한 버튼 그룹이다. 버튼 그룹은 Atom에서 만든 Button을 사용해서 만든다. 그게 아토믹 디자인 패턴을 사용하는 묘미다.
+두개의 Button 원자가 결합해 하나의 ButtonGroup 분자를 이루게 된다.
+
+```ModalButtonGroup.tsx
+
+import styled from "styled-componets"
+import Button from './Atom/Button'
+
+interface ButtonGroupProps {
+}
+
+const ButtonGroup = () => {
+    return (
+        <ButtonContainer>
+            <Button>취소</Button>
+            <Button>확인</Button>
+        </ButtonContainer>
+    )
+}
+
+export default ButtonGroup;
+
+const ButtonContainer = styled.div`
+    display:flex;
+    width:100%;
+    justify-content:space-between;
+`
+
+```
+
+이걸 만드는 것도 그렇게 많은 생각을 하지 않아도 된다. 하지만 문제는 ButtonGroup에 취소와 확인 버튼을 눌렀을 때 동작할 비즈니스 로직을 어떻게 전달해야할지 고민이 생긴다.
+처음에 내가 했던 방법은 이렇다.
+
+```ModalButtonGroup.tsx
+
+import Button from './Atom/Button'
+
+interface ModalButtonGroupProps {
+    handleCancelButton : () => void;
+    handleConfirmButton : () => void;
+}
+
+const ModalButtonGroup = ({handleCancelButton, handleConfirmButton}:ModalButtonGroupProps) => {
+    return (
+        <ButtonContainer>
+            <Button onClick={handleCancelButton}>취소</Button>
+            <Button onClick={handleConfirmButton}>확인</Button>
+        </ButtonContainer>
+    )
+}
+
+export default ModalButtonGroup;
+
+const ButtonContainer = styled.div`
+    display:flex;
+    width:100%;
+    justify-content:space-between;
+`
+
+```
+
+나쁘지 않다. 하지만 버튼에 disabled를 전달해야할때 또다시 두개의 props를 만들어야한다. 무언가 추가될때마다 props를 추가하게 되면 항상 두 개씩 추가할 수도 있다.
+로직이 취소와 확인이기 때문이다. 그러나 버튼은 모달 버튼만 있는 것은 아니다. 하단에 버튼이 세개 네개일 수 있다. 그럴 때마다 onClick, disabled와 같은 button 관련 props를 전달해야한다면
+나중에는 전달해야하는 props가 너무 많아서 버튼을 옮기거나 수정하는 것이 매우 부담이 된다.
+
+하지만 버튼이 몇개든 관계 없이 고차함수를 사용하거나 또는 거기까지 갈 필요 없이 함수의 동작을 외부에 위임하면 간단하게 해결이 가능해진다. 버튼이 5개라고 가정해보자 그러더라도 전달 받는 함수는 한개만 있으면 된다.
+여기까지 들었을 때 감이 오지 않나? SICP에서는 이것을 태그된 데이터라고 표현하고 있다. 직접 구현해보면 다음과 같다.
+
+```FiveBottomButtonGroup.tsx
+
+type ButtonControllerType = "PRE"|"START"|"PAUSE"|"NEXT"|"END"
+
+interface FiveBottomButtonGroupProps {
+    handleOnClick: (type:ButtonControllerType) => void;
+    handleButtonDisabled: (type:ButtonControllerType) => boolean;
+}
+
+const FiveBottomButtonGroup = ({ handleOnClick, handleButtonDisabled }:FiveBottomButtonGroupProps) => {
+    const handleButtonActionController = (type:ButtonControllerType) => (e:React.MouseEvent<ButtonElement>) => {
+        handleOnClick(type)
+    }
+
+    return (
+        <div>
+            <Button
+                disabled={handleButtonDisabled("PRE")}
+                onClick={FiveBottomButtonGroup("PRE")}>
+                이전
+            </Button>
+            <Button
+                disabled={handleButtonDisabled("START")}
+                onClick={FiveBottomButtonGroup("START")}>
+                시작
+            </Button>
+            <Button
+                disabled={handleButtonDisabled("PAUSE")}
+                onClick={FiveBottomButtonGroup("PAUSE")}>
+                일시중지
+            </Button>
+            <Button
+                disabled={handleButtonDisabled("NEXT")}
+                onClick={FiveBottomButtonGroup("NEXT")}>
+                다음
+            </Button>
+            <Button
+                disabled={handleButtonDisabled("END")}
+                onClick={FiveBottomButtonGroup("END")}>
+                종료
+            </Button>
+        </div>
+    );
+};
+
+```
+
+이렇게 동작을 외부로 위임하는 형태는 매우 익숙한 형태다. 거기에 어느 버튼에서 동작이 진행되고 있는지를 태그로 나눠 놓은 것 뿐이다.
+외부에서는 태그에 따라 원하는 함수를 실행시키면 된다.
+
+# 마무리
+
+이 방법이 마음에 들지 않을 수 있다. 다른 많은 방법이 있을 수 있다. Button 컨테이너에서 Button을 리스트로 받고 Button의 값을 객체로 넘긴다던가 createElement를 사용한다던가(react에서는 다른 방법을 권장함) 여러가지 방법이 있다.
+추상화를 더 해서 범용적으로 사용할 수 있겠지만 나는 비즈니스 로직이 항상 가변적이라는 것을 고려해서 오히려 도메인 별로 Molecular와 Organic을 나누어 설계했다. 이 방법이 나중에 유지 보수가 더 쉬울 것이라고 생각했기 때문이다.
+추상화는 너무 좋지만 너무 딥한 추상화는 시간을 잡아먹는 괴물이 될 수 도 있다고 생각한다. 하지만 적당한 추상화는 컴포넌트의 범용성을 높혀주고 유지보수도 쉬운 코드로 설계가 가능하지 않을까?
+물론 나중에 내 코드를 보는 분이 '뭐여 이게'하고 더 좋게 고칠 수 있다. 내가 생각한 코드가 상하지 않는다는 보장은 없기 때문이다. 분명 어느 시점이 지나면 레거시가 된다. (배포가 된 시점일 수도...)
+여러분들은 어떻게 추상화를 하고 있나? 이 글에서 소개한 방법 말고 더 나은 방법이 있나? [깃헙 이슈](https://github.com/movie42/hyunsu/issues/3)에서 토론이 이루어지면 좋겠다.
+
+마지막으로 위에서 소개한 SICP와 함수형 프로그래밍은 꼭 사서 보기를 추천한다. 한마디로 **_개 쩐다_**.
