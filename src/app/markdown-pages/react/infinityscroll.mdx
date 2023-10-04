@@ -112,35 +112,35 @@ const data = await Item.find()
 
 ~~React Query~~(TanStack Query)는 서버 상태를 관리하는데 편리한 기능을 많이 제공한다. react query에서 제공하는 useQuery 훅을 사용해서 데이터 패칭을 조금 편리하게 할 수 있다. 최근에는 fetch보다 axios와 함께 사용하는데 에러 처리를 조금 더 편리하게 할 수 있기 때문이다. 나는 useGetData라는 커스텀 훅을 만들어서 데이터를 가져왔다.
 
-```Typescript
-interface GetData{
-    id:string;
-    name:string;
-    age:number;
+```ts
+interface GetData {
+  id: string;
+  name: string;
+  age: number;
 }
 
-interface Data{
-    data: GetData[]
+interface Data {
+  data: GetData[];
 }
 
+const useGetData = () => {
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(10);
 
-
-const useGetData =()=>{
-    const [offset, setOffset] = useState(0)
-    const [limit, setLimit] = useState(10)
-
-    const query = useQuery<Data, AxiosError, GetData>(['dataList'],
-    ()=> axios.get(`${url}?offset=${offset}&limit=${limit}`),
+  const query = useQuery<Data, AxiosError, GetData>(
+    ["dataList"],
+    () => axios.get(`${url}?offset=${offset}&limit=${limit}`),
     {
-        select:(response)=>response.data,
-        onSuccess:()=>{},
-        onError:(error)=>{
-            console.log(error)
-        }
-    });
+      select: (response) => response.data,
+      onSuccess: () => {},
+      onError: (error) => {
+        console.log(error);
+      }
+    }
+  );
 
-    return {offset, setOffset, limit, setLimit, ...query}
-}
+  return { offset, setOffset, limit, setLimit, ...query };
+};
 ```
 
 불러온 데이터를 recoil을 사용해 저장한 다음에 불러온 데이터를 recoil에 합치는 방법을 사용했다. 그런데 예상치 못한 에러를 맞이했다.

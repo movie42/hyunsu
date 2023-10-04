@@ -15,39 +15,39 @@ tags: ["javascript", "react", "hooks"]
 
 1. 처음부터 리액트를 세팅하는 방법도 있다. 아티클을 참고하는 편이 좋다.
 
-   - <a
-       href="https://dev.to/underscorecode/creating-your-react-project-from-scratch-without-create-react-app-the-complete-guide-4kbc"
-       target="_blank"
-     >
-       Creating your React project from scratch without create-react-app: The
-       Complete Guide.
-     </a>
+   <a
+     href="https://dev.to/underscorecode/creating-your-react-project-from-scratch-without-create-react-app-the-complete-guide-4kbc"
+     target="_blank"
+   >
+     Creating your React project from scratch without create-react-app: The
+     Complete Guide.
+   </a>
 
 2. create-react-app
 
-```shell
-$ npx create-react-app your-project-name
-$ cd your-project-name
-$ npm start
-```
+   ```shell
+   $ npx create-react-app your-project-name
+   $ cd your-project-name
+   $ npm start
+   ```
 
 3. create-react-app with Typescript
 
-```shell
-$ npx create-react-app your-project-name --template typescript
-$ cd your-project-name
-$ npm start
-```
+   ```shell
+   $ npx create-react-app your-project-name --template typescript
+   $ cd your-project-name
+   $ npm start
+   ```
 
 4. react with vite
 
-```shell
-$ npm create vite@latest
-// 나에게 맞는 환경 선택
-$ cd my-project
-$ npm install
-$ npm start
-```
+   ```shell
+   $ npm create vite@latest
+   // 나에게 맞는 환경 선택
+   $ cd my-project
+   $ npm install
+   $ npm start
+   ```
 
 ## HOOKS
 
@@ -247,7 +247,10 @@ const App = () => {
 
   return (
     <form>
-      <input ref={inputEl} type="text" />
+      <input
+        ref={inputEl}
+        type="text"
+      />
       <button onClick={onButtonClick}>제출</button>
     </form>
   );
@@ -357,7 +360,10 @@ export default function App() {
   return (
     <>
       {state.map((value) => (
-        <User dispatch={dispatch} {...value} />
+        <User
+          dispatch={dispatch}
+          {...value}
+        />
       ))}
     </>
   );

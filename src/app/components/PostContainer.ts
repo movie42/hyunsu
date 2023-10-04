@@ -27,6 +27,12 @@ export const PostContainer = styled.div`
       word-spacing: -2px;
       margin-bottom: 2rem;
     }
+    h4 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      word-spacing: -2px;
+      margin-bottom: 2rem;
+    }
 
     a {
       display: block;
@@ -49,11 +55,14 @@ export const PostContainer = styled.div`
       max-width: 1020px;
     }
 
-    ul {
+    ul,
+    ol {
+      margin-bottom: 3rem;
       li {
         font-size: 1.8rem;
         line-height: 3rem;
-        ul {
+        ul,
+        ol {
           li {
             padding-left: 1rem;
           }
@@ -62,7 +71,6 @@ export const PostContainer = styled.div`
     }
 
     .remark {
-      margin-top: -1.6rem;
       padding: 0;
       small {
         margin: 0;
@@ -78,13 +86,19 @@ export const PostContainer = styled.div`
         height: 100%;
       }
     }
+
     blockquote {
       position: relative;
       word-break: keep-all;
-      margin: 1.2rem;
+      margin: 3rem 1.2rem;
       padding: 1rem 4rem;
       border-radius: 0.2rem;
       background-color: ${(props) => props.theme.grayColor_light};
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
       &::after {
         position: absolute;
         top: 0;
@@ -94,6 +108,9 @@ export const PostContainer = styled.div`
         background-color: ${(props) => props.theme.hlColor_light};
         content: "";
       }
+    }
+    p + blockquote {
+      margin-top: 0;
     }
 
     code {
