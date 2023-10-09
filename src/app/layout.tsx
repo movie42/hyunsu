@@ -1,6 +1,7 @@
 import localFont from "@next/font/local";
 import { Metadata } from "next";
 import Providers from "./Providers";
+import Header from "./components/Header/Header";
 import { GlobalStyle } from "./styles/globalStyle";
 
 export const SUIT = localFont({
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={SUIT.className}>
         <Providers>
           <GlobalStyle />
+          <Header />
           {children}
         </Providers>
       </body>

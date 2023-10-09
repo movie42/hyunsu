@@ -73,17 +73,22 @@ export const Wrapper = styled.li`
       }
     }
   }
+
   &:hover {
-    background-color: ${(props) => props.theme.basicColor};
+    background-color: ${(props) => props.theme.hlColor_light};
+    transform: scale(1.02);
     a {
+      color: ${(props) => props.theme.whiteColor};
       h3 {
         word-spacing: -0.2rem;
         font-weight: 900;
-        color: ${(props) => props.theme.hlColor};
-        transition: all 0.3s ease-in-out;
+        transition: all 0.2s ease-in-out;
       }
     }
-    transition: all 0.3s ease-in-out;
+    transition: all 0.2s ease-in-out;
+  }
+  &:active {
+    transform: scale(0.96);
   }
 
   @media (max-width: 1020px) {
