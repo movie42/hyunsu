@@ -15,8 +15,7 @@ export const metadata: Metadata = {
   description:
     "프론트엔드 개발자 고현수의 블로그입니다. 개발, 자바스크립 & 잡다한 이야기를 끄적거리는 곳입니다.",
   verification: {
-    google:
-      "google-site-verification=veIyQnpMzmYGRpL8GEjeQsflYmq9zJAVRpn5zVx16FY"
+    google: "veIyQnpMzmYGRpL8GEjeQsflYmq9zJAVRpn5zVx16FY"
   }
 };
 
