@@ -1,8 +1,4 @@
-"use client";
-
-import { DefaultTheme } from "styled-components";
-
-export const theme: DefaultTheme = {
+export const theme = {
   basicColor: "#303030",
   grayColor: "#E0E0E0",
   grayColor_light: "#F7F7F7",
