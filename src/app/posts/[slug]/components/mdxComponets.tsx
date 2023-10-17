@@ -1,10 +1,11 @@
-import { Code } from "bright";
-import Link from "next/link";
-import Image from "next/image";
-import { MDXComponents } from "mdx/types";
-import { Fira_Code } from "@next/font/google";
-import { AnchorHTMLAttributes } from "react";
 import Canvas from "@/app/components/Animation/Canvas";
+import Quotation from "@/app/components/Quotation/Quotation";
+import { Fira_Code } from "@next/font/google";
+import { Code } from "bright";
+import { MDXComponents } from "mdx/types";
+import Image from "next/image";
+import Link from "next/link";
+import { AnchorHTMLAttributes } from "react";
 import { focus } from "./focus";
 
 const font = Fira_Code({ subsets: ["latin"] });
@@ -30,5 +31,6 @@ export const mdxComponents: MDXComponents = {
     return <Image {...props} />;
   },
   pre: Code,
+  Quotation,
   Canvas
 };
