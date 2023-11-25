@@ -4,16 +4,21 @@ import Link from "next/link";
 import { styled } from "styled-components";
 
 interface PostProps {
+  className?: string;
   href: string;
   title?: string;
   date?: string;
+  tags?: string[];
 }
 
-const Post = ({ href, title, date }: PostProps) => {
+const Post = ({ href, title, date, className, tags }: PostProps) => {
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <Link href={href}>
         <h3>{title}</h3>
+        <TagContainer>
+          <Tag>{tags ? tags.join(", ") : ""}</Tag>
+        </TagContainer>
         <div className="info_wrapper">
           <span>{date}</span>
         </div>
@@ -23,6 +28,15 @@ const Post = ({ href, title, date }: PostProps) => {
 };
 
 export default Post;
+const TagContainer = styled.div`
+  display: flex;
+  gap: 0.4rem;
+  border: 0;
+`;
+const Tag = styled.span`
+  border: 0;
+  font-size: 1.8rem;
+`;
 
 export const Wrapper = styled.li`
   box-sizing: border-box;
@@ -76,16 +90,13 @@ export const Wrapper = styled.li`
 
   &:hover {
     background-color: ${(props) => props.theme.hlColor_light};
-    transform: scale(1.02);
     a {
       color: ${(props) => props.theme.whiteColor};
       h3 {
         word-spacing: -0.2rem;
         font-weight: 900;
-        transition: all 0.2s ease-in-out;
       }
     }
-    transition: all 0.2s ease-in-out;
   }
   &:active {
     transform: scale(0.96);

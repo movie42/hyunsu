@@ -1,25 +1,21 @@
-import { HomeContainer } from "./components/Container/HomeContainer";
-import Post from "./components/Post";
+import { HomeContainer, Nav, Section } from "./components";
+
 import { getPageURL } from "./libs/url";
 
 export default function Home() {
   const data = getPageURL();
+  const recentBlog = data
+    .sort((a, b) => Number(a.date) - Number(b.date))
+    .slice(0, 4);
 
   return (
     <HomeContainer>
-      <ul className="post-container">
-        {data?.map(
-          (post, index) =>
-            post.slug && (
-              <Post
-                key={index}
-                title={post.title}
-                date={post.date}
-                href={post.slug}
-              />
-            )
-        )}
-      </ul>
+      <Section
+        sectionTitle="최근에 쓴 글"
+        posts={recentBlog}
+        baseUrl="/posts"
+      />
+      <Nav />
     </HomeContainer>
   );
 }

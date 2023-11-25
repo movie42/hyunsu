@@ -1,4 +1,4 @@
-import { getAllPosts, getPost } from "../../libs/readFile";
+import { getAllPosts, getPost } from "../../../libs/readFile";
 
 import { BASE_PATH, BASE_URL } from "@/app/libs/constant";
 
@@ -9,6 +9,7 @@ import {
   Title
 } from "@/app/components/Post/PostContainer";
 import { getData } from "@/app/libs/getData";
+import { mdxComponents } from "@/app/mdxComponets";
 import { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
@@ -16,7 +17,6 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
-import { mdxComponents } from "../../mdxComponets";
 
 interface PostPageProps {
   params: { slug: string };
