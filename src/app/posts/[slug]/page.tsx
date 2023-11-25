@@ -2,6 +2,7 @@ import { getAllPosts, getPost } from "../../libs/readFile";
 
 import { BASE_PATH, BASE_URL } from "@/app/libs/constant";
 
+import Giscus from "@/app/components/Giscus/Giscus";
 import {
   InfoContainer,
   PostContainer,
@@ -68,6 +69,7 @@ const PostPage = ({ params: { slug } }: PostPageProps) => {
           }}
           components={mdxComponents}
         />
+        <Giscus />
       </div>
     </PostContainer>
   ) : (
