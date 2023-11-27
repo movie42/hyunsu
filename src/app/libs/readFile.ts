@@ -1,9 +1,8 @@
-import fs from "fs";
 import dayjs from "dayjs";
+import fs from "fs";
 import { sync } from "glob";
 import matter from "gray-matter";
 import path from "path";
-import { BASE_PATH } from "./constant";
 
 const BASE_FILE_PATH = "/markdown-pages";
 const POST_PATH = path.join(process.cwd(), `src/app${BASE_FILE_PATH}`);
@@ -34,7 +33,7 @@ export const getPost = (postPath: string): Post | undefined => {
     tags: grayMatter.tags.filter(Boolean),
     date: dayjs(grayMatter.date).format("YYYY-MM-DD"),
     content,
-    slug: `${BASE_PATH}/${postPath
+    slug: `${postPath
       .split("/")
       .findLast((value) => value)
       ?.replace(".mdx", "")}`,
