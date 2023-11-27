@@ -1,5 +1,6 @@
 export { default as Canvas } from "./Animation/Canvas";
 export { HomeContainer } from "./Container/HomeContainer";
+export { TitleContainer } from "./Container/TitleContainer";
 export { default as Giscus } from "./Giscus/Giscus";
 export { default as Header } from "./Header/Header";
 export { default as Nav } from "./Nav/Nav";

@@ -1,5 +1,6 @@
 "use client";
 import styled from "styled-components";
+import { TitleContainer } from "../Container/TitleContainer";
 import Post from "../Post/Post";
 
 interface Post {
@@ -66,11 +67,6 @@ const Container = styled.section`
       border-radius: 0;
     }
   }
-`;
-
-const TitleContainer = styled.div`
-  background-color: unset;
-  padding: 2rem 0;
 `;
 
 const RecentPost = styled(Post)`
