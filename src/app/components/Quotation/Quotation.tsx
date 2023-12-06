@@ -33,6 +33,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10rem 0 12rem;
+
   blockquote.block-quotation {
     margin: 0;
     padding: 0;
