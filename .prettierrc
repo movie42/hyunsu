@@ -6,6 +6,6 @@
   "semi": true,
   "trailingComma": "none",
   "printWidth": 130,
-  "proseWrap": "always",
+  "proseWrap": "preserve",
   "singleAttributePerLine": true
 }
