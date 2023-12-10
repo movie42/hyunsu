@@ -5,6 +5,7 @@
   "tabWidth": 2,
   "semi": true,
   "trailingComma": "none",
-  "printWidth": 80,
+  "printWidth": 130,
+  "proseWrap": "preserve",
   "singleAttributePerLine": true
 }
