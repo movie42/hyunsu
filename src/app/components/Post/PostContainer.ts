@@ -13,25 +13,25 @@ export const PostContainer = styled.div`
       font-size: 4.2rem;
       font-weight: 800;
       word-spacing: -2px;
-      margin-bottom: 2rem;
+      margin: 2rem 0;
     }
     h2 {
       font-size: 3.5rem;
       font-weight: 700;
       word-spacing: -2px;
-      margin-bottom: 2rem;
+      margin: 2rem 0;
     }
     h3 {
       font-size: 3rem;
       font-weight: 700;
       word-spacing: -2px;
-      margin-bottom: 2rem;
+      margin: 2rem 0;
     }
     h4 {
       font-size: 2.5rem;
       font-weight: 700;
       word-spacing: -2px;
-      margin-bottom: 2rem;
+      margin: 2rem 0;
     }
 
     a {
@@ -40,7 +40,7 @@ export const PostContainer = styled.div`
     }
 
     p {
-      font-size: 1.7rem;
+      font-size: 1.9rem;
       line-height: 3.9rem;
       word-spacing: -2px;
       padding-bottom: 3rem;
@@ -55,6 +55,20 @@ export const PostContainer = styled.div`
       max-width: 1020px;
     }
 
+    ol {
+      margin-left: 2.2rem;
+      li {
+        list-style: auto;
+        ul {
+          margin: 0;
+          margin-left: 1.2rem;
+          li {
+            list-style: disc;
+            padding-left: 2rem;
+          }
+        }
+      }
+    }
     ul,
     ol {
       margin-bottom: 3rem;

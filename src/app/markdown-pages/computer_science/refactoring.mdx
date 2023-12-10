@@ -1,0 +1,752 @@
+---
+slug: "/refactoring"
+date: "2023-12-10"
+title: "Join 컴포넌트 리펙토링 - 비즈니스 로직과 캡슐화"
+tags: ["front-end", "refactoring"]
+---
+
+내가 이전에 작성했던 코드를 보고 비즈니스 로직과 UI의 얽힌 부분을 풀어서 캡슐화를 진행해보려고 한다.
+
+# 비즈니스 로직 찾아보기
+
+예전에 작성했던 코드 중에 너무 복잡한건 실습 하다가 그만 둘 것 같아서 난이도가 가장 낮은 Join 컴포넌트로 실습을 하기로 했다.
+일단 처음에 코드를 쭉 살펴보면서 비즈니스 로직으로 생각할 수 있는 것을 찾아보았다.
+
+```Join.tsx
+function Join() {
+
+  // focus(1:18)
+  const [email, setEamil] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+
+  const {
+    isEmail,
+    setIsEmail,
+    isUserName,
+    setIsUserName,
+    isName,
+    setIsName,
+    isPassword,
+    setIsPassword,
+    isPassword2,
+    setIsPassword2,
+    isDisabled,
+    setIsDisabled
+  } = useValidate();
+
+
+  const navigate = useNavigate();
+
+  // focus(1:6)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError
+  } = useForm<SubmitProps>();
+
+  // focus(1)
+  const { mutate: joinMutate, isSuccess } = useJoin();
+
+  // focus(1:13)
+  const onSubmit = handleSubmit(async (data: SubmitProps) => {
+    if (data.password !== data.password2) {
+      setError(
+        "password2",
+        {
+          message: "앞에서 입력한 비밀번호와 같아야합니다."
+        },
+        { shouldFocus: true }
+      );
+      return;
+    }
+    joinMutate(data);
+  });
+
+    // focus(1:18)
+  const checkValueFromServer = async (
+    value: string,
+    type: "email" | "userName"
+  ) => {
+    try {
+      const check = await axios.get(`/api/user/checked-db?${type}=${value}`);
+
+      const { exist } = check.data;
+
+      if (!exist) {
+        return true;
+      }
+
+      throw check;
+    } catch (e) {
+      return false;
+    }
+  };
+
+    // focus(1:3)
+  const checkChangeValueForValidate = ({ event, type }: CheckValue) => {
+    const value = event.currentTarget.value;
+    const checkValue = VALIDATION_CHECK_VALUE[`${type}`].value.test(value);
+    return checkValue;
+  };
+
+    // focus(1:27)
+  const validateEmail = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEamil(e.currentTarget.value);
+
+    const checkValue = checkChangeValueForValidate({
+      event: e,
+      type: "email"
+    });
+    if (checkValue) {
+      const canUseValue = await checkValueFromServer(
+        e.currentTarget.value,
+        "email"
+      );
+      if (canUseValue) {
+        setIsEmail(canUseValue);
+        setError("email", { message: "" });
+      } else {
+        setIsEmail(canUseValue);
+        setError("email", {
+          message: "이미 다른 사람이 사용중이에요."
+        });
+      }
+    }
+    if (isEmail !== null && !checkValue) {
+      setIsEmail(false);
+      setError("email", { message: VALIDATION_CHECK_VALUE.email.message });
+    }
+  };
+
+// focus(1:28)
+  const validateUserName = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.currentTarget.value);
+    const checkValue = checkChangeValueForValidate({
+      event: e,
+      type: "userName"
+    });
+    if (checkValue) {
+      const canUseValue = await checkValueFromServer(
+        e.currentTarget.value,
+        "userName"
+      );
+      if (canUseValue) {
+        setIsUserName(canUseValue);
+        setError("userName", { message: "" });
+      } else {
+        setIsUserName(canUseValue);
+        setError("userName", {
+          message: "이미 다른 사람이 사용중이에요."
+        });
+      }
+    }
+    if (isUserName !== null && !checkValue) {
+      setIsUserName(false);
+      setError("userName", {
+        message: VALIDATION_CHECK_VALUE.userName.message
+      });
+    }
+  };
+
+// focus(1:24)
+  useEffect(() => {
+    if (isEmail && isPassword && isPassword2 && isUserName && isName) {
+      setIsDisabled(false);
+      return;
+    }
+    setIsDisabled(true);
+  }, [isEmail, isPassword, isPassword2, isUserName, isName]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      const timeout = setTimeout(() => navigate("/login"), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isSuccess]);
+  if (isSuccess) {
+    return (
+      <Wrapper>
+        <MessageContainer>
+          <h1>가입하신것을 축하드립니다! 😙</h1>
+          <p>로그인 화면으로 이동합니다.</p>
+        </MessageContainer>
+      </Wrapper>
+    );
+  }
+  return (
+    <Wrapper>
+      <h1>회원가입</h1>
+      <form onSubmit={onSubmit}>
+        <FormItemContainer>
+          <RootFormItem error={isEmail}>
+            <Label>이메일</Label>
+            <Input
+              type="text"
+              value={email}
+              {...register("email", {
+                required: "이메일을 입력해야합니다.",
+                pattern: VALIDATION_CHECK_VALUE.email,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  validateEmail(e)
+              })}
+            />
+          </RootFormItem>
+          <ErrorLabel error={isEmail}>
+            {isEmail === null
+              ? "사용하고 있는 이메일을 입력해주세요."
+              : errors?.email?.message}
+          </ErrorLabel>
+        </FormItemContainer>
+        <FormItemContainer>
+          <RootFormItem error={isUserName}>
+            <Label>사용자 이름</Label>
+            <Input
+              type="text"
+              value={userName}
+              {...register("userName", {
+                required: VALIDATION_CHECK_VALUE.userName.message,
+                pattern: VALIDATION_CHECK_VALUE.userName,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  validateUserName(e)
+              })}
+            />
+          </RootFormItem>
+          <ErrorLabel error={isUserName}>
+            {isUserName === null
+              ? "사용자 이름은 한글, 영문, 숫자 조합 5자 이상 10자 이하로 입력해주세요."
+              : errors?.userName?.message}
+          </ErrorLabel>
+        </FormItemContainer>
+        <FormItemContainer>
+          <RootFormItem error={isName}>
+            <Label>실명</Label>
+            <Input
+              type="text"
+              {...register("name", {
+                required: VALIDATION_CHECK_VALUE.name.message,
+                pattern: VALIDATION_CHECK_VALUE.name,
+                // focus(1:18)
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  const checkValue = checkChangeValueForValidate({
+                    event: e,
+                    type: "name"
+                  });
+                  if (checkValue) {
+                    setIsName(checkValue);
+                    setError("name", { message: "" });
+                  }
+                  if (isName !== null && !checkValue) {
+                    setIsName(false);
+                    setError("name", {
+                      message: VALIDATION_CHECK_VALUE.name.message
+                    });
+                  }
+                }
+              })}
+            />
+          </RootFormItem>
+          <ErrorLabel error={isName}>
+            {isName === null
+              ? VALIDATION_CHECK_VALUE.name.message
+              : errors?.name?.message}
+          </ErrorLabel>
+        </FormItemContainer>
+        <FormItemContainer>
+          <RootFormItem error={isPassword}>
+            <Label>비밀번호</Label>
+            <Input
+              type="password"
+              {...register("password", {
+                // focus(1:20)
+                required: VALIDATION_CHECK_VALUE.joinPassword.message,
+                pattern: VALIDATION_CHECK_VALUE.joinPassword,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.currentTarget.value);
+                  const checkValue = checkChangeValueForValidate({
+                    event: e,
+                    type: "joinPassword"
+                  });
+                  if (checkValue) {
+                    setIsPassword(checkValue);
+                    setError("password", { message: "" });
+                  }
+                  if (isPassword !== null && !checkValue) {
+                    setIsPassword(false);
+                    setError("password", {
+                      message: VALIDATION_CHECK_VALUE.joinPassword.message
+                    });
+                  }
+                }
+              })}
+            />
+          </RootFormItem>
+          <ErrorLabel error={isPassword}>
+            {isPassword === null
+              ? VALIDATION_CHECK_VALUE.joinPassword.message
+              : errors?.password?.message}
+          </ErrorLabel>
+        </FormItemContainer>
+        <FormItemContainer>
+          <RootFormItem error={isPassword2}>
+            <Label>비밀번호 확인</Label>
+            <Input
+              id="password2"
+              type="password"
+              {...register("password2", {
+                required: VALIDATION_CHECK_VALUE.password2.message,
+                // focus(1:13)
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  if (password === e.currentTarget.value) {
+                    setIsPassword2(true);
+                    setError("password2", { message: "" });
+                    return;
+                  }
+                  setIsPassword2(false);
+                  setError("password2", {
+                    message: VALIDATION_CHECK_VALUE.password2.message
+                  });
+                }
+              })}
+            />
+          </RootFormItem>
+          <ErrorLabel error={isPassword2}>
+            {isPassword2 === null
+              ? "앞에서 입력한 비밀번호와 같은 값을 입력해주세요."
+              : errors?.password2?.message}
+          </ErrorLabel>
+        </FormItemContainer>
+        <SubmitButton
+          buttonType="block"
+          disabled={isDisabled}
+        >
+          가입하기
+        </SubmitButton>
+      </form>
+    </Wrapper>
+  );
+}
+export default Join;
+```
+
+## 비즈니스 로직이라고 생각하는 이유
+
+비즈니스 로직은 UI 컴포넌트의 기본 기능 외, 사용자의 액션을 반영해서 추가적으로 사이드이펙을 일으키는 요소라고 이해했다.
+예를들면 Text Input 컴포넌트의 기본 기능은 사용자가 키보드로 문자열을 입력했을 때 안에 글자가 들어가는 것이라면 비즈니스 로직은
+문자열을 입력했을 때, 비즈니스가 요구하는 형식에 맞는지 validation을 해주고 아니라면 색상을 변경하거나 메시지를 사용자에게 노출시켜
+경고나 안내를 하는 로직이다. Join.tsx에서 밝게 표시된 영역들은 그러한 이유에서 비즈니스 로직이라 생각하는 것들이다.
+
+# UI 로직에서 비즈니스 로직 분리해보기
+
+## 동작 방법
+
+내가 실습으로 고른 코드는 비즈니스 로직이 생각보다 많이 얽혀있는 것 같진 않다.
+일단 이 컴포넌트의 동작 순서 또는 방법에 대해서 간략하게 정리해보자.
+
+1. 사용자가 input에 값을 넣는다.
+2. react hook form의 onChange에서 변경되는 값을 setState를 사용해 값을 넣어준다.
+   - 액션
+3. validateEmail 이나 validateUserName이 동작한다. (email, userName일 때)
+   - 계산(Validation) 후 액션 (isEmail, isUserName)
+4. 비밀번호는 함수가 없지만 input 컴포넌트 안에서 onChange에 로직이 있다.
+   - validation 후 액션
+5. 모든 값을 알맞게 입력하면 submit 버튼 disabled가 false로 변경
+   - useEffect에서 액션을 일으킨다.
+     - isEmail, isUserName,isName,isPassword 등이 true가 된다. 그리고 isDisabled가 false가 된다.
+6. onSubmit 버튼을 누르면 최종적으로 서식을 보내기 전에 password === password2인지 체킹힌다.
+   - (혼란스럽다... 왜 여기서...??) 어쨌든 계산 후 joinMutate 함수를 호출한다 (액션)
+7. 최종적으로 isSuccess가 true이면 navigate 함수가 동작한다. (액션)
+
+## validation 기능의 역할 강화하기
+
+이 컴포넌트가 복잡한 이유를 두 가지로 분석해봤는데 일단 첫번째로 validation이 이곳 저곳에 흩어져있기 때문이다.
+useValidate라는 훅은 정말 아무런 역할을 하지 않는다. 그냥 단순하게 isEmail, setIsEmail을 추출한 훅이다.
+아마도 이때 당시에 훅을 이렇게 작성한 이유는 isEmail이라는 boolean이 너무 많아서 따로 뽑은 듯 하다.
+하지만 이상하게도 useEffect가 밖에 있고 조건부 절 안에서 isDisabled를 세팅하고 있다.
+validation을 하는 함수도 email과 username을 제외하고는 나머지는 컴포넌트에 뒤섞여있다.
+
+그래서 일단 validation 역할을 모아서 강화해보기로했다. 그럼 useValidate를 이렇게 묶을 수 있다.
+
+```useValidate.tsx
+const useValidate = () => {
+  const [{ isEmail, isUserName, isName, isPassword, isPassword2 }, dispatch] =
+    useReducer(reducer, initValue);
+
+  const isDisabled = Object.entries(validate).every(([_, value]) => value);
+
+  const checkChangeValueForValidate = ({ value, type }: CheckValue) => {
+    const checkValue = VALIDATION_CHECK_VALUE[`${type}`].regex.test(value);
+    return checkValue;
+  };
+
+  return {
+    validate: {
+      isEmail,
+      isUserName,
+      isName,
+      isPassword,
+      isPassword2
+    },
+    dispatch,
+    checkChangeValueForValidate
+  };
+};
+
+export default useValidate;
+```
+
+isDisabled는 함수가 랜더링 될때 변경되기 때문에 useEffect를 사용해서 값을 셋 할 필요가 없다.
+checkChangeValueForValidate는 원래 event를 받도록 되어있는데 이러면 이벤트에 종속되기 때문에 value를 string으로 받도록 변경했다.
+그럼 value가 어떤 이벤트인지는 별로 중요해지지 않고 validate를 하려는 곳에서 언제든지 사용할 수 있다.
+
+다음으로 validate\*\*\* 함수가 onChange의 역할을 대신하고 있는 것이 문제가 된다.
+
+```Join.tsx
+  const validateUserName = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.currentTarget.value);
+    const checkValue = checkChangeValueForValidate({
+      event: e,
+      type: "userName"
+    });
+    if (checkValue) {
+      const canUseValue = await checkValueFromServer(
+        e.currentTarget.value,
+        "userName"
+      );
+      if (canUseValue) {
+        setIsUserName(canUseValue);
+        setError("userName", { message: "" });
+      } else {
+        setIsUserName(canUseValue);
+        setError("userName", {
+          message: "이미 다른 사람이 사용중이에요."
+        });
+      }
+    }
+    if (isUserName !== null && !checkValue) {
+      setIsUserName(false);
+      setError("userName", {
+        message: VALIDATION_CHECK_VALUE.userName.message
+      });
+    }
+  };
+
+return <FormItemContainer>
+          <RootFormItem error={isUserName}>
+            <Label>사용자 이름</Label>
+            <Input
+              type="text"
+              value={userName}
+              {...register("userName", {
+                required: VALIDATION_CHECK_VALUE.userName.message,
+                pattern: VALIDATION_CHECK_VALUE.userName,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  validateUserName(e)
+              })}
+            />
+          </RootFormItem>
+          <ErrorLabel error={isUserName}>
+            {isUserName === null
+              ? "사용자 이름은 한글, 영문, 숫자 조합 5자 이상 10자 이하로 입력해주세요."
+              : errors?.userName?.message}
+          </ErrorLabel>
+        </FormItemContainer>
+```
+
+onChange는 그냥 단순하게 onChange를 하도록 하고
+react-hook-form을 사용했으니까 react-hook-form을 통해서 validation을 하는 방향으로 변경하려고 한다.
+이렇게 변경점을 생각한 이유는 react-hook-form을 사용하는데 Input은 controlled 컴포넌트다.
+그럼 react-hook-form의 이점은 살리기 어렵기 때문에 그냥 라이브러리를 가져다가 쓴 격이 된다. 그래서 react-hook-form을 사용해서
+컴포넌트 랜더링을 최적화 한다. 그럼, useState와 onChange의 역할을 대신하고 있는 validate\*\*\* 함수는 더이상 역할이 없기 때문에 삭제할 수 있다.
+
+```Join.tsx
+const Join = ()=>{
+
+ return (
+    <Wrapper>
+      <h1>회원가입</h1>
+      <form onSubmit={onSubmit}>
+        <FormItemContainer>
+          <RootFormItem error={isEmail}>
+            <Label>이메일</Label>
+            <Input
+              type="text"
+              {...register("email", {
+                required: VALIDATION_CHECK_VALUE.email.errorMessage,
+                pattern: VALIDATION_CHECK_VALUE.email.regex
+              })}
+            />
+          </RootFormItem>
+           <ErrorLabel error={isEmail}>
+            {isEmail === null
+              ? "사용하고 있는 이메일을 입력해주세요."
+              : errors?.email?.message}
+          </ErrorLabel>
+          </FormItemContainer>
+          // 형식이 같기 때문에 생략
+      </form>
+      </Wrapper>
+)
+}
+
+```
+
+하지만 이렇게 되면 문제가 되는 것은 react-hook-form을 사용해서 사용자가 입력하는 값을 실시간으로 받아야하는 점이 문제가 된다.
+그렇게 되면 필연적으로 useValidate 훅은 react-hook-form에 의존적이게 될 수 밖에 없다. 그럼 react-hook-form의 useForm, useWatch 의 값을
+useValidate에 props로 넣어주어야하는데 이렇게 하면 응집도가 느슨해지고 또 복잡해진다.
+그래서 나는 useValidate를 useJoinForm으로 이름을 바꾸고 useForm의 역할의 extends해서 Join.tsx에 제공해주는 쪽으로 리펙토링을 했다.
+
+```useJoinForm.tsx
+const useJoinForm = () => {
+  const [{ isEmail, isUserName, isName, isPassword, isPassword2 }, dispatch] =
+    useReducer(reducer, initValue);
+  const { control, ...rest } = useForm<FormValues>();
+
+  const { email, name, password2, password, userName } = useWatch({
+    control
+  });
+
+  const isDisabled = !Object.entries({
+    isEmail,
+    isName,
+    isPassword,
+    isPassword2,
+    isUserName
+  }).every(([_, value]) => value);
+
+  const checkChangeValueForValidate = ({ value, type }: CheckValue) => {
+    if (!value) {
+      return;
+    }
+    const checkValue = VALIDATION_CHECK_VALUE[`${type}`].regex.test(value);
+    return checkValue;
+  };
+
+  const validateEmail = useCallback(() => {
+    if (!email) {
+      dispatch({
+        type: "SET_IS_EMAIL",
+        payload: null
+      });
+      return;
+    }
+    dispatch({
+      type: "SET_IS_EMAIL",
+      payload: Boolean(
+        checkChangeValueForValidate({ type: "email", value: email })
+      )
+    });
+  }, [email]);
+
+  const validateUserName = useCallback(() => {
+    if (!userName) {
+      dispatch({
+        type: "SET_IS_USERNAME",
+        payload: null
+      });
+      return;
+    }
+    dispatch({
+      type: "SET_IS_USERNAME",
+      payload: Boolean(
+        checkChangeValueForValidate({ type: "userName", value: userName })
+      )
+    });
+  }, [userName]);
+
+  const validateName = useCallback(() => {
+    if (!name) {
+      dispatch({
+        type: "SET_IS_NAME",
+        payload: null
+      });
+      return;
+    }
+    dispatch({
+      type: "SET_IS_NAME",
+      payload: Boolean(
+        checkChangeValueForValidate({ type: "name", value: name })
+      )
+    });
+  }, [name]);
+
+  const validatePassword = useCallback(() => {
+    if (!password || !password2) {
+      dispatch({
+        type: "SET_IS_PASSWORD",
+        payload: null
+      });
+      dispatch({
+        type: "SET_IS_PASSWORD2",
+        payload: null
+      });
+      return;
+    }
+    dispatch({
+      type: "SET_IS_PASSWORD",
+      payload: Boolean(
+        checkChangeValueForValidate({ type: "password", value: password })
+      )
+    });
+    dispatch({
+      type: "SET_IS_PASSWORD2",
+      payload: Boolean(
+        checkChangeValueForValidate({ type: "password2", value: password2 })
+      )
+    });
+
+    if (password !== password2) {
+      dispatch({
+        type: "SET_IS_PASSWORD2",
+        payload: false
+      });
+      return;
+    }
+  }, [password, password2]);
+
+  const validateValue = () => {
+    validateEmail();
+    validateName();
+    validateUserName();
+    validatePassword();
+  };
+
+  useEffect(() => {
+    validateValue();
+  }, [email, password, password2, name, userName]);
+
+  return {
+    validate: {
+      isEmail,
+      isUserName,
+      isName,
+      isPassword,
+      isPassword2,
+      isDisabled
+    },
+    formValues: {
+      email,
+      name,
+      password2,
+      password,
+      userName
+    },
+    formMethod: {
+      control,
+      ...rest
+    },
+    dispatch,
+    checkChangeValueForValidate
+  };
+};
+
+export default useJoinForm;
+```
+
+validate 함수를 각자 따로 만들어서 처리한 것은 각 함수에 서버에 요청을 보내야하는 로직도 들어가야하고 에러 처리도 다 다르기 때문에
+함수를 따로 만들었다. 하지만 나머지 로직이 들어간 뒤에 반복되는 부분을 부분 캡슐화 하면 조금더 간략하게 로직을 처리할 수 있을지도 모른다.
+
+## ErrorLabel은 에러만 표시하게 해주세요.
+
+Join.tsx를 보면 ErrorLabel의 쓰임새가 좀 어색하다.
+
+```tsx
+<ErrorLabel error={isEmail}>
+  {isEmail === null
+    ? "사용하고 있는 이메일을 입력해주세요."
+    : errors?.email?.message}
+</ErrorLabel>
+```
+
+일단 isEamil이 null인 이유를 파악하기 어렵다. 그리고 ErrorLabel인데 error를 props로 받고 있고 isEmail의 validation된 값을 받는다.
+이름도 어렵고 파악하기 어렵다. 코드를 리펙토링하면서 알게 된것인데 UI상에서는 isEmail이 null일때
+무상태로 표시된다.(검정색) 그러다 사용자가 입력을 시작하면 형식에 맞지 않기 때문에 isEmail이 false가 되고
+빨간색이 된다. 형식에 맞게 입력을 하면 isEmail은 true가 되기 때문에 초록색으로 바뀐다.
+이 역할을 수행하기 위해서 ErrorLabel은 isEmail을 받아 여러 상태를 분기처리하도록 되어있다.
+
+차라리 ErrorLabel은 이름처럼 에러 메시지만 보여주고 대신 GuideLabel을 만들어서 상태 없을때 사용자에게
+어떻게 입력하라는 가이드 메시지를 표시해주는게 더 낫지 않을까 생각했다.
+
+```tsx
+{
+  isEmail === null ? <GuideLabel>{GUIDE_MESSAGE.email}</GuideLabel> : null;
+}
+{
+  isEmail !== null && !isEmail ? (
+    <ErrorLabel>{errors?.email?.message}</ErrorLabel>
+  ) : null;
+}
+```
+
+이렇게 하면 비즈니스 로직과 컴포넌트가 강하게 결합되는 것을 막을 수 있다고 생각했다. ErrorLabel은 굳이 다른 곳에서 boolean을 받지 않아도 되기 때문에
+그냥 에러일 때 에러인 메시지를 다른 곳에서도 사용자에게 보여줄 수 있다. 오히려 변화를 주어서 컴포넌트가 하나 더 늘고 조건식이 복잡해지긴 했지만 UI에 비즈니스 로직이 종속되지 않기 때문에 더 낫다고 생각한다.
+
+# 개선 전과 후
+
+[Join.tsx](https://github.com/movie42/ychung-frontend/blob/main/src/Pages/Root/Join.tsx)와 [useJoinForm.tsx](https://github.com/movie42/ychung-frontend/blob/main/src/Pages/Root/hooks/useJoinForm.ts)
+을 보면 이전과 이후가 그렇게 크게 변경된 것 같지 않다. 오히려 코드량이 늘었다. 하지만 단순 추출이 아니라 기능을 캡슐화 했기 때문에 다른 곳에서도 useJoinForm을 사용할 수 있다.(이름이 useJoinForm이라 다른 곳에서 사용하면 좀 띠용하지만)
+Join은 비즈니스 로직이 View에서 제거되었기 때문에 변경을 해야한다고 하면 쉽게 변경이 가능하다.
+
+지금 햇갈리는 부분은 반복되는 뷰 로직을 적절하게 처리하지 못했는데 이걸 Array를 사용해서 정규화를 해서 반복을 줄였어야 했나 싶다.
+
+```tsx
+<FormItemContainer>
+  <RootFormItem error={isUserName}>
+    <Label>사용자 이름</Label>
+    <Input
+      type="text"
+      {...register("userName", {
+        required: VALIDATION_CHECK_VALUE.userName.errorMessage,
+        pattern: VALIDATION_CHECK_VALUE.userName.regex
+      })}
+    />
+  </RootFormItem>
+
+  {isUserName === null ? (
+    <GuideLabel>{GUIDE_MESSAGE.userName}</GuideLabel>
+  ) : null}
+  {isUserName !== null && !isUserName ? (
+    <ErrorLabel>{errors?.userName?.message}</ErrorLabel>
+  ) : null}
+</FormItemContainer>
+```
+
+이 부분이 똑같이 반복되기 때문에 FormItemContainer를 컴포넌트로 따로 격리하고 반복을 줄였다면 어땠을까?
+예를 들자면 이렇다.
+
+```tsx
+const formItem = [
+  { id: 1, label: "이메일", type: "email", checkValidate: email },
+  { id: 2, label: "사용자 이름", type: "userName", checkValidate: isUserName }
+];
+
+return (
+  <form>
+    {formItem.map((value) => (
+      <FormItemContainer
+        key={value.id}
+        {...value}
+      />
+    ))}
+  </form>
+);
+```
+
+하지만 이렇게 하면 FormItemContainer는 변경점이 있을 때마다 많은 고민을 해야한다. 유연함이 없어지기 때문에 예외 상황이 생겼을 때 props를 하나 더 받아야하고
+props에 따라 FormItemContainer를 분기처리해야하는 상황이 생긴다. 그래서 고민하다 그냥 FormItemContainer라는 컴포넌트를 만들기보다.
+디테일이 변경되었을 때 대응하기 쉬운 방향으로 리펙토링을 끝마쳤다.
+
+# 복잡한 건 복잡할 수 밖에 없다.
+
+도널드 노먼은 현대 기술의 혼란스러움에서 비롯된 좌절을 줄이기 위해 단순한 상황을 고려한 심플한 제품은 제품의 해결책이 될 수 없다고 지적한다.
+오히려 풍부하고 만족스러운 삶을 추구하는 우리에겐 복잡함이 필요하다고 말한다. 그는 나쁜 것은 복잡함이 아니라 혼란스러움이라고 정의한다.
+
+코드를 작성하다보면 복잡성이 높은 어플리케이션을 만들게 된다. 그럼 당연히 코드도 복잡해질 수밖에 없다. 하지만 코드가 혼란스러워서는 안된다.
+1000줄이 넘어가는 복잡한 코드도 캡슐화가 잘 되어있다면 특정 부분을 수정하는 것이 그렇게 어렵지는 않을 것이다. 하지만 혼란스러운 코드는
+정말 많은 시간을 들여서 코드를 읽어야하고 수정도 쉽지 않으며 수정 이후 어떤 일이 벌어질지 전혀 예측할 수 없다. 그래서 제품을 테스트하는데 정말 많은 시간을 들여야하고
+그렇게 했음에도 불구하고 에러가 발생한다.
+
+이번에 Join.tsx를 리펙토링 하면서 방향을 잡기가 쉽지는 않았다. 하지만 일단 코드를 읽고 코드의 동작 방법을 적어보고 큰 부분으로 나누고 다시 코드를 작성하고를 반복하면서
+나름 좋은 코드가 무엇일까 고민해보는 시간을 가졌다. 내일 회사 나가면 주어진 업무가 있는데 그 업무를 진행할 때 일단 키보드부터 두드리기 전에
+가볍에 요구사항을을 큰 부분으로 나눠보고 의사 코드를 작성한 다음에 일을 시작해보려고 한다. 그럼 혼란스러움은 피할 수 있지 않을까?

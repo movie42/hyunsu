@@ -29,7 +29,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/components/Animation/Canvas.tsx"
+    "src/app/components/Animation/Canvas.tsx",
+    "src/app/components/Post/fileIcon.js",
+    "src/app/components/Post/Tabs.jsx"
   ],
   "exclude": ["node_modules"]
 }

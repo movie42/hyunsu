@@ -6,6 +6,7 @@ import { MDXComponents } from "mdx/types";
 import Image from "next/image";
 import Link from "next/link";
 import { AnchorHTMLAttributes } from "react";
+import { fileIcons } from "./components/Post/fileIcon";
 import { focus } from "./components/Post/focus";
 
 const font = Fira_Code({ subsets: ["latin"] });
@@ -14,7 +15,7 @@ Code.theme = "github-dark-dimmed";
 Code.codeClassName = font.className;
 Code.titleClassName = font.className;
 Code.lineNumbers = true;
-Code.extensions = [focus];
+Code.extensions = [focus, fileIcons];
 
 export const mdxComponents: MDXComponents = {
   a: ({ children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => {
