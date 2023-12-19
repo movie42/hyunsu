@@ -48,6 +48,12 @@ export const PostContainer = styled.div`
         display: inline;
         color: ${({ theme }) => theme.hlColor};
       }
+      code {
+        color: ${({ theme }) => theme.hlColor_light};
+        background-color: ${({ theme }) => theme.grayColor_light};
+        padding: 0.4rem;
+        border-radius: 0.5rem;
+      }
     }
 
     img {

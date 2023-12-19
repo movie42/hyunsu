@@ -6,8 +6,10 @@ import { MDXComponents } from "mdx/types";
 import Image from "next/image";
 import Link from "next/link";
 import { AnchorHTMLAttributes } from "react";
+import { ImageComment } from "./components/Comment/ImageComment";
 import { fileIcons } from "./components/Post/fileIcon";
 import { focus } from "./components/Post/focus";
+import { Tabs } from "./components/Post/tabs/tabs";
 
 const font = Fira_Code({ subsets: ["latin"] });
 
@@ -33,5 +35,7 @@ export const mdxComponents: MDXComponents = {
   },
   pre: Code,
   Quotation,
-  Canvas
+  Canvas,
+  Tabs,
+  ImageComment
 };
