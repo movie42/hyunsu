@@ -2,10 +2,7 @@ import Rss from "rss";
 
 import { getPageURL } from "../libs/url";
 
-const SITE_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://hyunsu.info";
+const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://hyunsu.info";
 
 export async function GET() {
   const articles = await getPageURL();
@@ -22,8 +19,8 @@ export async function GET() {
     feed.item({
       title: article.title ? article.title : "",
       description: article.content ? `${article.content.slice(0, 100)}...` : "",
-      url: `${SITE_URL}${article.slug}`,
-      guid: `${SITE_URL}${article.slug}`,
+      url: `${SITE_URL}/posts/${article.slug}`,
+      guid: `${SITE_URL}/posts/${article.slug}`,
       date: article.date ? article.date : ""
     });
   });

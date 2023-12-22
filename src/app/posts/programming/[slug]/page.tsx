@@ -3,11 +3,7 @@ import { getAllPosts, getPost } from "../../../libs/readFile";
 import { BASE_PATH, BASE_URL } from "@/app/libs/constant";
 
 import Giscus from "@/app/components/Giscus/Giscus";
-import {
-  InfoContainer,
-  PostContainer,
-  Title
-} from "@/app/components/Post/PostContainer";
+import { InfoContainer, PostContainer, Title } from "@/app/components/Post/PostContainer";
 import { getData } from "@/app/libs/getData";
 import { mdxComponents } from "@/app/mdxComponets";
 import { Metadata } from "next";
@@ -22,10 +18,8 @@ interface PostPageProps {
   params: { slug: string };
 }
 
-export async function generateMetadata({
-  params
-}: PostPageProps): Promise<Metadata> {
-  const post = getData({ params: `${BASE_PATH}/${params.slug}` });
+export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
+  const post = getData({ params: params.slug });
   if (!post) {
     return {
       title: "페이지를 찾을 수 없습니다.",
@@ -36,7 +30,7 @@ export async function generateMetadata({
   return {
     title: `${post.title}`,
     description: post.content,
-    alternates: { canonical: `${BASE_URL}/${BASE_PATH}/${params.slug}` }
+    alternates: { canonical: `${BASE_URL}${BASE_PATH}/${params.slug}` }
   };
 }
 
