@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnchorHTMLAttributes } from "react";
 import { ImageComment } from "./components/Comment/ImageComment";
+import { TestContainer } from "./components/Post/PostContainer";
+import { collapse } from "./components/Post/collapse/extension";
 import { fileIcons } from "./components/Post/fileIcon";
 import { focus } from "./components/Post/focus";
 import { Tabs } from "./components/Post/tabs/tabs";
@@ -17,7 +19,7 @@ Code.theme = "github-dark-dimmed";
 Code.codeClassName = font.className;
 Code.titleClassName = font.className;
 Code.lineNumbers = true;
-Code.extensions = [focus, fileIcons];
+Code.extensions = [focus, fileIcons, collapse];
 
 export const mdxComponents: MDXComponents = {
   a: ({ children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => {
@@ -37,5 +39,6 @@ export const mdxComponents: MDXComponents = {
   Quotation,
   Canvas,
   Tabs,
-  ImageComment
+  ImageComment,
+  TestContainer
 };

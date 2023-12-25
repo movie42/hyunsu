@@ -89,7 +89,7 @@ export const Wrapper = styled.li`
   }
 
   &:hover {
-    background-color: ${(props) => props.theme.hlColor_light};
+    bakground-color: ${(props) => props.theme.hlColor_light};
     a {
       color: ${(props) => props.theme.whiteColor};
       h3 {

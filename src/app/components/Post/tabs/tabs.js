@@ -1,4 +1,5 @@
 import { Code } from "bright";
+import { collapse } from "../collapse/extension";
 import { fileIcons } from "../fileIcon";
 import { focus } from "../focus";
 import { tabs } from "./extension";
@@ -17,7 +18,7 @@ export function Tabs({ children }) {
   return (
     <Code
       children={children}
-      extensions={[title, tabs, fileIcons, focus]}
+      extensions={[title, tabs, fileIcons, focus, collapse]}
     />
   );
 }

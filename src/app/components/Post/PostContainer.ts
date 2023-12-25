@@ -136,6 +136,12 @@ export const PostContainer = styled.div`
     code {
       font-size: 1.6rem;
       letter-spacing: -0.01rem;
+      div {
+        &:hover {
+          cursor: pointer;
+          background-color: #111;
+        }
+      }
     }
     @media (max-width: 450px) {
       h1,
@@ -160,6 +166,51 @@ export const PostContainer = styled.div`
       h5 {
         font-size: 1.8rem;
       }
+    }
+  }
+`;
+
+export const TestContainer = styled.div`
+  margin: 0;
+  &.test-container {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    a {
+      display: inline-block;
+      font-size: 3.5rem;
+      font-weight: 900;
+      padding: 0;
+      margin: 0;
+      line-height: 1.5;
+    }
+    ul li,
+    ol li {
+      font-size: 3.5rem;
+      font-weight: 100;
+      line-height: 1.5;
+      margin: 0;
+    }
+    ol,
+    ul {
+      margin: 0;
+      line-height: 1.5;
+    }
+    a {
+      font-weight: 100;
+      text-decoration: underline;
+      line-height: 1.5;
+    }
+    p {
+      display: inline-block;
+      font-size: 3.5rem;
+      font-weight: 100;
+      padding: 0;
+      margin: 0;
+      line-height: 1.5;
+      word-break: break-word;
     }
   }
 `;
