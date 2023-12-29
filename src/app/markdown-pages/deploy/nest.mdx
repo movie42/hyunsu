@@ -1,32 +1,29 @@
 ---
 date: "2023-12-22"
 title: "NestJS 배포하기"
-tags: ["nestjs", "oracle", "deploy"]
+tags: ["nestjs", "oracle", "deploy", "github actions", "CICD"]
 ---
 
-이 글은 내가 docker 없이 배포하는 방법을 기억하기 위해 쓴 글이라 누군가가 읽었을 때 도움이 되기 어렵다.
+> 이 글은 내가 docker 없이 배포하는 방법을 기억하기 위해 쓴 글이다.  
+> CICD를 github Actions의 self-runnders를 사용해 나의 인스턴스에 배포하는 방법이 적혀있다.
 
 # NestJS
 
-express, fastify로 이어서 NestJS까지 어플리케이션을 만들어보았다. 하지만 대부분 프론트 어플리케이션을 동작시키기 위한 용도로 배운거라
-깊게 무언가 익혔다고 보긴 어려운 것 같다.
+express, fastify로 이어서 NestJS까지 어플리케이션을 만들어보았다. 아래 강의를 보고 만들었다.
 
-## NestJS 도움되는 강의
+- [따라하며 배우는 NestJS](https://www.inflearn.com/course/%EB%94%B0%EB%9D%BC%ED%95%98%EB%8A%94-%EB%84%A4%EC%8A%A4%ED%8A%B8-%EC%A0%9C%EC%9D%B4%EC%97%90%EC%8A%A4/dashboard)
 
-[따라하며 배우는 NestJS](https://www.inflearn.com/course/%EB%94%B0%EB%9D%BC%ED%95%98%EB%8A%94-%EB%84%A4%EC%8A%A4%ED%8A%B8-%EC%A0%9C%EC%9D%B4%EC%97%90%EC%8A%A4/dashboard)
+# 수동 배포
 
-# 배포
-
-## 클라우드
+## 오라클 클라우드
 
 다 만들었다면 배포를 하자. 배포는 클라우드 컴퓨팅을 사용한다. 서버는 어렵다고 생각할 수도 있지만 그냥 컴퓨터다. 남의 컴퓨터를 빌려쓰는 거라고 생각하자.
-빌려쓰려면 돈을 내야한다. 하지만 무료로 최소 사양 컴퓨터를 영구적으로 빌려 쓸 수 있다. 언젠가 사라질 수 있는 서비스이지만 무료인데 안쓸 이유가 있나?
+빌려쓰려면 돈을 내야한다. 하지만 오라클 클라우드는 무료로 최소 사양 컴퓨터를 영구적으로 빌려 쓸 수 있다. 언젠가 사라질 수 있는 서비스이지만 무료인데 안쓸 이유가 있나?
 
 - [오라클 클라우드](https://www.oracle.com)
 
-티어 한개는 무제한 무료다.
-
-클라우드를 만드는 방법은 AWS나 Oracle이나 인터페이스의 차이만 있을 뿐 거의 같다. 아래 동영상을 참고하자. 나는 ubuntu가 편해서 그냥 ubuntu로 했다. 초보라면 동영상을 그대로 따라하고 모르는 단어나 개념을 GPT에게 물어보자.
+티어 한개는 무제한 무료다. 클라우드를 만드는 방법은 AWS나 Oracle이나 인터페이스의 차이만 있을 뿐 거의 같다. 아래 동영상을 참고하자.
+나는 ubuntu가 편해서 그냥 ubuntu로 했다. 초보라면 동영상을 그대로 따라하고 모르는 단어나 개념을 GPT에게 물어보자.
 
 - [오라클 클라우드 무료 서버 사용하기](https://www.youtube.com/watch?v=wLgHEn2vcPo)
 
@@ -115,16 +112,135 @@ rm -rf dist
 yarn build
 ```
 
+# 백그라운드에서 실행하기
+
+어플리케이션은 백그라운드에서 실행이 되어야한다. 그래야 터미널을 닫아도 외부에서 postman으로 api 호출을 계속 해볼 수 있다.
+
+```shell
+npm install pm2 -g
+```
+
+설치가 끝나면 build 경로를 실행하면 된다. 아래 스크립트 경로는 빌드된 main.js가 있는 경로다.
+
+```shell
+pm2 start dist/main.js
+```
+
+---
+
+# 자동 배포
+
+## Github Actions 세팅
+
+github actions의 [self-runners](https://docs.github.com/ko/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners)를 사용해서 oracle cloud의 인스턴스에 배포를 해보자.
+
+> 참고한 글
+>
+> - [Oracle Cloud + GitHub Actions](https://blog.mp3monster.org/2021/07/05/oracle-cloud-github-actions/)
+
+self-runners는 쉽게 말하면 내가 소유하고 있는 컴퓨팅 자원을 사용해서 뭔가(배포 자동화든 뭐든)를 하는 것이다.
+
+나는 이미 설정한 runner가 있어서 그냥 보이는 것이다. 이미지를 참고해 3번 버튼을 누르면 된다.
+
+<img
+  alt="github actions settings self-runners"
+  src="/images/self-runners.png"
+/>
+
+그럼 세팅 화면이 나오는데 뭔가 이상해보일 수도 있다. 왠 스크립트를 실행시키라는 안내만 잔뜩 나오니까. 당황하지 않고
+처음에 인스턴스 생성할때 설정한 컴퓨팅 환경을 이미지처럼 입력해준다. 나는 리눅스 x64 로 설정했다. 기억이 잘 안난다면 둘다 해보면 된다. 어느 순간에 스크립트가 실행이 안되는데 에러 메시지를 긁어서 넣어보면 환경이 달라서 실행이 안된다고 한다.
+그럼 환경 바꿔서 다시 실행하면 된다.
+
+<img
+  alt="settings self-runners"
+  src="/images/setting-self-runners.png"
+/>
+
+이 화면을 열어 놓고 인스턴스 ssh에 접속한다. 그리고 Download 색션에 있는 명령어를 차례대로 입력해준다.
+에러 없이 설치가 완료되었다면 Configure 색션을 한줄씩 실행해본다.
+`run.sh`파일을 실행하면 터미널에서 개발을 위해서 어플리케이션을 실행하는 것과 똑같이 계속 watch를 하고 있다. 그럼 정상이다.
+
+<img
+  alt="running run.sh"
+  src="/images/runsh.png"
+/>
+
+이 상태에서 `ctrl + c`를 눌러서 종료해주고 pm2로 run.sh를 실행해준다.
+
+```shell
+pm2 start ./run.sh
+```
+
+그럼 백그라운드에서 run.sh가 실행되고 github actions runners에 다시 들어가면 처음 이미지처럼 자신의 runner가 생성되어있고
+idle이라는 상태가 되어있는 것을 확인할 수 있다.
+
+## yml 파일 작성하기
+
+yml 파일은 작성하기 어렵지 않다. 정말 쉽다. 작성할 수 있는 방법은 여러가지인데
+대부분 github 안에서 다 해결 가능하다. Actions 탭에 들어가서 `node`를 검색한다. 그럼 NodeJS가 보인다 configure를 누르자.
+
+<img
+  alt="search workflow node"
+  src="/images/github-actions-search.png"
+/>
+
+<img
+  alt="nodejs configure"
+  src="/images/node-configure.png"
+/>
+
+그럼 yml파일을 설정하는 화면이 나오는데 아래 스크립트를 복사해서 붙여넣고 오른쪽 상단에 `Commit changes...` 버튼을 누른다.
+
+```yml
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: serverCD
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    # runs-on은 반드시 self-hosted라고 이름을 명명해야한다. 왜냐하면 self-runners가이드에 그렇게 나와있기 때문이다.
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+      - run: yarn --frozen-lockfile
+      - run: yarn run build
+      - run: pm2 start dist/main.js
+```
+
+좀 이상했던게 AWS에서 code deploy를 사용해서 ec2에 배포할때랑 너무 달라서 좀 당황했다. 그런데 생각해보니 나의 컴퓨팅 자원을 사용해서 배포를 하는 것이니까
+따로 build 파일을 push할 필요가 없는 것이었다. **주의할 점**은 그리고 **_`runs-on`_**은 반드시 **_`self-hosted`_**라고 명명해야한다. 가이드에 그렇게 나와있다.
+Actions 탭에 들어가면 runner가 실행중이고 다 끝나고 ssh에 접속해서 `pm2 status` 명령어를 입력하면 나의 어플리케이션이 실행중일 것이다.
+참고로 pm2를 stop, delete하는 스크립트를 위에 추가해야한다. `run:`으로 작성하면 된다.
+
 # 앞으로 해결 과제
 
-1. 이전에 mongodb로 할때는 migration 같은게 필요 없었는데 sql은 다른 것 같다. 일단 migration 명령어를 넣어놓지 않아서
-   dev로 실행을 한번 한다음에 그 다음에 실행하니까 된다.
-2. 로컬에서는 signup하고 login한 다음 return되는 jwt 토큰을 authrization에 붙여넣기 해서 boards를 실행하면 게시물이 만들어지는데 이상하게 프러덕션에서는 401에러가 뜬다. 왜 권한이 없다고 그러는지 이해가 안된다.
-   이것때문에 3시간 하다가 결국 못했다. 같은 도메인으로 인식하지 못하는건가? 게시물 생성 결국 실패했다.
-3. 오라클은 FQDN이 내부 FQDN만 주어져서 그런지 외부에서 이 DNS로 접속이 안된다. IP를 외부에 노출하고 싶지 않다. DNS를 구매해야하나? 어차피 1년이면 싼거 구매 가능한데 찾아봐야겠다.
-4. 만약 서버에 새로운 것이 추가되었다고 생각해보자. CI/CD 설정 안되어있으면 진짜 끔찍하다. 배포 파이프라인 구축도 알아보자.
+- [ ] 이전에 mongodb로 할때는 migration 같은게 필요 없었는데 sql은 다른 것 같다. 일단 migration 명령어를 넣어놓지 않아서
+      dev로 실행을 한번 한다음에 그 다음에 실행하니까 된다.
+- [ ] 로컬에서는 signup하고 login한 다음 return되는 jwt 토큰을 authrization에 붙여넣기 해서 boards를 실행하면 게시물이 만들어지는데 이상하게 프러덕션에서는 401에러가 뜬다. 왜 권한이 없다고 그러는지 이해가 안된다.
+      이것때문에 3시간 하다가 결국 못했다. 같은 도메인으로 인식하지 못하는건가? 게시물 생성 결국 실패했다.
+- [ ] 오라클은 FQDN이 내부 FQDN만 주어져서 그런지 외부에서 이 DNS로 접속이 안된다. IP를 외부에 노출하고 싶지 않다. DNS를 구매해야하나? 어차피 1년이면 싼거 구매 가능한데 찾아봐야겠다.
+- [x] ~~만약 서버에 새로운 것이 추가되었다고 생각해보자. CI/CD 설정 안되어있으면 진짜 끔찍하다. 배포 파이프라인 구축도 알아보자.~~
 
 # 아직 마무리는 아니다.
+
+## NestJS
 
 스터디에서 프로젝트를 만들어보자고 시작하게 된건데 와... 진짜 서버 ME(mongodb, expressjs) 스택으로 할때랑 뭐가 많이 다르다. 간단하지가 않다.
 PN(postgresql, nestjs)스택은 DB 마이그레이션이라는 개념도 익숙치 않고 Service, Repository, Controller, Module 로 코드가 있어야할 위치에 있도록 정해놓아서 자유도는 떨어져도
@@ -133,5 +249,10 @@ express로 할때보다 덜 혼란스러운것도 사실이다.(물론 express�
 사실 요즘 bun이 나오면서 hono, elisia 등 여러 종류의 서버 프레임워크가 쏟아져 나오는데
 그런데 ExpressJS가 정말 대단한게 왠만한 JS 진영의 서버 프레임워크는 거의 다 express에 영감을 받았다고 말한다.(진짜 GOAT...)
 아무튼 그 상황에서 NestJS를 선택한건 사실 좀 쉽게 가자는게 컸는데(서버 빨리 만들어놓고 React 18로 프로젝트 진행해보면서 React 18을 익히자는 의도가 컸다.) 쉽지 않다.
+
+## Nginx는 어떤 역할을 할까?
+
+nginx 설치하는 것을 이야기하지 않았는데 나는 nginx를 설치했다. nginx는 아파치와 같은 서버인데 이게 실행되고 있으면 아마 pm2로 백그라운드에서 실행할 필요가 없을 것이다.
+nginx는 아직 잘 모르는 영역이니까 공부한다면 더 보충해서 채워넣을 예정이다.
 
 이 아티클은 새로운 것을 익힐 때마다 계속 업데이트 할 예정이다. 고럼 이만.
