@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
 
   return {
     title: `${post.title}`,
-    description: post.content,
+    description: `${post.content.slice(0, 100)}...`,
     alternates: { canonical: `${BASE_URL}${BASE_PATH}/${params.slug}` }
   };
 }

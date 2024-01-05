@@ -28,13 +28,8 @@ export default function Giscus() {
   }, []);
 
   useEffect(() => {
-    const iframe = document.querySelector<HTMLIFrameElement>(
-      "iframe.giscus-frame"
-    );
-    iframe?.contentWindow?.postMessage(
-      { giscus: { setConfig: { theme } } },
-      "https://giscus.app"
-    );
+    const iframe = document.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
+    iframe?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, "https://giscus.app");
   }, [theme]);
 
   return <section ref={ref} />;
