@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import styled from "styled-components";
 import { TitleContainer } from "../Container/TitleContainer";
 import Post from "../Post/Post";
@@ -28,17 +29,16 @@ const Section = ({ posts, sectionTitle, baseUrl }: SectionProps) => {
       <ul className="post-container">
         {posts?.map((post, index) => {
           return (
-            <>
+            <React.Fragment key={index}>
               {post.slug && (
                 <RecentPost
-                  key={index}
                   title={post.title}
                   date={post.date}
                   href={`${baseUrl}/${post.slug}`}
                   tags={post.tags}
                 />
               )}
-            </>
+            </React.Fragment>
           );
         })}
       </ul>
