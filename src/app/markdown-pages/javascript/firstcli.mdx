@@ -1,0 +1,280 @@
+---
+date: "2024-03-15"
+title: "나의 첫 cli 툴"
+tags: ["node", "cli", ""]
+---
+
+회사에서 처음으로 웨이팅이라는 프러덕트를 개발하게 되었다. 웨이팅은 모노레포로 되어있는데 총 6개의 레포가 묶여있었다.
+yarn workspace로 구성이 되어있는데 명령어를 치는게 너무 어려웠다. 예를 들어 admin을 실행해야한다면
+cli 명령어를 매우 길게 작성해야했다.
+
+```zsh
+yarn workspace @admin/A start:dev
+```
+
+다른 프러덕트도 모노레포로 되어있는게 있어서 처음에는 package.json에 단축어를 만드려고 했다.
+
+<Tabs>
+
+```json
+// title package.json
+{
+  "scripts": {
+    "A": "yarn workspace @A"
+  }
+}
+```
+
+```zsh
+# title cli
+yarn A start:dev
+```
+
+</Tabs>
+
+하지만 구조상 이렇게 만들 수가 없었다. 왜냐하면 위 명령어는 partner라는 공통 프러덕트를 묶어서 사용하기 때문에 workspace의 이름이 A와 B로 나뉜다.
+웨이팅은 A, B 안에 각각 admin, client, check가 있기 때문에 workspace 이름이 client/A 로 되어있었다.
+그래서 고민을 하다가 yarn create vite를 했을 때, shell에서 원하는 옵션을 선택할 수 있다는 것에 착안해서 cli 툴을 만들어보기로 했다.
+node도 cli를 만드는게 가능했는데 GPT 덕분에 쉽게 만들 수 있었다.
+
+<Tabs>
+
+```javascript
+// title choose-workspace.js
+const readline = require("readline");
+const { spawn } = require("child_process");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const packages = ["A", "B"];
+const workspace = ["admin", "client", "check"];
+const environments = ["dev", "staging", "production"];
+
+const askQuestion = (question, choices) => {
+  return new Promise((resolve) => {
+    console.log(question);
+    choices.forEach((choice, index) => {
+      console.log(`${index + 1}: ${choice}`);
+    });
+    rl.question("Enter your choice (number): ", (answer) => {
+      const choiceIndex = parseInt(answer, 10) - 1;
+      if (choiceIndex >= 0 && choiceIndex < choices.length) {
+        resolve(choices[choiceIndex]);
+      } else {
+        console.log("Invalid choice, please try again.");
+        resolve(askQuestion(question, choices));
+      }
+    });
+  });
+};
+
+const runCommand = (workspace, package, env) => {
+  const scriptMap = {
+    dev: "start:dev",
+    staging: "start:staging",
+    production: "start:prod"
+  };
+  const args = [`workspace`, `@${workspace}/${package}`, `run`, `${scriptMap[env]}`];
+
+  console.log(`Executing: yarn ${args.join(" ")}`);
+
+  const proc = exec("yarn", args, { stdio: "inherit" });
+
+  proc.on("error", (error) => {
+    console.error(`Error: ${error}`);
+  });
+
+  proc.on("close", (code) => {
+    console.log(`Process exited with code ${code}`);
+    rl.close(); // Make sure to close the readline interface
+  });
+};
+
+const main = async () => {
+  const workspace = await askQuestion("Select a workspace:", workspaces);
+  const package = await askQuestion("Select a package:", packages);
+  const env = await askQuestion("Select an environment:", environments);
+  runCommand(workspace, package, env);
+};
+
+main();
+```
+
+```json
+// title package.json
+{
+  "scripts": {
+    "yarn start": "node ./choose-workspace.js"
+  }
+}
+```
+
+```zsh
+# title cli
+# focus(1:1)
+yarn start
+yarn run v1.22.21
+$ node ./choose-workspace.js
+Select a workspace:
+1: admin
+2: client
+3: check
+Enter your choice (number): 1
+Select a package:
+1: A
+2: B
+Enter your choice (number): 1
+Select an environment:
+1: dev
+2: staging
+3: production
+Enter your choice (number): 1
+Executing: yarn workspace @admin/A run start:dev
+```
+
+</Tabs>
+
+# 만들긴 했는데 webpack 상태가 터미널에 표시가 안된다!?
+
+하지만 명령어 실행 후 webpack에서 hot reload가 되는 것을 볼 수 가 없었다. 즉 상태창 없이 개발해야하는 상황과 똑같았다.
+GPT는 exec를 spawn으로 변경할 것을 제안해줬다.
+
+exec를 사용해 다른 명령을 실행할 때, 자식프로세스의 stdout와 stderr은 부모의 프로세스(node.js)에 의해서 관리된다.
+그래서 webpack과 같은 도구에서 발생하는 출력이 터미널에 표시되지 않았다. spawn으로 변경하면 새로운 프로세스를 생성할 때
+스트림을 통해 실시간으로 데이터를 전송할 수 있게 해준다고 한다. 코드를 exec에서 spawn으로 변경했다.
+이렇게 변경하니까 Webpack의 출력 데이터가 터미널에 표시됐다.
+
+```js
+- const proc = exec("yarn", args, { stdio: "inherit" });
+// focus(1:1)
++ const proc = spawn("yarn", args, { stdio: "inherit" });
+```
+
+# 종료를 했는데 왜 터미널에 아무것도 입력이 안되지?
+
+ctrl + c를 사용해서 프로세스를 종료하면 터미널에서 다른 명령어를 입력할 수 있어야한다. 하지만 백그라운드에서 뭔가가 종료가 되지 않은 듯 한 느낌이었다.
+왜냐하면 나는 git을 사용할 때마다 암호를 물어보는데 암호 입력이 되지 않았고 종료도 안됐다. GPT는 프로세스가 종료되기 전에 표준 입력 스트림이 닫히지 않았기 때문이라고 했다.
+그래서 종료하는 로직을 다시 생성했다.
+
+```choose-workspace.js
+const readline = require("readline");
+const { spawn } = require("child_process");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+const packages= ["A", "B"];
+const workspaces = ["admin", "client", "check"];
+const environments = ["dev", "staging", "production"];
+
+const askQuestion = (question, choices) => {
+  return new Promise((resolve) => {
+    console.log(question);
+    choices.forEach((choice, index) => {
+      console.log(`${index + 1}: ${choice}`);
+    });
+    rl.question("Enter your choice (number): ", (answer) => {
+      const choiceIndex = parseInt(answer, 10) - 1;
+      if (choiceIndex >= 0 && choiceIndex < choices.length) {
+        resolve(choices[choiceIndex]);
+      } else {
+        console.log("Invalid choice, please try again.");
+        resolve(askQuestion(question, choices));
+      }
+    });
+  });
+};
+
+const runCommand = (workspace, package, env) => {
+  const scriptMap = {
+    dev: "start:dev",
+    staging: "start:stg",
+    production: "start:prd",
+  };
+  const args = [
+    `workspace`,
+    `@${package}/${workspace}`,
+    `run`,
+    `${scriptMap[env]}`,
+  ];
+
+  console.log(`Executing: yarn ${args.join(" ")}`);
+
+  childProcess = spawn("yarn", args, { stdio: "inherit" });
+
+  childProcess.on("error", (error) => {
+    console.error(`Error: ${error}`);
+  });
+
+  childProcess.on("close", (code) => {
+    console.log(`Process exited with code ${code}`);
+  });
+};
+
+// focus(1:21)
+process.on("SIGINT", () => {
+  console.log("Received SIGINT. Cleaning up...");
+
+  // readline 인터페이스 닫기
+  rl.close();
+
+  // 표준 입력 스트림을 수동으로 종료
+  process.stdin.destroy();
+
+  if (childProcess) {
+    childProcess.on('exit', function () {
+      // 자식 프로세스가 종료되면, Node 프로세스를 종료합니다.
+      process.exit();
+    });
+    // 자식 프로세스에게 SIGINT 시그널을 전달하여 종료를 시도합니다.
+    childProcess.kill('SIGINT');
+  } else {
+    // 자식 프로세스가 없으면 바로 종료합니다.
+    process.exit();
+  }
+});
+
+const main = async () => {
+  const workspace = await askQuestion("Select a workspace:", workspaces);
+  const package = await askQuestion("Select a package:", packages);
+  const env = await askQuestion("Select an environment:", environments);
+  runCommand(workspace, package, env);
+};
+
+main();
+```
+
+이 코드를 실행하면 내가 원하는 결과를 얻을 수 있다.
+
+# 마무리
+
+개발을 하다보면 불편한게 많다. 그럴때면 항상 '이거 불편한데 어떻게 해야 조금 더 편해질 수 있을까'를 생각하게 된다.
+'이렇게 고쳐보면 더 편해지겠다'라고 생각하는 단계로 나가기는 생각보다 쉽지 않다.
+선험적 지식이 없기 때문이거나 무엇을 고쳐야할지 모르거나 고쳤지만 더 악화되거나 하는 상황들을 자주 맞주하기 때문이다.
+하지만 나 혼자 개발을 하는 것이 아니기 때문에 충분히 개선할 수 있다. 고치고 PR 올리고 리뷰 받고 또 고치고 하는 일을 반복하면서 고민하고 배운다.
+동료들은 많은 시간을 들여서 나에게 좋은 조언들을 해주었다.
+
+node.js로 cli를 만드는 것은 생각치 못했던 일이다. C++을 배울 때는 처음에 std 라이브러리를 사용하면서 cli에 입, 출력을 해보는것이 자연스럽지만
+node.js는 바로 npm package를 구성하고 난 뒤 express를 설치해서 서버를 만드는 일로 넘어가기 때문에 cli 입출력이 가능하다는 것을 처음 알았던 것 같다.
+'node.js는 서버가 아닙니다. 런타임 환경입니다.'를 들어봤지만 그렇게 활용한 사례는 없었던 것 같다. 하지만 분명 나는 처음 nodejs를 만질 때 편하게 package.json을 만들었었다.
+지금 당장 터미널에서 아래 명령어를 입력해보자.
+
+```zsh
+npm init
+```
+
+그럼 터미널 입출력이 나오면서 사용자 입력을 받고 저장해두었다가 나중에 package.json을 작성해주는 경험을 이미 했었다.
+또 vite나 nextjs를 설치할 때 선택한 환경을 구성해주는 것도 경험했었다. 다행이 이런 것들을 미리 경험했기 때문에 이번에 cli를 만들어 볼 수 있었던 것 같다.
+
+- 이번 글에서 사용된 코드 레포다 [monorepo-cli](https://github.com/movie42/monorepo-cli) 아직 부족한 점이 많다. 개선사항을 todo로 적어놓는다.
+
+  - [ ] install / uninstall package
+  - [ ] build / test script
+  - [ ] git commit (이런건 많을 것 같은데...)
+
+- [nodejs-cli-apps-best-practices](https://github.com/lirantal/nodejs-cli-apps-best-practices?tab=readme-ov-file) 이 레포를 구경해보는 것도 좋을 것 같다.

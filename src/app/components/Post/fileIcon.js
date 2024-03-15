@@ -10,8 +10,7 @@ export const fileIcons = {
 function MyTab(props) {
   const { title, colors } = props;
 
-  const { svg, color } =
-    colors.colorScheme === "dark" ? getDarkIcon(title) : getLightIcon(title);
+  const { svg, color } = colors.colorScheme === "dark" ? getDarkIcon(title) : getLightIcon(title);
   const __html = svg.replace(/svg/, `svg fill='${color}'`);
   return (
     <div
