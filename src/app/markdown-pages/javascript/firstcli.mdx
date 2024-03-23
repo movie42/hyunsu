@@ -107,7 +107,7 @@ main();
 // title package.json
 {
   "scripts": {
-    "yarn start": "node ./choose-workspace.js"
+    "start": "node ./choose-workspace.js"
   }
 }
 ```
@@ -275,8 +275,160 @@ GPT가 언젠가는 내 일자리를 위협하는 날이 오겠지만 지금은 
 
 - 이번 글에서 사용된 코드 레포다 [monorepo-cli](https://github.com/movie42/monorepo-cli) 아직 부족한 점이 많다. 개선사항을 todo로 적어놓는다.
 
-  - [ ] install / uninstall package
+  - [x] install / uninstall package
   - [ ] build / test script
   - [ ] git commit (이런건 많을 것 같은데...)
+
+---
+
+# install / uninstall package
+
+- 2024-03-23 추가
+
+패키지 설치, 제거 할 때 어떤 workspace에서 설치, 제거 할 것인지 기능을 만들었다. 대체적인 흐름은 비슷하다.
+
+## input-text.js 만들기
+
+add인지 remove인지 선택하면 좋겠지만 사용자에게 자유도를 주는 것이 좋겠다고 판단해서 workspace까지만 만들고 나머지는 사용자 값을 받아서 명령어를 실행시키도록 스크립트를 작성하기로 했다.
+구체적인 흐름은 choose-workspace.js와 같다.
+
+```text-command.js
+const readline = require("readline");
+const { spawn } = require("child_process");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const packages = ["A", "B"];
+const workspaces = ["admin", "client", "check"];
+
+const askForPackageToInstall = async () => {
+  const customCommandInput = await new Promise((resolve) => {
+    rl.question("Enter the custom command (e.g., add react): ", resolve);
+  });
+  return customCommandInput;
+};
+
+const askQuestion = (question, choices) => {
+  return new Promise((resolve) => {
+    console.log(question);
+    choices.forEach((choice, index) => {
+      console.log(`${index + 1}: ${choice}`);
+    });
+    rl.question("Enter your choice (number): ", (answer) => {
+      const choiceIndex = parseInt(answer, 10) - 1;
+      if (choiceIndex >= 0 && choiceIndex < choices.length) {
+        resolve(choices[choiceIndex]);
+      } else {
+        console.log("Invalid choice, please try again.");
+        resolve(askQuestion(question, choices));
+      }
+    });
+  });
+};
+
+const runCommand = (workspace, package, command) => {
+  const args = [`workspace`, `@${package}/${workspace}`, `${command}`];
+
+  console.log(`Executing: yarn ${args.join(" ")}`);
+
+  childProcess = spawn("yarn", args, { stdio: "inherit" });
+
+  childProcess.on("error", (error) => {
+    console.error(`Error: ${error}`);
+  });
+
+  childProcess.on("close", (code) => {
+    console.log(`Process exited with code ${code}`);
+  });
+};
+
+process.on("SIGINT", () => {
+  console.log("Received SIGINT. Cleaning up...");
+
+  rl.close();
+
+  process.stdin.destroy();
+
+  if (childProcess) {
+    childProcess.on("exit", function () {
+      process.exit();
+    });
+
+    childProcess.kill("SIGINT");
+  } else {
+    process.exit();
+  }
+});
+
+const main = async () => {
+  const workspace = await askQuestion("Select a workspace:", workspaces);
+  const package = await askQuestion("Select a package:", packages);
+  const command = await askForPackageToInstall();
+  runCommand(workspace, package, command);
+};
+
+main();
+
+```
+
+```package.json
+{
+  "scripts": {
+    "start": "node ./choose-workspace.js",
+    // focus(1)
+    "etc": "node ./choose-workspace.js"
+  }
+}
+```
+
+이렇게 해서 etc를 실행하면 command를 입력받아서 실행 시킬 수 있다.
+
+## 하지만 설치가 안되는걸?
+
+스크립트 작성 후에 etc를 실행해보자.
+
+```shell
+yarn etc
+Select a workspace:
+1: admin
+2: client
+3: check
+Enter your choice (number): 1
+Select a package:
+1: A
+2: B
+Enter your choice (number): 1
+Enter the custom command (e.g., add @radix-ui/react-radio-group): add react
+Executing: yarn workspace @A/admin add react
+```
+
+이 스크립트를 실행하면 입력한 값을 받아서 실행은 시키지만 입력한 command가 없는 command라는 에러를 받게 된다.
+spawn 함수를 사용해서 실행하고 있기 때문인데 spawn은 배열로 커맨드를 전달하기 때문에 string은 하나의 커맨드로 인식하기 때문이다.
+간단하게 해당 부분을 수정했다.
+
+```text-command.js
+   const args = [`workspace`, `@${package}/${workspace}`, ...command.split(' ')];
+```
+
+이렇게 수정한 뒤에 etc 명령어를 다시 실행하면 command를 받아서 실행할 수 있게 된다.
+
+이 코드는 [monorepo-cli](https://github.com/movie42/monorepo-cli)에 올려 놓았다.
+
+# 부록 - node cli를 만들 때 도움이 될만한 자료
+
+cli를 package로 만들 수 있는 방법이 없을까 찾아보았다. 몇개의 자료가 있어서 공유하려고 한다.
+
+Ahmand라는 게스트가 Jason라는 개발자에게 자신의 nodejs cli 팁을 알려주면서 배우는 컨텐츠(강추)
+
+- 🎥 [Automating Tasks with Node CLIs (with Ahmad Awais) — Learn With Jason](https://youtu.be/V1GkmB7T7Ps?si=QQOMcdow9wnrxIAc)
+- [동영상에서 사용된 레포](https://github.com/ahmadawais/lwj-cli)
+
+- 🎥 [Build a Dynamic CLI with Inquirer and Node.js: A Step-by-Step Guide](https://youtu.be/CfS6eOBe8AY?si=muLnia-FkgFwlMUZ)
+- 🎥 [Node.js Tutorial - 58 - Building CLI Tools](https://youtu.be/y-zS9XV_kRM?si=9LPe9J53kVSeaLQm)
+- 🎥 [Node.js Tutorials - 59 - CLI Options](https://youtu.be/oIg08Z0bqsY?si=vOcBVADPSsxGCh28)
+- 🎥 [Node.js Tutorial - 60 - Interactive CLI Tools](https://youtu.be/sJdqdGxRbXY?si=UGAlO6pJ6tAQj3vz)
 
 - [nodejs-cli-apps-best-practices](https://github.com/lirantal/nodejs-cli-apps-best-practices?tab=readme-ov-file) 이 레포를 구경해보는 것도 좋을 것 같다.
