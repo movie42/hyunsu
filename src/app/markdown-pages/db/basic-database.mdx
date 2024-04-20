@@ -1,0 +1,195 @@
+---
+date: "2024-04-20"
+title: "RDB 모델링"
+tags: ["db", "programming"]
+---
+
+관계형 데이터 베이스 모델링의 기초에 대해서 공부했다. 생활 코딩 수업의 내용을 간략하게 정리한 것임으로 생활 코딩을 보는 것을 추천한다.
+
+> [생활코딩 - 관계형 데이터 모델링](https://youtube.com/playlist?list=PLuHgQVnccGMDF6rHsY9qMuJMd295Yk4sa&si=dwVNDyp3gd0TLHqO)
+
+# Model이란?
+
+- 목적을 가지고 진짜를 모방한 것
+
+# 데이터 모델이 되는 순서
+
+- 업무파악 → 개념적 데이터 모델링 → 논리적 데이터 모델링 → 물리적 데이터 모델링
+
+1. 업무파악
+2. 개념적 데이터 모델링
+   ER
+3. 논리적 데이터 모델링
+   - 표로 그리는 것
+4. 물리적 데이터 모델링
+   - 실재로 표를 코드로 작성하는 것
+
+# 업무 파악
+
+업무 파악 단계는 기획서와 연관되어있다.(혹은 기획을 하는 것과)
+
+# 개념적 데이터 모델링
+
+- 관계형 데이터 모델링의 극치(?) - 전체 과정을 한번 경험해봐야 쉽게 할 수 있다.
+- ERD - Entity Relationship Diagram
+
+## 모델링이 필요한 이유
+
+- RDB는 내포 관계를 허용하지 않는다.
+- 거대 단일 테이블로 표현하면 중복이 발생한다.
+
+## 주제별로 쪼개기
+
+- 주제에 따라서 데이터를 그룹핑할 수 있다.
+- JOIN
+
+## ERD를 구성하는 것들
+
+### Entity
+
+- Table로 치환할 수 있다.
+
+### Attribute
+
+- column 치환할 수 있다.
+
+### Relation
+
+- Relation 쓰다, 소속 등의 관계
+  - PK, FK, JOIN을 통해서 동적으로 연결된다.
+
+### Tuple
+
+- row
+
+### entity 코드로 옮겨보기
+
+typeorm을 사용하는 환경에서 user entity를 만든다고 했을 때 코드로 옮겨보자.
+
+```user.entity.ts
+@Entitiy()
+class User extends BaseEntity { // User는 entitiy이므로 User Table로 치환할 수 있다.
+    @IsNotNull()
+    id:string; // attribute는 column으로 치환된다.
+
+    @Column()
+    username : string;
+
+    @OneToMany(type => BeforeUnloadEvent, (board)=>board.user, {eager:true}) // relation
+    board:Board[]
+}
+```
+
+## 엔티티 정의
+
+> [ERD 실습](https://drive.google.com/file/d/1O3JpFUsrcuCedITuXHdSIPjeEaHOPSEH/view?usp=sharing)
+
+## 식별자 정의
+
+- 중복된 값을 가지고 있으면 안된다.
+- ERD에서도 식별자를 지정할 수 있다. (나중에 PK가 된다. Primary Key)
+
+### 후보키 - Candidate key
+
+- 식별자로 사용될 수 있는 것들
+
+### 기본키 - Primary key
+
+- 선택한 식별자
+
+### 대체키 - Alternate key
+
+- 성능 향상을 위해서 secondary index를 걸기 좋다.
+
+### 중복키 - composit key
+
+## 관계 정의(Relation ship)
+
+### 외래 키 Foreign key
+
+- 외부 테이블의 데이터를 식별하기 위한 키
+
+### Cardinality, Optionality
+
+#### Cardinality
+
+- 1 대 1 관계(one to one)
+- 1 대 N 관계(one to many)
+- N 대 M 관계 (many to many)
+  - 연결 테이블을 만들어서 컨버팅을 시킨다.
+
+#### Optionality
+
+- 저자와 댓글 관계
+  - 저자는 댓글을 쓰지 않을 수 있다. (Optional)
+  - 댓글에게 저자는 필수다. (Mandatory)
+
+# 논리적 데이터 모델링
+
+## Mapping Rule
+
+### Table, Column, PK, FK
+
+구름 ERD를 사용했다.
+
+> [실습](https://www.erdcloud.com/d/gWjjtmsvm7LfEt386)
+
+# 정규화(Normalization)
+
+- 쓰기를 위해서 읽기를 희생 시키는 것.
+
+> [정규화](https://en.wikipedia.org/wiki/Database_normalization)
+
+## Unnormalized form
+
+## First Normal Form
+
+- 조건 : Atomic Columns(각 행은 아토믹 해야한다.)
+- 각각의 column의 값은 하나만 가지고 있어야한다.
+
+## Second Normal Form
+
+- No partial dependencies(부분 종속성이 없어야한다.)
+
+## Third Normal Form
+
+- No transitive dependencies(이행적 종속성이 없어야한다.)
+
+# 물리적 데이터 모델링
+
+- 성능이 가장 중요하다.
+- 운영을 해봐야 알 수 있다.
+
+## 성능을 개선시킬 수 있는 방법들
+
+### index
+
+- 행에 대한 읽기 성능을 비약 시킨다.
+- 쓰기는 매우 안좋아진다.
+
+### cache
+
+- application 수준에서 캐싱을 해서 성능을 향상 시키는 방법
+
+### 역정규화 denormalization
+
+- 역정규화는 읽기 성능을 개선하기 위해서 한다.
+- 단점은 중복을 허용하고 수정 등이 어렵다.
+
+# 데이터 모델링 기초 수업을 마치면서
+
+Prisma를 가지고 DB를 만들고 있는데 점점 관계가 복잡해지면서 어떻게 DB를 설계해야할까 하는 질문에서 검색을 시작했다.
+도착지는 생활 코딩 RDB 모델링 수업이었다. 하루만에 다 들을 수 있고 또 복습도 하루만에 다시 해볼 수 있는 장점이 있다.
+
+사이드 프로젝트를 하면서 구름 ERD를 가지고 모델링을 하는데 '논리형과 물리형이 뭐지?'라는 질문이 있었다.
+그 질문을 이 수업을 통해서 해소할 수 있었다. 간단하게 논리형은 논리적으로 DB가 이렇게 구성된다는 것이고 물리형은 실재 코드로 작성된 DB를 말한다.
+ERD를 구성할 때 많은 도움이 되었다. NestJS로 API를 만들면서 entity를 왜 만들까 하는 질문이 있었는데 코드로 ERD를 작성하고 그 ERD로 DB를 제어하기 위한 목적이라고 정리했다.
+
+맵핑 테이블이 필요한 이유를 잘 몰랐다. ORM에서는 맵핑 테이블 없이 관계를 만들어주니까 그냥 그런가보다 했다.
+하지만 동료 백엔드 개발자가 맵핑 테이블은 꼭 만들어서 쓰라고 조언을 해주었다. 아마 그때 설명은 역정규화 관점에서 맵핑 테이블의
+필요성을 이야기 한 듯 하다.
+이 수업에서는 Many To Many 관계에서는 맵핑 테이블의 필요성을 배웠다. 만약 맵핑 테이블이 없으면 데이터 중복이 많이 일어날 것 같다.
+
+DB를 조회하는 것은 업무를 보는데 도움이 많이 되는 것 같다.
+데이터를 보냈을 때, 혹은 데이터가 실제로 쓰였는지 등을 조회할 때 Select를 사용해서 DB를 조회하고 있다. 생각보다 유용하다.
+[SQL Teaching](https://www.sqlteaching.com)이라는 온라인 사이트가 있는데 SQL을 처음 접한다면 이곳에서 연습해볼 것을 추천한다.
