@@ -1,0 +1,473 @@
+---
+slug: "/react/external"
+date: "2024-05-08"
+title: "다른 회사의 비즈니스 조건을 우리 제품에 얹으며 배운 것들"
+tags: ["react", "solid", "functional programing", "test"]
+---
+
+우리 회사는 POS를 중심으로 핵심 비즈니스 로직이 구성되어있다. 나는 프론트엔드 개발자이고
+POS나 테이블 오더 같은 기기들의 옵션을 관리하는 어드민과 키오스크, 웨이팅과 같은 프러덕트를 개발 하고 있다.
+작년 9월쯤 A 회사의 POS를 연동하게 되었는데 어드민에서 카테고리나, 상품 생성, 수정, 삭제 등 여러 조건에 맞춰 개발을 해야했다.
+그 이후 B라는 회사와 POS 연동을 하게 되었다. 회사 비즈니스 로직도 복잡하게 얽혀 코드가 복잡한데
+계약 조건에 따라 외부 회사의 조건까지 만족하는 코드를 작성하는 것은 쉬운 일이 아니었다.
+
+외부 연동 과정은 순탄치 않았다. 외부 POS 연동을 하면서 코드의 복잡도가 기하 급수적으로 올라가는 것을 경험했고
+그 과정에서 저질렀던 실수와 어려움이 있었다. 개선을 할 때 그동안 배운 것을 최대한 적용하려고 노력했다.
+동료들의 많은 지지와 조언이 있었고 코드 리뷰를 통해 처음 생각했던 초안에서 점차 개선되어 갈 수 있었다.
+이 글을 통해서 비슷한 도메인 혹은 어려움을 겪고 있는 개발자들에게 조금이나마 도움이 되면 좋겠다.
+코드는 가상으로 작성했기 때문에 실재 동작하는 것은 아니지만 그 의도가 전달될 수 있도록 최선을 다하려고 한다.
+
+본문에서 언급한 레퍼런스는 주석을 달지 않고 마지막 부록에 모아 놓았다. 참고 바란다.
+
+# 비즈니스 로직
+
+모든 회사가 그렇듯 모든 제품은 각자 고유의 비즈니스 로직을 가지고 있다. 그것은 초창기부터 조금씩 켜켜히 쌓여온 지층같은 것이라
+견고하게 쌓여있어서 지층을 뚫고 들어가 새롭게 개선하는 것은 무척이나 어렵다. 이해가 안가서 팀을 가리지 않고 질문을 해도
+이전 로직이 왜 그렇게 되어있는지 설명을 못듣는 경우도 있었다.
+
+우리는 TODO를 만드는 회사에 있다고 생각해보자. TODO는 사용자, 읽기 권한을 받은자, 쓰기 권한을 받은자가 있다고 해보자.
+
+```tsx
+const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
+  const isDisabled = (!isCreator && !isWritePermission) || todoItem.creator !== userId;
+
+  const handleEdit = () => {
+    if (!(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+
+    // 실행
+  };
+  const handleDelete = () => {
+    if (!(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+    // 실행
+  };
+  const handlStatus = () => {
+    if (!(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+    // 실행
+  };
+  return (
+    <TodoContainer>
+      <TodoRow>
+        <TodoTitle>{todoItem.title}</TodoTitle>
+        <TodoDate>{todoItem.updatedAt}</TodoDate>
+        <TodoStatus onClick={handlStatus}>{todoItem.todoStatus}</TodoStatus>
+        <EditButton
+          onClick={handleEdit}
+          disabled={isDisabled}
+        >
+          수정
+        </EditButton>
+        <DeleteButton
+          onClick={handleDelete}
+          disabled={isDisabled}
+        >
+          삭제
+        </DeleteButton>
+      </TodoRow>
+    </TodoContainer>
+  );
+};
+```
+
+위 비즈니스 로직은 Todo Page의 생성자가 아니면서 쓰기 권한이 없으면 수정, 삭제가 불가능하다. 또한 페이지 생성자라도
+todoItem의 생상자와 아이디가 다르면 수정, 삭제를 할 수 없다. 아마도 초반에는 이런 식의 비즈니스 로직은 없었을 것이다.
+하지만 어플리케이션에 다른 사용자를 초대해서 읽기 권한, 수정, 삭제 권한을 따로 주자는 비즈니스 로직이 추가되면 그 조건에 맞춰서 새로운 값들이 DB Column에 생성되고
+그 값을 받아와서 적절하게 가공해 원래 있던 비즈니스 로직에 추가하게 된다. 세부적인 정책이 많아지면
+어플리케이션의 조건 분기는 매우 복잡해진다.
+
+# 외부 Note 회사와 계약
+
+사장님은 눈 깜짝할 사이에 직원 월급날을 맞이한다. Todo 회사 사장 두두씨도 창사 이례 회사 사정이 너무 좋지 않아 고민이 깊다.
+그 와중에 유명한 Note회사가 Todo 어플과 연동을 하고 싶다고 제안을 해온다. 계약이 성사되고 PRD는 다음과 같다.
+
+> Note 회사에서 생성한 list를 Todo에 보여주어야한다.  
+> 사람들이 얼마나 많이 Todo에 공감 했는지 공감 표시 버튼을 만들어야한다.  
+> Note 회사에서 생성한 Todo는 수정, 삭제 할 수 없고 Status만 변경할 수 있다.
+
+그래도 그렇게 복잡한 조건은 아니다. 이 로직을 추가해보려고한다.
+
+# 비즈니스 로직에 외부 Todo 비즈니스 로직 얹기
+
+조건이 그렇게 복잡하지 않다고 생각한다. 그래서 코드를 빠르게 작성해서 PR을 올린다.
+
+```tsx
+const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
+  const isDisabled = !!todoItem?.external || (!isCreator && !isWritePermission) || todoItem.creator !== userId;
+
+  const handleEdit = () => {
+    if (!!todoItem?.external || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+
+    // 실행
+  };
+  const handleDelete = () => {
+    if (!!todoItem?.external || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+    // 실행
+  };
+  const handlStatus = () => {
+    if (!(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+    // 실행
+  };
+
+  const handleLikeButton = () => {
+    if (!todoItem?.external) {
+      return;
+    }
+  };
+  return (
+    <TodoContainer>
+      <TodoRow>
+        <TodoTitle>{todoItem.title}</TodoTitle>
+        <TodoDate>{todoItem.updatedAt}</TodoDate>
+        <TodoStatus onClick={handlStatus}>{todoItem.todoStatus}</TodoStatus>
+        <EditButton
+          onClick={handleEdit}
+          disabled={isDisabled}
+        >
+          수정
+        </EditButton>
+        <DeleteButton
+          onClick={handleDelete}
+          disabled={isDisabled}
+        >
+          삭제
+        </DeleteButton>
+        {todoItem?.external ? <LikeButton onClick={handleLikeButton}>{todoItem?.like}</LikeButton> : null}
+      </TodoRow>
+    </TodoContainer>
+  );
+};
+```
+
+팀장님이 코드를 보고 이렇게 코멘트를 해준다.
+
+> "외부 연동이 아마 더 많아 질겁니다. 지금은 급하니까 승인 해드릴께요. 외부 연동을 관리할 수 있는 방안을 생각해보세요."
+
+일단 승인 받았으니까 나중에 생각해보기로 한다. 이 코드의 문제는 현재는 잘 모를 수도 있다. 어차피 조건이 하나 더 추가되는 것이니까.
+
+두두 사장님은 다른 외부 업체외 연동을 적극적으로 하려고 한다.
+얼마지나지 않아 로드맵 제작 회사에서 Todo와 계약을 맺고 싶어한다. 역시 Todo를 사용하고 싶어한다. 하지만 이번엔 조건이 다르다.
+
+> 로드맵 회사에서 작성한 Todo는 수정이 되어야한다.  
+> 상태 변경은 로드맵에서만 할 수 있다.  
+> 로드맵 회사에서 작성한 Todo는 삭제가 되면 안된다.
+
+external을 구분해야한다. 그래서 서버에서 enum을 내려주기로 했다. 나는 고민은 했지만 어떻게 관리를 해야할지 아직 잘 모르겠다.
+
+```tsx
+const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
+  const isDisabled = (!isCreator && !isWritePermission) || todoItem.creator !== userId;
+  const isNoteDisabled = todoItem?.external === "NOTE" || isDisabled;
+  const isRoadDisabled = todoItem?.external === "ROAD" || isDisabled;
+
+  const handleEdit = () => {
+    if (todoItem?.external === "NOTE" || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+
+    // 실행
+  };
+  const handleDelete = () => {
+    if (!!todoItem?.external || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+    // 실행
+  };
+  const handlStatus = () => {
+    if (todoItem?.external === "ROAD" || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+      return;
+    }
+    // 실행
+  };
+  const handleLikeButton = () => {
+    if (todoItem?.external !== "NOTE") {
+      return;
+    }
+  };
+
+  return (
+    <>
+      // 중략
+      {todoItem?.external === "NOTE" ? <LikeButton onClick={handleLikeButton}>{todoItem?.like}</LikeButton> : null}
+    </>
+  );
+};
+```
+
+## 이 코드의 문제점
+
+이 코드는 제품이 가지고 있는 고유의 비즈니스 로직에 B2B로 들어온 비즈니스 로직이 그대로 얹어져 있다. 사실 한 업체만 추가되면 그렇게 큰 문제는 없을지도 모른다. 하지만 업체가 두개만 되도
+비즈니스 로직을 추가하는 것은 어려워지고 배포 전 테스트를 할 때도 어렵다. 비즈니스 로직은 생각보다 자주 바뀐다.
+정책이 변경되면 로직은 변경된다. 또 그 생각은 배포 직전에 바뀔 수 있고 배포 이후에도 바뀔 수 있다.
+나는 실재로 이런 식으로 (정말 이렇게 한건 아니지만) 코드를 넣었다가 낭패를 보았다. 외부 업체 비즈니스 조건을 만족한다고 넣었던 조건 때문에 고유 비즈니스 로직이 동작을 하지 않게 되었고 결국 통채로 로직을 드러내야만 했다.
+실재 코드는 페이지도 많고 조건이 어떤 UI에만 적용되어야 한다거나 한 페이지에서 업체마다 요구하는 조건이 다 다르기 때문에 이런식으로 코드를 작성하면 나중에 관리가 불가능해질 것이다.
+다른 사람이 이어받는 것은 거의 불가능에 가깝다.(아니 가능은 하지만 나의 수명이 많이 늘어날 것이다.)
+다음부터 이어지는 글은 '어떻게 하면 회사 제품의 비즈니스 로직과 외부 업체의 비즈니스 로직이 독립적으로 동작하면서 변경이 쉬운 코드를 작성할까'에 대한
+나름의 답이다.
+
+# 고차 함수와 지연 동작
+
+외부 연동 개선 이슈를 다시 담당하게 되었을 때 했던 고민은 다음과 같다.
+
+> 어떻게 하면 여러 업체의 조건을 어떻게 동시에 만족하는 코드를 작성할 수 있을까?
+> 기존 비즈니스 로직과 외부연동 로직이 어떻게 하면 섞이지 않게 할 수 있을까.
+
+첫번째 고민을 해결하기 위해 비즈니스 로직을 CRUD로 나누기로 했다. 예전에 취업 전에 cors를 해결하기 위해서
+찾아봤던 아티클이 있는데 거기에서 blackList로 도메인을 허용하는 전략이 생각났다.(이 코드를 생각할 때는 blackList였는데 자료를 보니 allowList 였다.)
+
+```ts
+interface ExternalProps {
+  name: string;
+  type: Modifiler;
+  blackList: ("NOTE" | "ROAD")[];
+}
+const External: ExternalProps[] = [
+  {
+    name: "노트 읽기 제한",
+    modifier: "NOT_ALLOWED_READ_NOTE",
+    blackList: []
+  },
+  {
+    name: "노트 쓰기 제한",
+    modifier: "NOT_ALLOWED_CREATE_NOTE",
+    blackList: ["NOTE"]
+  },
+  {
+    name: "노트 수정 제한",
+    modifier: "NOT_ALLOWED_UPDATE_NOTE",
+    blackList: []
+  },
+  {
+    name: "노트 삭제 제한",
+    modifier: "NOT_ALLOWED_DELETE_NOTE",
+    blackList: []
+  }
+];
+```
+
+위와 같이 리스트를 작성하면 제한자에 속해있는 blackList를 바라보게 하고 blackList에 속해있다면
+기능이 동작하지 않도록 할 수 있다. 이렇게 해놓으면 만약 NOTE는 쓰기가 되어야하고 ROAD는 안된다면 blackList에 NOTE만 추가하면 된다.
+
+두 번째 고민은 이전에 들었던 유인동님의 함수형 프로그래밍 강의에서 많은 영감을 받았다.
+고차 함수로 함수 실행을 지연시키는 전략을 사용하기로 했다. 고차함수에 대해서 설명하자면 고차함수는 함수를 반환하는 함수다.
+
+```tsx
+function Example() {
+  const handleClick = (storeId: number) => (e) => {
+    console.log(storeId); // 1
+  };
+  return <div onClick={handleClick(1)}></div>;
+}
+```
+
+위 코드는 handleClick이 UI에서 랜더링 될 때 handleClick(1)이 이미 값으로 평가된 상태에서 `(e)=>{}`로 넘어가게 된다.
+자바스크립트에서 함수는 일급 객체이기 때문에(값으로 쓰일 수 있다는 말) 평가된 함수는 값이 된다.
+따라서 위 코드는 storeId가 1로 평가된 채로 이벤트 함수로 넘어가게 된다.
+
+나는 우리 제품의 변경이 유연하면서 외부 비즈니스 로직 조건을 독립적으로 사용 하고 싶었기 때문에 고차 함수를 여기에 응용했다.
+
+```tsx
+const handleExternal = (callback, modifier) => {
+  const foundModifier = External.find((value) => value.modifier === modifier);
+  if (foundModifier.blackList(ExternalName)) {
+    return alert("기능을 사용할 수 없습니다.");
+  }
+  return callback;
+};
+```
+
+그럼 원래 함수를 handleExternal로 감싸주기만 하면 이 함수를 사용할 수 있는지 없는지에 대한 평가가 끝난 상태로 UI가 렌더링 된다.
+UI를 disabled하기 위한 함수도 고차 함수로 만들어주면 된다. 이런게 가능한 이유는 자바스크립트 함수가 일급 객체이기 때문이다.
+
+이렇게 두 가지 조건을 모두 만족할 수 있었다. 그렇게 구현을 했고 다행이 모든 조건을 만족하면서 회사 제품의 코드는 어지럽히지 않을 수 있었다.
+
+# '그 후 현수와 프론트 팀은 행복했답니다. the end.' 라고 끝났다면 좋았을 것을
+
+하지만 이후에 3가지 문제점이 생겨났다.
+
+> 1. 한 번 구현하고 테스트 하는데 정신이 나갈 것 같다.
+>    - 업체 한개 추가될 때마다 원래 비즈니스 로직 가지 수 + 알파로 손 테스트를 해야한다.
+>    - 배포가 얼마 안남은 시점에 "현수님 이거 수정해야해요."라는 말을 들으면... 살려주세요.
+> 2. 세부적인 컨트롤이 어렵다.
+>    - 가끔 우리 제품 기능은 모두 사용하면서 외부 회사의 기능은 어떻게 해달라는 요구조건이 온다. 그럼 두 조건이 섞이면서 저 코드는 더이상 유효하지 않게 된다.
+> 3. 문서가 코드 속도를 따라가지 못한다.
+>    - 문서 정리가 꼬박 꼬박 되면 좋겠지만... 잘 안된다. 특히 modifier 항목이 10개를 넘어가면서 외부 업체 뭐는 들어가고 안들어가고 하는 것은 시간이 정말 엄청나게 걸린다.
+
+이 문제를 해결하기 위해서 또 여러가지 고민을 했다. 이 고민의 목적은 역시나 회사 제품의 비즈니스 로직과 외부 업체의 비즈니스 로직이 독립적으로 동작해야하는 것이다.
+
+# 중간에 인터페이스를 만들어서 의존성 분리하기
+
+제품 코드에서 useHandleExternal을 직접 의존하도록 코드가 작성 되어있었다. 사실 의존 관계는 고려하지 않았었다. 왜냐하면 한 페이지에서 부정은 전부 부정이고 긍정은 전부 긍정이었기 때문이다.
+수정이 안되면 그냥 수정은 불가능 하다. 그런데 우리 제품의 기능은 그대로 쓰면서 외부 데이터는 수정이 안되게 해야하는 조건이 생겨났다.
+더이상 부정은 전부 부정이 아니게 되었다.
+
+그럼 handleExternal을 수정해야할 것이다....
+
+```tsx
+const handleExternal = (callback, addCondition, modifier) => {
+  // addCondition이라고 이름 짓는 사람은 없을꺼라 생각한다.
+  const foundModifier = External.find((value) => value.modifier === modifier);
+  if (ExternalName === "SUM" && addCondition) {
+    return; //
+  }
+
+  if (foundModifier.blackList(ExternalName)) {
+    return alert("기능을 사용할 수 없습니다.");
+  }
+  return callback;
+};
+```
+
+아니다. 이렇게 하면 또 다른 지옥을 내가 스스로 만들게 된다. 위의 예시 코드와 별반 다를 바가 없어진다.
+handleExternal도 외부 업체가 추가될 때마다
+신경을 써야하게 되고 그럼 새로운 조건이 생길 때마다 handleExternal을 의존하고 있는 모든 함수에 대해서 테스트를 해야한다.
+handleExternal의 목적은 하나다. 외부 업체면 기능을 제한하고 아니면 원래 함수를 실행 시키는 것이다. 이건 더이상 오염되면 안된다.
+
+의존성을 분리하는 아이디어는 원티드 프리온보딩(23년 12월)과 '쏙쏙 들어오는 함수형 코딩'에서 계층을 세분화 하는 부분에서 영감을 받았다.
+중간에 인터페이스 역할을 하는 무언가를 두고 제어를 역전하는 방법을 사용하기로 했다.
+나는 인터페이스 역할로 ContextAPI를 사용하기로 했다. ContextAPI는 Context를 공유할 수 있기 때문에
+의존성을 props로 내려줄 필요가 없다. useContext를 사용해서 Provider 내부에서 Context를 의존할 수 있다.
+나는 ContextAPI에서 세부 비즈니스로 직을 구현하도록 역할을 부여했다.
+
+<img
+  alt="externalHook,externalprovider,some Page RFC"
+  src="/images/interface.png"
+/>
+
+모양새는 이렇다. 코드는 대강 이렇다.
+
+```tsx
+const ExternalProvider = (children) => {
+  const { handleExternal, checkExternal } = useExternalHook();
+
+  const handleTodoExternal = ({ callback, modifier, optinalCondition }) => {
+    if (checkExternal("SUM") && optinalCondition && modifier === "UPDATE") {
+      return alert("SUM의 제품은 수정할 수 없습니다.");
+    }
+    if (modifier === "CREATE") {
+      return handleExternal(callback, "NOT_ALLOWED_CREATE_TODO");
+    }
+  };
+
+  return <ExternalContext.Provider>{children}</ExternalContext.Provider>;
+};
+```
+
+그럼 handleTodoExternal을 handleExternal 대신 사용하면 된다. 오히려 modifier는 더 사용하기 쉬워졌다. (CRUD중 하나만 고르면 된다.)
+이렇게 했을 때 useExternalHook은 변경되지 않는다. 그리고 PAGE RFC에서 handleTodoExternal에 optionalCondition에 해당하는 조건만 넘겨주면 된다.
+
+# 테스트 코드
+
+구현은 언제나 즐겁다. 잘 구현하는게 어렵고 테스트가 더 어려울 뿐이다.
+이미 이 글을 작성하고 있는 지금 외부 연동 업체가 4개였다. 한 업체 추가 후 기존 로직에 영향은 없는지
+다른 외부 연동은 잘 동작하는지를 문서를 보고 일일히 눈으로 테스트 할 수가 없었다. 이번에도 야근을 하면 가능하겠지만
+사람은 실수를 한다. 그래서 분명 놓치는 것들이 있고 프러덕트에 손실로 이어질 수 있다.
+
+작년 회고 때 커버리지 5%만이라도 하자는 결심을 했었고 유틸 함수에만 단위 테스트 코드를 작성했었는데(5%도 힘듬)
+이번엔 유틸 함수 뿐 아니라 Hook과 UI 테스트 코드를 작성하기로 했다. 다행이 환경은 팀 내에서 구축을 해놓았다.
+
+```External.test.ts
+describe("투 두 생성 제한", ()=>{
+  it("SUM : false", ()=>{
+    expect().toBe(false)
+  })
+})
+```
+
+1. MSW를 사용해서 API Mock을 했는데 유용하다. 통합 테스트는 Mock이 필요하다고 생각한다.
+2. Redux, ThemeProvider 등 의존하고 있는 것들이 있다면 테스트 코드 내에서는 따로 의존성을 주입해주어야한다.
+
+```tsx
+// 대강 이런식으로
+const TestProvider = ({ children }) => {
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </Provider>
+  );
+};
+
+describe("", () => {
+  it("", () => {
+    render(
+      <TestProvider>
+        <MyComponent />
+      </TestProvider>
+    );
+    const button = screen.getById("test-button");
+    expect(button).toBeInTheDocument("수정");
+  });
+});
+```
+
+테스트 코드까지 무사히 작성하였다. 테스트를 돌려보니 테스트 케이스가 200개가 좀 안되었다.
+이걸 눈으로 다 확인을 하려고 했다니...
+
+테스트 코드를 작성하면서 테스트 하기 좋은 코드를 컴포넌트는 무엇인지 생각해보았다. 테스트 케이스 중에 '본사는 00을 할 수 없다.' 조건이 있었는데
+다른 컴포넌트에서는 똑같은 조건에서 전부 pass인데 계속 A 컴포넌트에서 fail이 났다. 살펴보니 부모인지 아닌지를 판별 하는 방법이 달랐다.
+리덕스에서 전역으로 내려온 값을 참조하고 있었지만 다른 컴포넌트에서는 상품 데이터에 있는 값을 직접 참조 하고 있었다.
+리덕스 의존성을 변경하기 위해 본사 조건일 때, 새로운 값을 주입했다.
+또 props로 내려받는 것이 많은 컴포넌트는 테스트에 쓰일 값이 아닌데 일일히 가짜 값을 만들어 넣어줘야하는 어려움도 있었다.
+(컴포넌트의 props가 많다는 것은 계층을 고민해볼 필요가 있다는 신호인 것 같다.)
+
+위 경험으로 보건데 테스트 하기 좋은 컴포넌트는 의존하고 있는 것이 적거나 채널이 하나인게 좋은 것 같다.
+또한 컴포넌트가 하는 일이 너무 많지 않은 것이 좋은 컴포넌트가 아닐까 생각해본다.
+
+# 내일 배포다.
+
+내일 배포다. 기도가 필요하다. 하지만 기도 메타를 탈 필요는 없다. 사실 이틀 전에 갑자기 또 수정이 있었다.
+
+```shell
+yarn test
+```
+
+이 명령 줄 하나가 나의 반나절의 시간을 아껴주었다. 테스트 코드가 없었다면 수정하고 또 기존 로직과 외부 연동 로직을
+일일이 눈으로 확인 해야했을 것이다. 하지만 수정과 테스트까지 30분도 걸리지 않았다.
+이번 구현에도 동료들의 많은 지지와 도움이 있었다. 코드 리뷰에 많은 시간을 쏟아준 우리 팀에게 정말 감사 드린다.(내일 커피 쏴야겠다.)
+이번 해 초, 테스트 코드를 작성하자고 하고 환경 구성에 팀장님이 많은 공을 드려주었다. 덕분에 나는 쉽게 코드를 작성할 수 있었다.
+
+이번 구현은 지금까지 배운 모든 것을 다 사용해 보았다. 외부 연동 하는거라 처음엔 그냥 조건만 추가해주면 될 줄 알았지만
+조건이 하나 추가되면 복잡도는 배가 된다는 것을 배울 수 있었고 복잡도를 낮추기 위해서 그동안 개발자들이 닦아 놓은 길이
+너무 소중했다. 사실 SOLID니 계층 구조니 함수형 프로그래밍이니 뭐니 하는 것들이 배우긴 하는데 어디에 적용할 수 있을까하는
+고민이 있었다. 하지만 배운 것을 적용 할 기회가 생긴건 어쩌면 다행인듯 하다.
+
+# 부록
+
+글 속에 영감을 얻었던 자료.
+
+블로그는 취준 할 때 본 것이 많아서 좀 옛날 자료가 많다. 자료가 직접적으로 도움이 되진 않더라도
+키워드로 더 많은 검색과 자료를 찾아 볼 수 있을 것이라 생각한다.
+
+## 예제 아티클
+
+> [express cors](https://expressjs.com/en/resources/middleware/cors.html)  
+> [벨로퍼트와 함께하는 리액트 테스팅](https://velog.io/@velopert/series/react-testing)  
+> [Javascript에서도 SOLID 원칙이 통할까?](https://velog.io/@teo/Javascript%EC%97%90%EC%84%9C%EB%8F%84-SOLID-%EC%9B%90%EC%B9%99%EC%9D%B4-%ED%86%B5%ED%95%A0%EA%B9%8C)  
+> [Compound Pattern](https://www.patterns.dev/react/compound-pattern)  
+> [Higer-Order Functions - 33 Concepts Every JavaScript Developer Should Know](https://github.com/leonardomso/33-js-concepts?tab=readme-ov-file#22-high-order-functions)  
+> [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) - 아이디어만 얻어봤다. 말하자면 오른손이 하는일을 왼손이 모르게 하라.
+
+## 무료 강의
+
+> 원티드 프리온보딩 23년도 12월 강의 - 멘토 오종택(아쉽게도 강의 자료는 공유할 수 없습니다. 대신 프리온보딩 수업을 듣다보면...)
+> [프리온보딩 오픈 알림 신청](https://www.wanted.co.kr/events/pre_ob_open)
+
+## 유료강의
+
+> 유료 [함수형 프로그래밍과 JavaScript ES6+](https://www.inflearn.com/course/functional-es6)  
+> 유료 [함수형 프로그래밍과 JavaScript ES6+ 응용편](https://www.inflearn.com/course/%ED%95%A8%EC%88%98%ED%98%95_ES6_%EC%9D%91%EC%9A%A9%ED%8E%B8)
+
+## 책
+
+> [쏙쏙 들어오는 함수형 코딩](https://www.yes24.com/Product/Goods/108748841)  
+> [모던 자바스크립트 Deep Dive](https://www.yes24.com/Product/Goods/92742567)
