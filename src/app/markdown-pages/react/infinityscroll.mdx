@@ -7,7 +7,6 @@ tags:
   - "frontend"
   - "react"
   - "reactquery"
-draft: false
 ---
 
 무한 스크롤은 기존에 페이지를 눌러 이동하는 방법과 다르게 사용자가 보고있는 화면이 가장 아래 도달하면 그 다음 페이지에 해당하는 아이템을 불러오는 방법이다. 사용자는 그저 스크롤만 내리면 되기 때문에 손가락으로 다른 버튼을 누르지 않아도 된다.모바일에서 메뉴나 버튼을 배치하는 것은 생각보다 어렵기 때문에 좋은 해결책이고 사용자에게 좋은 경험을 줄 수 있다. 하지만 만약에 사용자가 지나쳤던 다른 컨텐츠를 찾을때 불러온 컨텐츠의 수가 많으면 스크롤을 한참 올려야하는 단점이 있다. 그럼에도 불구하고 무한 스크롤은 이미지, 동영상과 같은 컨텐츠를 제공하는 서비스에서 심심치 않게 사용된다.
@@ -127,17 +126,13 @@ const useGetData = () => {
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(10);
 
-  const query = useQuery<Data, AxiosError, GetData>(
-    ["dataList"],
-    () => axios.get(`${url}?offset=${offset}&limit=${limit}`),
-    {
-      select: (response) => response.data,
-      onSuccess: () => {},
-      onError: (error) => {
-        console.log(error);
-      }
+  const query = useQuery<Data, AxiosError, GetData>(["dataList"], () => axios.get(`${url}?offset=${offset}&limit=${limit}`), {
+    select: (response) => response.data,
+    onSuccess: () => {},
+    onError: (error) => {
+      console.log(error);
     }
-  );
+  });
 
   return { offset, setOffset, limit, setLimit, ...query };
 };
@@ -168,11 +163,10 @@ const useGetData = () => {
     allowfullscreen
   ></iframe>
 </div>
-두 번째는 해결하지 못했다. 리스트가 사라져버린다. 예상컨데 컴포넌트가 언마운트 되면서
-가지고 있던 데이터를 잃어버리는 것 같았다. 그리고 마운트 시에 limit와 offset이 초기화
-되기 때문에 발생하는 문제인 것 같다. 함수형 컴포넌트는 실행 될 때마다 랜더링이 다시
-발생하기 때문에 선언된 변수 값들이 초기화되기 때문이다. 하지만 분명 캐싱이 발생할
-텐데... 왜 데이터를 잃어버릴까? 하지만 왜 그런지 아직 원인을 찾지 못했다.
+두 번째는 해결하지 못했다. 리스트가 사라져버린다. 예상컨데 컴포넌트가 언마운트 되면서 가지고 있던 데이터를 잃어버리는 것 같았다. 그리고
+마운트 시에 limit와 offset이 초기화 되기 때문에 발생하는 문제인 것 같다. 함수형 컴포넌트는 실행 될 때마다 랜더링이 다시 발생하기 때문에
+선언된 변수 값들이 초기화되기 때문이다. 하지만 분명 캐싱이 발생할 텐데... 왜 데이터를 잃어버릴까? 하지만 왜 그런지 아직 원인을 찾지
+못했다.
 
 # Intersection Observer와 useInfiniteQuery
 
@@ -229,8 +223,7 @@ interface NoticeQueryData {
 const useGetNoticeItem = ({ size }: IuseGetNoticeItem2Props) => {
   return useInfiniteQuery<NoticeQueryData, AxiosError, NoticeQueryData>(
     ["notices"],
-    ({ pageParam = 0 }) =>
-      api.getData(`/example`, { params: { page: pageParam, size } }),
+    ({ pageParam = 0 }) => api.getData(`/example`, { params: { page: pageParam, size } }),
     {
       getNextPageParam: ({ isLastPage, pageNumber }) => {
         return isLastPage ? undefined : pageNumber + 1;
@@ -252,10 +245,7 @@ pageParam은 처음에 0으로 기본값을 넣었다.(자기가 넣고 싶은 �
 params를 불러와 배열을 평탄화를 하는데 useMemo를 사용하였다. 무릎을 탁 치게 되는 순간?
 
 ```typescript
-const users = useMemo(
-  () => (data ? data.pages.flatMap(({ data }) => data.contents) : []),
-  [data]
-);
+const users = useMemo(() => (data ? data.pages.flatMap(({ data }) => data.contents) : []), [data]);
 
 //출처: https://tech.kakaoenterprise.com/149[카카오엔터프라이즈 기술블로그 Tech&(테크앤):티스토리]
 ```

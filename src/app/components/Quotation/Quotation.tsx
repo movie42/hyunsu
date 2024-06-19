@@ -24,8 +24,7 @@ export default Quotation;
 const Container = styled.div`
   @font-face {
     font-family: "NotoSerifKR";
-    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NotoSerifKR.woff")
-      format("woff");
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NotoSerifKR.woff") format("woff");
     font-weight: normal;
     font-style: normal;
   }
@@ -35,6 +34,7 @@ const Container = styled.div`
   padding: 10rem 0 12rem;
 
   blockquote.block-quotation {
+    display: flex;
     margin: 0;
     padding: 0;
     background-color: unset;
@@ -42,10 +42,15 @@ const Container = styled.div`
     font-family: "NotoSerifKR ", serif;
     font-style: italic;
     color: ${({ theme }) => theme.basicColor};
+    padding: 0 10rem;
     span.quotes {
       font-family: "Times New Roman", Times, serif;
       color: ${({ theme }) => theme.grayColor_dark};
       font-style: italic;
+    }
+    p {
+      display: inline-block;
+      padding: 0 2rem;
     }
     &:after {
       display: none;
