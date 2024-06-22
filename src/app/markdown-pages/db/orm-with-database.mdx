@@ -1,0 +1,498 @@
+---
+date: "2024-06-22"
+title: "Prisma Migrate dev"
+tags: ["db", "prisma", "programming"]
+---
+
+사이드 프로젝트를 하면서 prisma를 사용해 db를 제어하고 있다. prisma orm은 schema 작성, migrate, generate라는
+3가지 큰 주제를 가지고 사용 방법을 익히면 금방 사용할 수 있다.
+3가지 주제중 가장 중요한 것은 prisma migrate다. prisma migrate 명령어는 prisma 파일에 작성된 shcema를 연결된 db에 직접
+쓰기, 삭제, 수정을 진행한다. 이때 원래 있던 값을 삭제하거나 수정을 했을 때, 이미 db에 column값이 있으면 데이터가 전부 날아가게 된다.
+나는 이미 migrate를 사용하면서 로컬 DB를 몇 번 날려먹었다. 그래서 prisma migrate dev를 중심으로 schema에서 column을 쓰고 지우고 삭제 했을 때
+DB가 초기화되지 않도록 점진적으로 업데이트 하는 방법을 익혀보았다.
+
+1. prisma 초기화 후에 데이터 베이스에 값 저장하기
+2. 데이터 베이스에 데이터가 쌓였을 때 새로운 column 넣기
+3. column을 삭제하거나 변경했을 때 prisma migrate 하는 방법
+4. 'DB는 버전 관리를 어떻게 할수 있나'를 커뮤니티에 질문 했을 때 알게된 DDL, DML
+
+nestJS와 prisma를 사용하면서 데이터베이스를 제어하는 예제를 담고 있으며 모든 내용은 공식 문서에 담겨 있는 것을 옮겨 온 것이다. 글은 prisma migrate에 대한
+이야기를 먼저 하기 위해 개발 환경 세팅과 같은 잡다한 이야기는 마지막으로 미뤘다.
+실습을 따라해보고 싶은 독자는 가장 마지막 <a href="#setting">개발 환경 설정</a> 파트를 쭉 따라갔다가 <a href="#write-schema">prisma 스키마 작성하기</a>로 돌아오면 된다.
+
+<h1>
+  <a name="write-schema">prisma 스키마 작성하기</a>
+</h1>
+
+prisma는 schema.prisma라는 파일에서 model을 정의하고 migrate dev 명령어를 통해 db에 쓰기를 진행한다. schema를 작성하려면 먼저 `npx prisma init` 명령어를 커멘드 라인에서 실행한다.
+그럼 prisma 폴더가 생성된다.
+
+```shell
+npx prisma init
+
+```
+
+> Next steps:
+>
+> 1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
+> 2. Set the provider of the datasource block in schema.prisma to match your database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
+> 3. Run prisma db pull to turn your database schema into a Prisma schema.
+> 4. Run prisma generate to generate the Prisma Client. You can then start querying your database.
+
+우리는 db를 전부 prisma를 통해 새로 쓸 것이기 때문에 일단 3번은 진행할 일이 없다. 기존 db를 가져와야한다면 [prisma 공식 문서를 읽어](https://www.prisma.io/docs/orm/prisma-schema/introspection)보고 3번을 진행해보자.
+
+1번은 .env에 데이터 베이스 url을 셋하라고 하는데 우리는 postgresql에 movie라는 db와 movieadmin이라는 user를 만들었다.
+그대로 env에 작성해주자.
+
+```
+
+DATABASE_URL="postgresql://movieadmin:1234@localhost:5432/movie?schema=public"
+
+```
+
+prisma 폴더에 schema.prisma가 있는데 열어보면 datasource db에 다음과 같이 적혀있는지 확인하자.
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+모델을 작성해보자. 모델의 각 의미는 [Model](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)을 보자.
+
+```prisma
+model Movie {
+  id        Int      @id @default(autoincrement())
+  name      String
+  genre     String?
+  director  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+# prisma migarte
+
+[prisma migrate](https://www.prisma.io/docs/orm/prisma-migrate)는 prisma schema를 DB에 쓰기, 수정, 삭제를 할 때 사용한다.
+schema를 작성했다고 해도 실재로 orm을 통해 DB를 제어하려면 prisma migrate를 실행해야한다. 로컬 DB에는 `prisma migrate dev` 명령어를 사용해서 조작한다.
+
+## prisma migrate dev --name ""
+
+스키마를 적용하기 위해 아래 명령어를 적어보자.
+
+```shell
+npx prisma migrate dev --name 'init'
+```
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "movie", schema "public" at "localhost:5432"
+
+```
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "movie", schema "public" at "localhost:5432"
+
+Applying migration `20240623091851_init`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20240623091851_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (v5.15.1) to ./node_modules/@prisma/client in 53ms
+```
+
+명령어 입력 후에 prisma 폴더를 열어보면 migrations가 생성되었고 그 아래는 터미널 명령어에 나온대로 폴더가 생성된 것을 확인 할 수 있다.
+migration.sql 파일을 열어보자.
+
+```sql
+CREATE TABLE "Movie" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "genre" TEXT,
+    "director" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Movie_pkey" PRIMARY KEY ("id")
+);
+```
+
+prisma에서 migration.sql을 생성한 뒤에 CREATE TABLE이란 명령어를 가지고 DB에 쓰기를 진행했을 것이다. dbeaver를 사용해 movie DB를 열어보면 Movie Table이 생성된 것을 확인할 수 있다.
+
+<img
+  alt="Movie"
+  src="/images/dbeaver.png"
+/>
+
+> npx prisma migrate dev --name \<youtname>으로 적용된 이후 sql문을 수정하면 안된다. prisma 공식문서에서 수정이나 삭제를 하지 말라고 하니까 절대로 수정 및 삭제를 하지 말자. 그런데 지금은 실험실에 들어와서 실험을 하는 것이니 한번 해보는것도 좋을 것 같다.
+> 어차피 이번 아티클은 학점이나 취업 점수에 반영되지 않는다.
+
+## prisma migrate dev --create-only --name
+
+하지만 개발을 진행하다보면 column의 이름을 변경하거나 삭제를 해야할 때가 있을 것이다.나는 movie의 name이 아니라 title이 column에 더 적합한 이름이란 생각이 들었다. 그래서 model을 수정했다.
+
+```prisma
+model Movie {
+  id        Int      @id @default(autoincrement())
+  title     String
+  genre     String?
+  director  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+만약 DB에 아무런 데이터가 쌓여있지 않다면
+`prisma migrate dev --name ""`을 진행해도 경고 없이 진행된다.  
+하지만 이미 데이터베이스에 데이터가 들어있는 상태에서 dev 명령어를 입력하면 --create-only --name 을 진행하라고 경고를 해준다.
+
+이 경고를 함께 보기 위해서 아래 과정을 진행해보자. dbeaver에서 sql 편집기에 sql을 입력해준다.
+
+```sql
+insert into "Movie" (name, genre, director, "updatedAt")
+values ('인셉셥', 'sf', '크리스토퍼 놀란', now());
+```
+
+sql이 익숙하지 않거나 dbeaver와 같은 데이터베이스 관리 도구가 없다면 postman이나 vscode 확장프로그램인 선더 클라이언트를 설치해서 post 요청을 날려보자.
+
+```json
+{
+  "name": "테스트 영화",
+  "genre": "test",
+  "director": "testor"
+}
+```
+
+그리고 select 문을 통해서 Movie 테이블을 조회하면 데이터가 삽입 된 것을 확인할 수 있다.
+
+```sql
+select * from "Movie" m;
+```
+
+<img src="/images/dbeaver1.png" />
+
+그 다음 `npx prisma migrate dev --name "change name to title"` 명령어를 커멘드 라인에 입력해 실행해보자 그럼 아래 에러 메시지를 볼 수 있다.
+
+> Error:  
+> ⚠️ We found changes that cannot be executed:  
+> • Step 0 Added the required column `title` to the `Movie` table without a default value. There are 1 rows in this table, it is not possible to execute this step.  
+> You can use prisma migrate dev --create-only to create the migration file, and manually modify it to address the underlying issue(s).  
+> Then run prisma migrate dev to apply it and verify it works.
+
+에러 메시지에 나온 가이드대로 진행해보자. 커멘드 라인에 아래 명령어를 입력하자.
+
+```shell
+ npx prisma migrate dev --create-only --name "change name to title"
+```
+
+그럼 이번엔 Warning을 보여준다.
+
+> ⚠️ We found changes that cannot be executed:  
+>  • Step 0 Added the required column `title` to the `Movie` table without a default value. There are 1 rows in this table, it is not possible to execute this step.  
+> ⚠️ Warnings for the current datasource:  
+>  • You are about to drop the column `name` on the `Movie` table, which still contains 1 non-null values.  
+> ✔ Are you sure you want to create this migration? … yes  
+> Prisma Migrate created the following migration without applying it 20240624130836_change_name_to_title  
+> You can now edit it and apply it by running prisma migrate dev.
+
+migration을 생성할 것이냐는 질문에 y를 입력해주자. 그럼 migration 폴더에 `20240624130836_change_name_to_title` 폴더가 있고 그 안에 sql 파일이 있다.
+
+```sql
+ALTER TABLE "Movie" DROP COLUMN "name",
+ADD COLUMN     "title" TEXT NOT NULL;
+```
+
+만약 의도가 name column을 더이상 사용하지 않기 때문에 drop하기 위한 것이라면 `prisma migrate dev` 명령어를 실행하면 된다. 하지만 나의 의도는 name을 title로 변경하는 것이다.
+prisma migrate dev를 실행하기전에 sql문을 수정해야한다. 나는 sql문을 잘 모르기 때문에 GPT에게 name을 title로 변경하기 위한 sql 문을 작성해달라고 했다.
+아래 sql은 column name을 title로 변경해주는 구문이다.
+
+```sql
+ALTER TABLE "Movie" RENAME COLUMN "name" TO "title";
+```
+
+데이터 손실 없이 name이 title로 변경된것을 확인 할 수 있다. `prisma migrate dev`명령어는 데이터베이스에 아무 데이터가 없다면 문제가 되지 않는다.
+하지만 이미 쓰기가 진행된 DB라면 `prisma migrate dev --create-only --name`을 잘 사용해야할 것이다. 만약 튜토리얼 대로 진행하는데 아직 sql을 수동으로 변경하지 않았거나
+변경했는데 `Do you want to continue? All data will be lost.` 이라고 물어보는 질문이 나오면 Y를 누르지 말고 왜 그러는지 해결할 수 있는 방법은 무엇인지 찾아봐야한다.
+
+## migrate history는 삭제하거나 변형하지 말 것
+
+> [공식문서 Do not edit or delete migrations that have been applied](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/migration-histories#do-not-edit-or-delete-migrations-that-have-been-applied)
+
+공식 문서에는 시나리오가 단계별로 나와있는데 migrate된 것을 커스터마이징 하는 경우
+결국 production에 문제가 생기기 때문이다. 이때 DB를 reset하지말고 원인을 찾아서 복원하라고 조언한다.
+
+production DB가 날아갔다고 생각해봐라. 정말 상상하고 싶지 않다. 모종의 이유로 백업도 안되어있고 복원 하는 동안 서비스 장애로 이어지면
+결국 금전적 손해를 보게된다. DB는 유일하고 단일한 진실의 원천이다. 그러니 실험실에서 겪은 일은 실험실에서 잘 정리해서 필드에서 실수로 이어지지 않는 것이 좋은 것 같다.
+
+# 질문 : db도 버전관리를 하나요?
+
+개발을 하다보니 로컬 DB에 이미 변경점을 적용했다면 두 명 이상의 사람이 함께 백엔드 작업시 변경점을 어떻게 서로 공유하는지 궁금했다.
+그리고 feature를 옮기다보면 이미 다른 feature에서 model이 변경되어있다면 아마 위와 같은 경고를 받게 될텐데 그러는 경우에는 어떻게 해야하는지도 궁금했다.
+일단 prisma 공식문서에서는 prisma/migrations 폴더를 반드시 [소스 컨트롤 도구에 commit](https://www.prisma.io/docs/orm/prisma-migrate/understanding-prisma-migrate/migration-histories#committing-the-migration-history-to-source-control)하라고 한다.
+같이 작업하는 경우에는 --create-only로 수동 처리 하지 않고 DB를 마음것 입맛대로 바꾸게 되면 아마 입맛대로 이곳 저곳에서 뜯고 씹고 맛보이게 되지 않을까.
+
+백엔드 개발자에게 물어봤을 때는 따로 DB 형상관리를 하지 않는다.
+어떤 분은 DB는 적용 되면 적용 된거다라며 '디비 자체는 ddl 새로 날리지 않는이상 안바껴요'라는 말을 해서 DDL이 뭐지? 궁금해서 찾아봤다.
+
+## DML(Data Manipulation Language)
+
+DML은 데이터베이스 내의 데이터를 조작하는데 사용하는 SQL 명령어 그룹이다. SELECT, INSERT, UPDATE, DELETE가 있다.
+
+## DDL(Data Definition Language)
+
+DDL은 데이터베이스의 구조를 정의하고 수정하는데 사용되는 SQL 명령어 그룹이다. CREATE, ALTER, DROP, TRUNCATE가 있다.
+
+# 뭔가 충분하지는 않은데 그래도 계속
+
+이번 아티클에서는 prisma migrate dev 기능에 대해서만 알아봤다. introspection 개념이나 depoloy같은 명령어를 사용해서 production 레벨까지 진행해보지 않아 아직은 작성을 할수가 없었다.
+하지만 사이드 프로젝트의 배포일이 되고 난 뒤에 depoloy도 쓰게되면 좋겠다.
+
+나는 회사 DB에 대해 read only 권한만 부여받아 사용하고 있다. 어차피 내가 DML, DDL을 쓸 상황은 오지 않는다.
+상황이 오면 권한이 있는 사람에게 부탁한다. 나는 그저 select 문으로 내가 넣은 데이터가 제대로 들어갔는지
+혹은 왜 이런 원인이 생기는 건지 조회해보는 것만으로도 충분했다.
+
+게다가 프론트엔드 개발자 특히 비전공자라면 더더욱이 데이터베이스는 생소한 개념이다. 사이드 프로젝트를 하다보니
+[DB는 모델링 개념](https://youtube.com/playlist?list=PLuHgQVnccGMDF6rHsY9qMuJMd295Yk4sa&si=dwVNDyp3gd0TLHqO) 기초를 공부하게 되었다.
+그러니 왠지 데이터베이스에 대한 접근이 더 쉬워졌다. 왜 조회 시간이 1초 이상 걸리는가 같은 질문은 정규화라는 개념을 알면서 성능 좋은 DB를 만드는게 꼭 이론을 따른다고 다 만들어지는게 아니구나 하는 생각이 들었다.
+
+거기에 select 명령어를 사용하면서 뒤에 붙는 where like in join 등을 [익혀두면](https://www.sqlteaching.com/) 가끔
+사내 DB에서 직접 데이터를 조회해 보면서 개발을 한다. 물론 거의 대부분 개발자 도구나 Datadog 같은 모니터링 도구를 사용해서 쉽게 로그를 추적할 수 있어서 데이터베이스 조회까지 안 간다.
+하지만 장인은 좋은 도구가 많다. 데이터베이스를 아는 지식도 그 도구 중 하나다. 이 도구는 사이드 프로젝트나 기타 상황에서 가끔 쓰인다.
+
+사실 아직까지는 도메인 지식이 DB를 통해 나온다는 말을 아직은 잘 모르겠다. 하지만 데이터가 DB에 어떻게 저장되는지 이해를 하고 있다면 개발 중 어떤 문제를 만났을 때
+문제의 원인을 빠르게 파악하는데 도움이 된다. 그리고 프론트엔드 개발자라도 결국 자기 자신의 어플리케이션을 만든다면 결국 프레임워크를 넘어서 데이터베이스를 공부할 수밖에 없다.
+직군이 나뉘어 있긴 하지만 결국 개발자니까 시간이 지날 수록 언어와 직군을 넘나들며 어느 지점에서 일을 하게 되지 않을까?
+
+<h1>
+  <a name="setting">부록 : 자습을 위한 개발 환경 설정</a>
+</h1>
+
+## 스텍
+
+이 글에서 사용하게될 스텍은 다음과 같다.
+
+```
+mac os 13.3
+nodejs : 20.12.0
+prisma : 5.11.0
+@prisma/client : 5.11.0
+@nestjs/cli : 10.3.2
+postgresql : 14
+```
+
+위 기술 스텍을 바탕으로 RestAPI를 만들것이다. mac os에서 진행되는 실습이다. window, linux 유저에게 도움이 안되서 미안하다.
+
+## 환경 세팅
+
+### postgresql 설치 및 실행
+
+postgresql은 brew를 사용해 설치한다. brew 설치 방법은 검색을 통해서 진행하면 된다.
+
+```shell
+brew install postgresql@14
+```
+
+설치 후 postgresql을 실행한다.
+
+```shell
+brew services start postgresql@14
+```
+
+실행 되고 있는지 확인해보자.
+
+```shell
+brew services info postgresql
+
+Warning: Formula postgresql was renamed to postgresql@14.
+postgresql@14 (homebrew.mxcl.postgresql@14)
+Running: ✔
+Loaded: ✔
+Schedulable: ✘
+User: yourname
+PID:
+```
+
+### 데이터베이스 만들기
+
+postgresql이 실행되고 있는 것을 확인했다면 데이터 베이스와 user를 만들어보자. postgresql에 아래 명령어를 통해 접속한다.
+
+```shell
+psql -U postgres
+
+postgres=#
+```
+
+#### 데이터 베이스 만들기
+
+```shell
+postgres=# create database movie;
+
+postgres=# \l
+                                                        List of databases
+                             Name                              |   Owner   | Encoding | Collate | Ctype |   Access privileges
+---------------------------------------------------------------+-----------+----------+---------+-------+------------------------
+ movie                                                         | user      | UTF8     | C       | C     |
+
+```
+
+#### 유저 만들기
+
+```shell
+postgres=# create user movieadmin with password '1234';
+CREATE ROLE
+
+postgres=# \du
+                                    List of roles
+ Role name  |                         Attributes                         | Member of
+------------+------------------------------------------------------------+-----------
+ movieadmin |                                                            | {}
+```
+
+> 데이터 베이스 암호는 1234로 적절하지 않다. 여긴 실습이니까 1234로 했는데 절대로 production db password를 1234로 설정하지 말자. 대참사가 일어날 수 있다.
+
+그 다음에 movieadmin에 movie 데이터 베이스 모든 권한을 부여한다. 여기서 권한이란 읽기, 쓰기, 수정, 삭제를 말한다.
+
+```shell
+postgres=# grant all privileges on database movie to movieadmin;
+```
+
+prisma에서 db 쓰기를 하려면 createdb 권한이 부여되어야한다. 여기서 권한은 전역 권한을 의미한다. createdb 권한이 부여되면 새로운 데이터 베이스 생성도 할 수 있다.
+
+```shell
+postgres=# alter user movieadmin with createdb;
+postgres=# \du
+
+                                    List of roles
+ Role name  |                         Attributes                         | Member of
+------------+------------------------------------------------------------+-----------
+ movieadmin | Create DB                                                  | {}
+```
+
+여기까지 확인이 되었다면 \q 명령어를 사용해서 postgresql을 종료하자.
+
+### nestJS와 prisma 설치하기
+
+#### nestJS 설치
+
+먼저 nodejs 20.12.0으로 변경한다.
+
+```
+nvm use 20.12.0
+node -v
+v20.12.0
+```
+
+그 후에 nestjs cli를 설치한다.
+
+```shell
+npm install -g @nestjs/cli
+```
+
+> 공식문서 : [First step](https://docs.nestjs.com/first-steps)  
+> nvm으로 node를 관리할 때 다른 node 버전에서 실습에 사용할 버전으로 옮겼다면 nestjs cli를 다시 설치해주자.
+
+nest 프로젝트를 생성해주자.
+
+```shell
+nest new movie-app
+
+? Which package manager would you ❤️  to use?
+  npm
+❯ yarn
+  pnpm
+```
+
+#### prisma, prisma client 설치하기
+
+```shell
+cd movie-app
+yarn add prisma -D
+yarn add @prisma/client
+```
+
+## Prisma resource, Movie resource setting
+
+실습은 Dbeaver와 sql문을 사용해서 진행할 것이다. 하지만 이게 익숙치 않은 사람들은 nest를 세팅한 김에 RestAPI를 만들자.
+
+`app.module.ts`, `app.service.ts`,`app.controller.ts`는 nest 프로젝트를 처음 실행하면 기본적으로 있는 파일이다. 아래
+내용을 복붙하면된다.
+
+```app.module.ts
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { PrismaModule } from './prisma/prisma.module';
+
+@Module({
+  imports: [PrismaModule],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+```app.controller.ts
+import { Body, Controller, Post } from '@nestjs/common';
+import { AppService } from './app.service';
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Post()
+  createMovie(@Body() data) {
+    return this.appService.createMovie(data);
+  }
+}
+```
+
+```app.service.ts
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from './prisma/prisma.service';
+
+@Injectable()
+export class AppService {
+  constructor(private prisma: PrismaService) {}
+  createMovie(movie) {
+    return this.prisma.movie.create({ data: movie });
+  }
+}
+```
+
+복붙이 다 끝났으면 prisma 폴더를 만들고 `prisma.module.ts`와 `prisma.service.ts`파일을 만들고 아래 내용을 각각 파일에 복붙하자.
+
+```prisma.module.ts
+import { Global, Module } from "@nestjs/common";
+import { PrismaService } from "./prisma.service";
+
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+@Global()
+export class PrismaModule {}
+```
+
+```prisma.service.ts
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PrismaService extends PrismaClient {}
+```
+
+복붙이 다 끝나면 아래 명령어로 서버를 실행시킨다.
+
+```shell
+yarn start:dev
+```
+
+환경 세팅은 모두 끝났다. <a href="#write-schema">prisma 스키마 작성하기</a>로 돌아가자.
+
+뭔가 안된다면 댓글 남겨주세요. 정보가 올바르지 않거나 보충하고 싶은게 있다면 댓글 남겨주세요. 토론은 언제나 환영입니다.
