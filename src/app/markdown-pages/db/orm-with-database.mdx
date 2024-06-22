@@ -1,0 +1,250 @@
+---
+date: "2024-06-22"
+title: "Prisma Migrate"
+tags: ["db", "prisma", "programming"]
+---
+
+사이드 프로젝트를 하면서 prisma를 사용해 db를 제어하고 있다. prisma orm은 schema 작성, migrate, generate라는
+3가지 큰 주제를 가지고 사용 방법을 익히면 금방 사용할 수 있다.
+3가지 주제중 가장 중요한 것은 prisma migrate다. prisma migrate 명령어는 prisma 파일에 작성된 shcema를 연결된 db에 직접
+쓰기, 삭제, 수정을 진행한다. 이때 원래 있던 값을 삭제하거나 수정을 했을 때, 이미 db에 column값이 있으면 데이터가 전부 날아가게 된다.
+나는 이미 migrate를 사용하면서 로컬 DB를 몇 번 날려먹었다. 그래서 prisma migrate dev를 중심으로 schema에서 column을 쓰고 지우고 삭제 했을 때
+DB가 초기화되지 않도록 점진적으로 업데이트 하는 방법을 익혀보았다.
+
+1. prisma 초기화 후에 데이터 베이스에 값 저장하기
+2. 데이터 베이스에 데이터가 쌓였을 때 새로운 column 넣기
+3. column을 삭제하거나 변경했을 때 prisma migrate 하는 방법
+4. 'DB는 버전 관리를 어떻게 할수 있나'를 커뮤니티에 질문 했을 때 알게된 DDL, DML
+
+nestJS와 prisma를 사용하면서 데이터베이스를 제어하는 예제를 담고 있으며 모든 내용은 공식 문서에 담겨 있는 것을 옮겨 온 것이다. 글은 prisma migrate에 대한
+이야기를 먼저 하기 위해 개발 환경 세팅과 같은 잡다한 이야기는 마지막으로 미뤘다.
+실습을 따라해보고 싶은 독자는 가장 마지막 <a href="#setting">개발 환경 설정</a> 파트를 쭉 따라갔다가 <a href="#write-schema">prisma 스키마 작성하기</a>로 돌아오면 된다.
+
+<h1>
+  <a name="write-schema">prisma 스키마 작성하기</a>
+</h1>
+
+prisma는 schema.prisma라는 파일에서 model을 정의하고 migrate dev 명령어를 통해 db에 쓰기를 진행한다. schema를 작성하려면 먼저 `npx prisma init` 명령어를 커멘드 라인에서 실행한다.
+그럼 prisma 폴더가 생성된다.
+
+```shell
+npx prisma init
+```
+
+> Next steps:
+>
+> 1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
+> 2. Set the provider of the datasource block in schema.prisma to match your database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
+> 3. Run prisma db pull to turn your database schema into a Prisma schema.
+> 4. Run prisma generate to generate the Prisma Client. You can then start querying your database.
+
+우리는 db를 전부 prisma를 통해 새로 쓸 것이기 때문에 일단 3번은 진행할 일이 없다. 기존 db를 가져와야한다면 [prisma 공식 문서를 읽어](https://www.prisma.io/docs/orm/prisma-schema/introspection)보고 3번을 진행해보자.
+
+1번은 .env에 데이터 베이스 url을 셋하라고 하는데 우리는 postgresql에 movie라는 db와 movieadmin이라는 user를 만들었다.
+그대로 env에 작성해주자.
+
+```
+DATABASE_URL="postgresql://movieadmin:1234@localhost:5432/movie?schema=public"
+```
+
+prisma 폴더에 schema.prisma가 있는데 열어보면 datasource db에 다음과 같이 적혀있는지 확인하자.
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+모델을 작성해보자. 모델의 각 의미는 [Model](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)을 보자.
+
+```prisma
+model Movie {
+  id        Int      @id @default(autoincrement())
+  name      String
+  genre     String?
+  director  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+# prisma migarte
+
+[prisma migrate](https://www.prisma.io/docs/orm/prisma-migrate)는 prisma schema를 DB에 쓰기, 수정, 삭제를 할 때 사용한다.
+schema를 작성했다고 해도 실재로 orm을 통해 DB를 제어하려면 prisma migrate를 실행해야한다. 로컬 DB에는 `prisma migrate dev` 명령어를 사용해서 조작한다.
+
+스키마를 적용하기 위해 아래 명령어를 적어보자.
+
+```shell
+prisma migrate dev --name 'init'
+```
+
+명령어 입력 후
+
+## prisma migrate dev --create-only --name ''
+
+## prisma migrate dev --name ""
+
+## migrate history는 삭제하지 말 것
+
+## prisma migrate deploy
+
+//TODO: migrate 작성
+
+# 질문 : db도 버전관리를 하나요?
+
+## DML, DDL
+
+# DB는 프론트 엔드 개발자도 알아야한다고 생각합니다.
+
+# 부록 : DB 모델링 개념
+
+<h1>
+  <a name="setting">부록 : 자습을 위한 개발 환경 설정</a>
+</h1>
+
+## 스텍
+
+이 글에서 사용하게될 스텍은 다음과 같다.
+
+```
+mac os 13.3
+nodejs : 20.12.0
+prisma : 5.11.0
+@prisma/client : 5.11.0
+@nestjs/cli : 10.3.2
+postgresql : 14
+```
+
+위 기술 스텍을 바탕으로 RestAPI를 만들것이다. mac os에서 진행되는 실습이다. window, linux 유저에게 도움이 안되서 미안하다.
+
+## 환경 세팅
+
+### postgresql 설치 및 실행
+
+postgresql은 brew를 사용해 설치한다. brew 설치 방법은 검색을 통해서 진행하면 된다.
+
+```shell
+brew install postgresql@14
+```
+
+설치 후 postgresql을 실행한다.
+
+```shell
+brew services start postgresql@14
+```
+
+실행 되고 있는지 확인해보자.
+
+```shell
+brew services info postgresql
+
+Warning: Formula postgresql was renamed to postgresql@14.
+postgresql@14 (homebrew.mxcl.postgresql@14)
+Running: ✔
+Loaded: ✔
+Schedulable: ✘
+User: yourname
+PID:
+```
+
+### 데이터베이스 만들기
+
+postgresql이 실행되고 있는 것을 확인했다면 데이터 베이스와 user를 만들어보자. postgresql에 아래 명령어를 통해 접속한다.
+
+```shell
+psql -U postgres
+
+postgres=#
+```
+
+#### 데이터 베이스 만들기
+
+```shell
+postgres=# create database movie;
+
+postgres=# \l
+                                                        List of databases
+                             Name                              |   Owner   | Encoding | Collate | Ctype |   Access privileges
+---------------------------------------------------------------+-----------+----------+---------+-------+------------------------
+ movie                                                         | user      | UTF8     | C       | C     |
+
+```
+
+#### 유저 만들기
+
+```shell
+postgres=# create user movieadmin with password '1234';
+CREATE ROLE
+
+postgres=# \du
+                                    List of roles
+ Role name  |                         Attributes                         | Member of
+------------+------------------------------------------------------------+-----------
+ movieadmin |                                                            | {}
+```
+
+> 데이터 베이스 암호는 1234로 적절하지 않다. 여긴 실습이니까 1234로 했는데 절대로 production db password를 1234로 설정하지 말자. 대참사가 일어날 수 있다.
+
+그 다음에 movieadmin에 movie 데이터 베이스 모든 권한을 부여한다. 여기서 권한이란 읽기, 쓰기, 수정, 삭제를 말한다.
+
+```shell
+postgres=# grant all privileges on database movie to movieadmin;
+```
+
+prisma에서 db 쓰기를 하려면 createdb 권한이 부여되어야한다. 여기서 권한은 전역 권한을 의미한다. createdb 권한이 부여되면 새로운 데이터 베이스 생성도 할 수 있다.
+
+```shell
+postgres=# alter user movieadmin with createdb;
+postgres=# \du
+
+                                    List of roles
+ Role name  |                         Attributes                         | Member of
+------------+------------------------------------------------------------+-----------
+ movieadmin | Create DB                                                  | {}
+```
+
+여기까지 확인이 되었다면 \q 명령어를 사용해서 postgresql을 종료하자.
+
+### nestJS와 prisma 설치하기
+
+#### nestJS 설치
+
+먼저 nodejs 20.12.0으로 변경한다.
+
+```
+nvm use 20.12.0
+node -v
+v20.12.0
+```
+
+그 후에 nestjs cli를 설치한다.
+
+```shell
+npm install -g @nestjs/cli
+```
+
+> 공식문서 : [First step](https://docs.nestjs.com/first-steps)  
+> nvm으로 node를 관리할 때 다른 node 버전에서 실습에 사용할 버전으로 옮겼다면 nestjs cli를 다시 설치해주자.
+
+nest 프로젝트를 생성해주자.
+
+```shell
+nest new movie-app
+
+? Which package manager would you ❤️  to use?
+  npm
+❯ yarn
+  pnpm
+```
+
+#### prisma, prisma client 설치하기
+
+```shell
+cd movie-app
+yarn add prisma -D
+yarn add @prisma/client
+```
+
+환경 세팅은 모두 끝났다. <a href="#write-schema">prisma 스키마 작성하기</a>로 돌아가자.
