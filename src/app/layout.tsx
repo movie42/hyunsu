@@ -3,6 +3,7 @@ import Providers from "./Providers";
 import Header from "./components/Header/Header";
 import { GlobalStyle } from "./styles/globalStyle";
 
+const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://hyunsu.info";
 export const metadata: Metadata = {
   title: {
     default: "현수의 블로그",
@@ -14,6 +15,11 @@ export const metadata: Metadata = {
   description: "프론트엔드 개발자 고현수의 블로그입니다. 개발, 자바스크립 & 잡다한 이야기를 끄적거리는 곳입니다.",
   verification: {
     google: "veIyQnpMzmYGRpL8GEjeQsflYmq9zJAVRpn5zVx16FY"
+  },
+  alternates: {
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`
+    }
   }
 };
 

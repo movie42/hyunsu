@@ -2,6 +2,7 @@
 
 import { BASE_URL } from "@/app/libs/constant";
 import Link from "next/link";
+import { GitHub, Rss } from "react-feather";
 import styled from "styled-components";
 
 const Header = () => {
@@ -16,12 +17,14 @@ const Header = () => {
         </Link>
       </h1>
       <LinkContainer>
-        <Link href={`${BASE_URL}/rss.xml`}>RSS</Link>
+        <Link href={`${BASE_URL}/rss.xml`}>
+          <Rss />
+        </Link>
         <Link
           href="https://github.com/movie42"
           className="github"
         >
-          Github
+          <GitHub />
         </Link>
       </LinkContainer>
     </Container>
@@ -31,19 +34,20 @@ const Header = () => {
 export default Header;
 
 const Container = styled.header`
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1.2rem 2rem;
-
+  background-color: white;
+  z-index: 1050;
   a {
     display: inline-block;
     font-size: 1.8rem;
     font-weight: 700;
-    border: 2px solid ${({ theme }) => theme.hlColor};
     color: ${({ theme }) => theme.hlColor};
     padding: 0.5rem;
-    border-radius: 0.5rem;
     &:hover {
       color: ${({ theme }) => theme.whiteColor};
       background-color: ${({ theme }) => theme.hlColor};
@@ -60,7 +64,6 @@ const Container = styled.header`
       }
     }
     &.github {
-      border: 2px solid ${({ theme }) => theme.basicColor};
       color: ${({ theme }) => theme.basicColor};
       &:hover {
         color: ${({ theme }) => theme.whiteColor};

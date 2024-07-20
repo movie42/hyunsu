@@ -5,8 +5,8 @@ import { getPageURL } from "../libs/url";
 
 const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://hyunsu.info";
 
-export async function GET() {
-  const articles = await getPageURL();
+export function GET() {
+  const articles = getPageURL();
 
   const feed = new Rss({
     title: "현수의 블로그",
