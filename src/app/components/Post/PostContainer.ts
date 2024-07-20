@@ -143,6 +143,7 @@ export const PostContainer = styled.div`
         }
       }
     }
+
     @media (max-width: 450px) {
       h1,
       h2,
@@ -166,6 +167,11 @@ export const PostContainer = styled.div`
       h5 {
         font-size: 1.8rem;
       }
+    }
+  }
+  @media (max-width: 1400px) {
+    .toc {
+      display: none;
     }
   }
 `;

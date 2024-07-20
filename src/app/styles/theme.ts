@@ -10,5 +10,6 @@ export const theme = {
   subColor: "#4C3BFA",
   subColor_dark: "#6A51FF",
   subColor_light: "#41209E",
-  compColor: "#FA4200"
+  compColor: "#FA4200",
+  hlColor2: "#ff0000"
 };
