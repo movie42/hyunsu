@@ -1,5 +1,6 @@
 import Rss from "rss";
 
+import { generateUrl } from "../libs/generateUrl";
 import { getPageURL } from "../libs/url";
 
 const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://hyunsu.info";
@@ -19,8 +20,8 @@ export async function GET() {
     feed.item({
       title: article.title ? article.title : "",
       description: article.content ? `${article.content.slice(0, 100)}...` : "",
-      url: `${SITE_URL}/posts/${article.slug}`,
-      guid: `${SITE_URL}/posts/${article.slug}`,
+      url: `${SITE_URL}${generateUrl({ tags: article.tags, slug: article.slug })}`,
+      guid: `${SITE_URL}${generateUrl({ tags: article.tags, slug: article.slug })}`,
       date: article.date ? article.date : ""
     });
   });

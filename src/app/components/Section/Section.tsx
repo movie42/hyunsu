@@ -1,4 +1,7 @@
 "use client";
+import { HOME } from "@/app/libs/constant";
+import { generateUrl } from "@/app/libs/generateUrl";
+import { usePathname } from "next/navigation";
 import React from "react";
 import styled from "styled-components";
 import { TitleContainer } from "../Container/TitleContainer";
@@ -21,6 +24,8 @@ interface SectionProps {
 }
 
 const Section = ({ posts, sectionTitle, baseUrl }: SectionProps) => {
+  const location = usePathname();
+
   return (
     <Container>
       <TitleContainer>
@@ -34,7 +39,9 @@ const Section = ({ posts, sectionTitle, baseUrl }: SectionProps) => {
                 <RecentPost
                   title={post.title}
                   date={post.date}
-                  href={`${baseUrl}/${post.slug}`}
+                  href={
+                    location === HOME ? generateUrl({ slug: post.slug, tags: post.tags, baseUrl }) : `${baseUrl}/${post.slug}`
+                  }
                   tags={post.tags}
                 />
               )}
