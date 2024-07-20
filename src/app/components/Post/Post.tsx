@@ -89,7 +89,7 @@ export const Wrapper = styled.li`
   }
 
   &:hover {
-    bakground-color: ${(props) => props.theme.hlColor_light};
+    background-color: ${(props) => props.theme.hlColor_light};
     a {
       color: ${(props) => props.theme.whiteColor};
       h3 {
@@ -97,9 +97,6 @@ export const Wrapper = styled.li`
         font-weight: 900;
       }
     }
-  }
-  &:active {
-    transform: scale(0.96);
   }
 
   @media (max-width: 1020px) {

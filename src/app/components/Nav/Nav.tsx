@@ -58,8 +58,11 @@ const Container = styled.nav`
         a {
           cursor: pointer;
           color: white;
-          background-color: ${({ theme }) => theme.hlColor_dark};
+          background-color: ${({ theme }) => theme.hlColor};
         }
+      }
+      &:active {
+        background-color: ${({ theme }) => theme.hlColor_dark};
       }
     }
   }

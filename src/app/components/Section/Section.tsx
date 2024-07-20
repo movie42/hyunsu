@@ -82,19 +82,17 @@ const RecentPost = styled(Post)`
   margin: 0;
 
   &:hover {
-    background-color: ${(props) => props.theme.hlColor_dark};
-    transform: scale(1);
+    background-color: ${(props) => props.theme.hlColor};
+
     a {
       color: ${(props) => props.theme.whiteColor};
       h3 {
         word-spacing: -0.2rem;
         font-weight: 900;
-        transition: all 0.2s ease-in-out;
       }
     }
-    transition: all 0.2s ease-in-out;
   }
   &:active {
-    transform: scale(0.96);
+    background-color: ${({ theme }) => theme.hlColor_dark};
   }
 `;

@@ -40,8 +40,11 @@ const Container = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 1.2rem 2rem;
-  background-color: white;
+  background: rgba(255, 255, 255, 0.8);
   z-index: 1050;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
   a {
     display: inline-block;
     font-size: 1.8rem;
@@ -52,9 +55,7 @@ const Container = styled.header`
       color: ${({ theme }) => theme.whiteColor};
       background-color: ${({ theme }) => theme.hlColor};
     }
-    &:active {
-      transform: scale(0.97);
-    }
+
     &.logo {
       font-size: 2.5rem;
       border: 0;

@@ -28,6 +28,7 @@
     "eslint-config-next": "13.4.3",
     "eslint-plugin-mdx": "^2.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "framer-motion": "^11.3.8",
     "glob": "^10.2.6",
     "gray-matter": "^4.0.3",
     "next": "13.4.3",
