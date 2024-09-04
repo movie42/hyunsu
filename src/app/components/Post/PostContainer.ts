@@ -41,7 +41,7 @@ export const PostContainer = styled.div`
 
     p {
       font-size: 1.9rem;
-      line-height: 3.9rem;
+      line-height: 3.2rem;
       word-spacing: -2px;
       padding-bottom: 3rem;
       a {
