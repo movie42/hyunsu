@@ -21,7 +21,7 @@
 			wordCount={data.heroPost.wordCount}
 			href={data.heroPost.href}
 		/>
-		<hr class="max-w-[1080px] mx-auto border-gray-DEFAULT" />
+		<hr class="max-w-[1200px] mx-auto mx-[2.4rem] sm:mx-[4.8rem] border-[rgba(0,0,0,0.08)]" />
 	{/if}
 	{#if data.pastPosts.length > 0}
 		<Section sectionTitle="Past Issues" posts={data.pastPosts} />

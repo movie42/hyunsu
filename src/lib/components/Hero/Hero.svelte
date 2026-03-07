@@ -12,25 +12,25 @@
 	const readingTime = $derived(Math.max(1, Math.round(wordCount / 200)));
 </script>
 
-<section class="py-20 px-8 max-w-[1080px] mx-auto">
-	<div class="flex items-center gap-4 text-[1.5rem] text-sub mb-6">
+<section class="pt-[6.4rem] pb-[4.8rem] px-[2.4rem] sm:px-[4.8rem] max-w-[1200px] mx-auto">
+	<div class="flex items-center gap-[1.6rem] text-[1.4rem] text-gray-dark mb-[3.2rem]">
 		<time>{date}</time>
-		<span class="text-gray-dark">|</span>
+		<span>·</span>
 		{#each tags.slice(0, 3) as tag}
-			<span>{tag}</span>
+			<span class="text-sub">{tag}</span>
 		{/each}
-		<span class="text-gray-dark">|</span>
+		<span>·</span>
 		<span>{readingTime}min read</span>
 	</div>
 	<a {href} class="block no-underline text-inherit group">
 		<h1
-			class="text-[5rem] sm:text-[7rem] font-black text-basic leading-[1.1] mb-8 group-hover:text-hl transition-colors"
-			style="word-break: keep-all;"
+			class="text-[4.8rem] sm:text-[5.6rem] font-semibold text-basic leading-[1.2] mb-[3.2rem] group-hover:text-hl transition-colors"
+			style="word-break: keep-all; letter-spacing: -0.5px;"
 		>
 			{title}
 		</h1>
 		{#if description}
-			<p class="text-[2rem] text-sub leading-[1.6] max-w-[720px] mb-8">
+			<p class="text-[1.8rem] text-[#666] leading-[1.7] max-w-[700px] mb-[3.2rem]">
 				{description}
 			</p>
 		{/if}
