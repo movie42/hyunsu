@@ -2,32 +2,61 @@
 	import type { Snippet } from 'svelte';
 	import TOC from '$lib/components/TOC/TOC.svelte';
 	import Giscus from '$lib/components/Giscus/Giscus.svelte';
+	import PostCard from '$lib/components/Post/PostCard.svelte';
 
+	interface RelatedPost {
+		slug: string;
+		title: string;
+		date: string;
+		tags: string[];
+		description: string;
+		href: string;
+	}
 	interface Props {
 		title: string;
 		date: string;
 		tags: string[];
+		relatedPosts?: RelatedPost[];
 		children: Snippet;
 	}
-	let { title, date, tags, children }: Props = $props();
+	let { title, date, tags, relatedPosts = [], children }: Props = $props();
 </script>
 
 <div class="post-container px-[1.2rem] sm:px-8 max-w-[1080px] mx-auto">
 	<TOC />
-	<div>
-		<div class="flex gap-[1.4rem]">
+	<header class="pt-20 pb-12">
+		<div class="flex items-center gap-4 text-[1.5rem] text-sub mb-6">
+			<time>{date}</time>
+			<span class="text-gray-dark">|</span>
 			{#each tags as tag}
-				<span class="text-[1.6rem]">{tag}</span>
+				<span>{tag}</span>
 			{/each}
 		</div>
-		<span class="text-[1.6rem]">{date}</span>
-		<a href="/" class="block text-hl text-[1.6rem] mt-2">뒤로가기</a>
-	</div>
-	<h1 class="text-hl font-black text-[16rem] max-[450px]:text-[4rem]" style="word-break: keep-all;">{title}</h1>
-	<div class="post-content py-16">
+		<h1 class="text-basic font-black text-[5rem] sm:text-[6rem] leading-[1.1]" style="word-break: keep-all;">{title}</h1>
+		<a href="/" class="inline-block text-hl text-[1.5rem] mt-6 hover:underline">← 홈으로</a>
+	</header>
+	<div class="post-content py-12">
 		{@render children()}
 		<Giscus />
 	</div>
+	{#if relatedPosts.length > 0}
+		<section class="py-16 border-t border-gray-DEFAULT">
+			<h2 class="text-[3rem] font-bold text-basic mb-10">다른 글 더 보기</h2>
+			<ul class="grid grid-cols-1 md:grid-cols-3 gap-6">
+				{#each relatedPosts as post (post.slug)}
+					<li class="border border-gray-DEFAULT rounded-lg overflow-hidden">
+						<PostCard
+							href={post.href}
+							title={post.title}
+							date={post.date}
+							tags={post.tags}
+							description={post.description}
+						/>
+					</li>
+				{/each}
+			</ul>
+		</section>
+	{/if}
 </div>
 
 <style>
@@ -77,8 +106,10 @@
 		border-radius: 0.5rem;
 	}
 	:global(.post-content img) {
-		width: 100%;
-		max-width: 1020px;
+		width: calc(100% + 4rem);
+		max-width: 1120px;
+		margin-left: -2rem;
+		border-radius: 0.8rem;
 	}
 	:global(.post-content ol) {
 		margin-left: 2.2rem;
