@@ -24,22 +24,26 @@
 
 <div class="post-container max-w-[1200px] mx-auto">
 	<TOC />
-	<!-- Dia-style metadata bar -->
-	<header class="px-[2.4rem] sm:px-[4.8rem] pt-[4.8rem] pb-[2.4rem] border-b border-[rgba(0,0,0,0.1)]">
-		<div class="flex items-center justify-between text-[1.4rem] text-[#666]">
-			<div class="flex items-center gap-[1.6rem]">
-				<time>{date}</time>
-				<span>·</span>
-				{#each tags as tag}
-					<span>{tag}</span>
-				{/each}
-			</div>
-			<a href="/" class="text-hl hover:underline">← 홈으로</a>
+	<!-- Metadata bar: 날짜 좌측, 태그 우측 -->
+	<div class="flex items-center justify-between px-[2.4rem] sm:px-[4.8rem] pt-[3.2rem] pb-[1.6rem] text-[1.3rem] text-[#999]">
+		<div class="flex items-center gap-[1.6rem]">
+			<time>{date}</time>
 		</div>
-	</header>
-	<!-- Dia-style centered title -->
+		<div class="flex items-center gap-[1.2rem]">
+			{#each tags as tag}
+				<span>{tag}</span>
+			{/each}
+		</div>
+	</div>
+	<!-- 블로그명 로고 (Dia Weekly 위치) -->
+	<div class="text-center py-[3.2rem]">
+		<a href="/" class="text-[8rem] sm:text-[10rem] font-black text-basic leading-[1] no-underline hover:opacity-80 transition-opacity">현수의 블로그</a>
+	</div>
+	<!-- 구분선 -->
+	<hr class="mx-[2.4rem] sm:mx-[4.8rem] border-[rgba(0,0,0,0.1)]" />
+	<!-- 글 제목: 중앙 정렬 -->
 	<div class="text-center px-[2.4rem] sm:px-[4.8rem] pt-[6.4rem] pb-[4.8rem]">
-		<h1 class="text-basic font-semibold text-[4.8rem] sm:text-[5.6rem] leading-[1.2] max-w-[800px] mx-auto" style="word-break: keep-all; letter-spacing: -0.5px;">{title}</h1>
+		<h1 class="text-basic font-bold text-[4.8rem] sm:text-[5.6rem] leading-[1.2] max-w-[800px] mx-auto" style="word-break: keep-all; letter-spacing: -0.5px;">{title}</h1>
 	</div>
 	<!-- Content body with Dia max-width -->
 	<div class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]">
