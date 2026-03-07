@@ -35,16 +35,12 @@
 			{/each}
 		</div>
 	</div>
-	<!-- 블로그명 로고 (Dia Weekly 위치) -->
-	<div class="text-center py-[3.2rem]">
-		<a href="/" class="text-[8rem] sm:text-[10rem] font-black text-basic leading-[1] no-underline hover:opacity-80 transition-opacity">현수의 블로그</a>
+	<!-- 글 제목: 대형 중앙 정렬 -->
+	<div class="text-center px-[2.4rem] sm:px-[4.8rem] py-[4.8rem]">
+		<h1 class="text-basic font-black text-[6rem] sm:text-[8rem] leading-[1.1] max-w-[900px] mx-auto" style="word-break: keep-all; letter-spacing: -1px;">{title}</h1>
 	</div>
 	<!-- 구분선 -->
 	<hr class="mx-[2.4rem] sm:mx-[4.8rem] border-[rgba(0,0,0,0.1)]" />
-	<!-- 글 제목: 중앙 정렬 -->
-	<div class="text-center px-[2.4rem] sm:px-[4.8rem] pt-[6.4rem] pb-[4.8rem]">
-		<h1 class="text-basic font-bold text-[4.8rem] sm:text-[5.6rem] leading-[1.2] max-w-[800px] mx-auto" style="word-break: keep-all; letter-spacing: -0.5px;">{title}</h1>
-	</div>
 	<!-- Content body with Dia max-width -->
 	<div class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]">
 		{@render children()}
