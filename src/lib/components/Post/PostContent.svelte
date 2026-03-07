@@ -39,8 +39,8 @@
       let lastScrollY = window.scrollY;
       let headerY = 0;
 
-      // 초기 상태: 제목 영역을 헤더 높이만큼 아래로
-      stickyEl.style.top = `${headerH}px `;
+      // 초기 상태: 제목 영역을 헤더 높이만큼 아래로 (-1px로 틈새 제거)
+      stickyEl.style.top = `${headerH - 1}px`;
 
       function onScroll() {
         const currentY = window.scrollY;
@@ -50,7 +50,7 @@
         headerY = Math.max(-headerH, Math.min(0, headerY - delta));
 
         header!.style.transform = `translateY(${headerY}px)`;
-        stickyEl.style.top = `${headerH + headerY}px`;
+        stickyEl.style.top = `${headerH + headerY - 1}px`;
 
         lastScrollY = currentY;
       }
@@ -99,7 +99,7 @@
   <!-- 제목 + 메타 + 구분선: sticky 영역 -->
   <div
     bind:this={stickyEl}
-    class="sticky top-0 z-[1040] bg-bg/80 backdrop-blur-md"
+    class="sticky -top-px z-[1040] bg-bg/80 backdrop-blur-[20px]"
   >
     <!-- 글 제목: 대형 중앙 정렬, 스크롤 시 축소 -->
     <div class="flex justify-center px-[2.4rem] sm:px-[4.8rem] py-[1.6rem]">
