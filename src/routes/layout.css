@@ -24,40 +24,40 @@
 	--color-border: rgba(0,0,0,0.06);
 }
 
-html, body {
-	font-family: 'SUIT Variable', "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-	font-size: 10px;
-	background-color: var(--color-bg);
-}
+@layer base {
+	html, body {
+		font-family: 'SUIT Variable', "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+		font-size: 10px;
+		background-color: var(--color-bg);
+	}
 
-html, body, a, ul, ol, table, thead, tbody,
-th, tr, td, li, a, h1, h2, h3, h4, h5, h6, p,
-form, input, select, label, pre, code {
-	margin: 0;
-	padding: 0;
-}
+	html, body, a, ul, ol, table, thead, tbody,
+	th, tr, td, li, a, h1, h2, h3, h4, h5, h6, p,
+	form, input, select, label, pre, code {
+		margin: 0;
+		padding: 0;
+	}
 
+	a {
+		text-decoration: none;
+		color: black;
+	}
 
+	ul, li {
+		list-style: none;
+	}
 
-a {
-	text-decoration: none;
-	color: black;
-}
+	h1, h2, h3, h4, h5, h6 {
+		word-spacing: -0.3rem;
+		word-break: keep-all;
+		letter-spacing: -0.02em;
+	}
 
-ul, li {
-	list-style: none;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	word-spacing: -0.3rem;
-	word-break: keep-all;
-	letter-spacing: -0.02em;
-}
-
-p, ul, ol, li, blockquote, span, a {
-	word-spacing: -0.04rem;
-	word-break: keep-all;
-	letter-spacing: -0.01em;
+	p, ul, ol, li, blockquote, span, a {
+		word-spacing: -0.04rem;
+		word-break: keep-all;
+		letter-spacing: -0.01em;
+	}
 }
 
 /* Scroll & load animations */

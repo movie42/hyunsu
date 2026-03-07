@@ -134,7 +134,10 @@
     class="sticky -top-px z-[1040] bg-bg/80 backdrop-blur-[20px]"
   >
     <!-- 글 제목: 대형 중앙 정렬, 스크롤 시 축소 -->
-    <div bind:this={titleWrapEl} class="flex justify-center px-[2.4rem] sm:px-[4.8rem] py-[1.6rem] overflow-hidden">
+    <div
+      bind:this={titleWrapEl}
+      class="flex justify-center px-[2.4rem] sm:px-[4.8rem] py-[1.6rem] overflow-hidden"
+    >
       <h1
         bind:this={titleEl}
         class="text-basic font-black leading-[1.1] max-w-[900px]"
@@ -160,7 +163,10 @@
     <hr class="border-border" />
   </div>
   <!-- Content body -->
-  <div bind:this={contentEl} class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]">
+  <div
+    bind:this={contentEl}
+    class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]"
+  >
     {@render children()}
     <Giscus />
   </div>
@@ -281,7 +287,9 @@
     font-size: 1.8rem;
     line-height: 1.7;
     color: var(--color-basic);
-    text-align: center;
+    background-color: var(--color-white);
+    padding: 1.6rem;
+    border-radius: 1.2rem;
   }
   :global(.post-content blockquote p) {
     margin: 0;

@@ -17,9 +17,7 @@
   let { sectionTitle, posts }: Props = $props();
 </script>
 
-<section
-  class="max-w-[1200px] mx-auto px-[2.4rem] sm:px-[4.8rem] pt-[4.8rem] pb-[6.4rem] border-t-[2px] border-border"
->
+<section class="mx-auto px-[2.4rem] sm:px-[4.8rem]pb-[6.4rem]">
   <h2 use:reveal class="text-[3.2rem] font-bold text-basic mb-[3.2rem]">
     {sectionTitle}
   </h2>
