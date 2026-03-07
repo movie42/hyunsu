@@ -145,28 +145,19 @@
 		padding-left: 1.2rem;
 	}
 	:global(.post-content blockquote) {
-		position: relative;
 		word-break: keep-all;
-		margin: 3.2rem 0;
-		padding: 2rem 3.2rem;
-		border-radius: 1.2rem;
-		background-color: rgba(0,0,0,0.02);
+		margin: 1.2rem 0 2.4rem;
+		padding: 0;
+		background: none;
+		border: none;
+		font-style: italic;
+		font-size: 1.8rem;
+		line-height: 1.7;
+		color: var(--color-basic);
 	}
 	:global(.post-content blockquote p) {
 		margin: 0;
-	}
-	:global(.post-content blockquote::after) {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 0.4rem;
-		height: 100%;
-		border-radius: 1.2rem 0 0 1.2rem;
-		background-color: var(--color-comp);
-		content: '';
-	}
-	:global(.post-content p + blockquote) {
-		margin-top: 0;
+		font-style: italic;
 	}
 	:global(.post-content pre) {
 		padding: 2.4rem;
