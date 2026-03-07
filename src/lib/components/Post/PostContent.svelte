@@ -133,6 +133,18 @@
 	:global(.post-content p + blockquote) {
 		margin-top: 0;
 	}
+	:global(.post-content pre) {
+		padding: 2rem;
+		border-radius: 0.8rem;
+		overflow-x: auto;
+		margin-bottom: 3rem;
+		line-height: 1.7;
+	}
+	:global(.post-content pre code) {
+		background-color: transparent;
+		padding: 0;
+		color: inherit;
+	}
 	:global(.post-content code) {
 		font-size: 1.6rem;
 		letter-spacing: -0.01rem;

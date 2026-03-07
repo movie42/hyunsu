@@ -1,4 +1,4 @@
-import { getAllPosts, getPostBySlug, getCategory, renderMarkdown } from '$lib/server/posts';
+import { getAllPosts, getPostBySlug, getCategory } from '$lib/server/posts';
 import { error } from '@sveltejs/kit';
 
 export function entries() {
@@ -15,14 +15,12 @@ export async function load({ params }) {
 		error(404, '페이지를 찾을 수 없습니다.');
 	}
 
-	const html = await renderMarkdown(post.content);
-
 	return {
 		title: post.title,
 		date: post.date,
 		tags: post.tags,
-		content: html,
 		slug: post.slug,
+		filePath: post.filePath,
 		description: post.content.slice(0, 100) + '...'
 	};
 }

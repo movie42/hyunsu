@@ -2,6 +2,9 @@
 	import PostContent from '$lib/components/Post/PostContent.svelte';
 
 	let { data } = $props();
+
+	const modules = import.meta.glob('/src/content/markdown-pages/**/*.{mdx,md}', { eager: true }) as Record<string, any>;
+	let Content = $derived(modules[data.filePath]?.default);
 </script>
 
 <svelte:head>
@@ -11,5 +14,7 @@
 </svelte:head>
 
 <PostContent title={data.title} date={data.date} tags={data.tags}>
-	{@html data.content}
+	{#if Content}
+		<Content />
+	{/if}
 </PostContent>

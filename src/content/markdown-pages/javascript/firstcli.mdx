@@ -1,4 +1,5 @@
 ---
+slug: "/javascript/firstcli"
 date: "2024-03-15"
 title: "나의 첫 cli 툴"
 tags: ["node", "cli", "programming"]
@@ -46,7 +47,7 @@ const { spawn } = require("child_process");
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 const packages = ["A", "B"];
@@ -75,9 +76,14 @@ const runCommand = (workspace, package, env) => {
   const scriptMap = {
     dev: "start:dev",
     staging: "start:staging",
-    production: "start:prod"
+    production: "start:prod",
   };
-  const args = [`workspace`, `@${workspace}/${package}`, `run`, `${scriptMap[env]}`];
+  const args = [
+    `workspace`,
+    `@${workspace}/${package}`,
+    `run`,
+    `${scriptMap[env]}`,
+  ];
 
   console.log(`Executing: yarn ${args.join(" ")}`);
 
@@ -274,7 +280,6 @@ npm init
 GPT가 언젠가는 내 일자리를 위협하는 날이 오겠지만 지금은 잘 활용하면 개발을 빠르게 잘 할 수 있는 시대가 온 것 같다.
 
 - 이번 글에서 사용된 코드 레포다 [monorepo-cli](https://github.com/movie42/monorepo-cli) 아직 부족한 점이 많다. 개선사항을 todo로 적어놓는다.
-
   - [x] install / uninstall package
   - [ ] build / test script
   - [ ] git commit (이런건 많을 것 같은데...)

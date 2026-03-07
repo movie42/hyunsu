@@ -2,13 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import dayjs from 'dayjs';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
-import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeStringify from 'rehype-stringify';
 
 const POST_PATH = path.join(process.cwd(), 'src/content/markdown-pages');
 
@@ -23,6 +16,7 @@ export interface PostMatter {
 export interface Post extends PostMatter {
 	slug: string;
 	content: string;
+	filePath: string;
 	wordCount: number;
 }
 
@@ -40,14 +34,15 @@ function globMdx(dir: string): string[] {
 	return results;
 }
 
-export function getPost(filePath: string): Post | undefined {
-	const file = fs.readFileSync(filePath, { encoding: 'utf8' });
+export function getPost(absPath: string): Post | undefined {
+	const file = fs.readFileSync(absPath, { encoding: 'utf8' });
 	const { content, data } = matter(file);
 	const grayMatter = data as PostMatter;
 
 	if (grayMatter.draft) return undefined;
 
-	const slug = path.basename(filePath).replace(/\.(mdx|md)$/, '');
+	const slug = path.basename(absPath).replace(/\.(mdx|md)$/, '');
+	const relativePath = '/src/content/markdown-pages/' + path.relative(POST_PATH, absPath);
 
 	return {
 		...grayMatter,
@@ -55,6 +50,7 @@ export function getPost(filePath: string): Post | undefined {
 		date: dayjs(grayMatter.date).format('YYYY-MM-DD'),
 		content,
 		slug,
+		filePath: relativePath,
 		wordCount: content.split(/\s+/gu).length
 	};
 }
@@ -90,17 +86,4 @@ export function getCategory(tags: string[]): 'etc' | 'movie' | 'programming' {
 	if (tags.includes('etc')) return 'etc';
 	if (tags.includes('movie')) return 'movie';
 	return 'programming';
-}
-
-const processor = unified()
-	.use(remarkParse)
-	.use(remarkGfm)
-	.use(remarkRehype, { allowDangerousHtml: true })
-	.use(rehypeSlug)
-	.use(rehypeAutolinkHeadings)
-	.use(rehypeStringify, { allowDangerousHtml: true });
-
-export async function renderMarkdown(content: string): Promise<string> {
-	const result = await processor.process(content);
-	return String(result);
 }

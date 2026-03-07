@@ -5,68 +5,87 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-yarn dev          # Dev server (NODE_ENV=develop)
-yarn build        # Production build
-yarn start        # Start production server
-yarn lint         # ESLint
+bun dev           # Dev server (vite dev)
+bun run build     # Production build (vite build)
+bun run preview   # Preview production build
+bun run check     # svelte-kit sync + svelte-check
 ```
 
 ## Architecture
 
-Next.js 13.4 App Router blog with TypeScript, styled-components, and MDX content.
+SvelteKit blog with Svelte 5, TypeScript, Tailwind CSS 4, and mdsvex for MDX content.
 
 ### Content Pipeline
 
-Blog posts are MDX files in `src/app/markdown-pages/[topic]/` with gray-matter frontmatter:
+Blog posts are MDX/MD files in `src/content/markdown-pages/[topic]/` with gray-matter frontmatter:
 
 ```yaml
-slug: "/post-name"
-date: "YYYY-MM-DD"
 title: "Post Title"
+date: "YYYY-MM-DD"
 tags: ["javascript", "react"] # Tags determine routing category
 draft: false # Optional, hides post when true
 ```
 
-**Post resolution flow:** `getAllPosts()` globs all `.mdx` files → `getPost()` parses each with gray-matter → `getData()` finds by slug → rendered via `next-mdx-remote` (RSC).
+**Post resolution flow:** `getAllPosts()` recursively globs `.mdx`/`.md` files → `getPost()` parses each with gray-matter → slug derived from filename → sorted by date descending.
+
+- Posts module: `src/lib/server/posts.ts`
+- MDX preprocessing: `mdsvex` in `svelte.config.js` with remark-gfm + rehype-slug
+- MDX layout wrapper: `src/lib/components/mdsvex/Layout.svelte`
 
 ### Routing & Categories
 
-Posts route to one of three categories based on tags (see `src/app/libs/generateUrl.ts`):
+Posts route to one of three categories based on tags (see `generateUrl()` in `src/lib/server/posts.ts`):
 
 - Tags include "etc" → `/posts/etc/[slug]`
 - Tags include "movie" → `/posts/movie/[slug]`
 - Everything else → `/posts/programming/[slug]`
 
-All three `[slug]/page.tsx` files share the same pattern: `getData()` → `<DynamicPostContent>`.
+Each category has `+page.server.ts` (list) and `[...slug]/+page.server.ts` (detail).
 
 ### Styling
 
-- **styled-components 6 (RC)** with SSR via `StyledComponentsRegistry` (`src/app/libs/registry.tsx`)
-- Theme defined in `src/app/styles/theme.ts` — accessed via `${props => props.theme.hlColor}` pattern
-- `Providers.tsx` wraps app with `ThemeProvider` + `StyledComponentsRegistry`
-- Path alias: `@/*` maps to `./src/*`
+- **Tailwind CSS 4** with `@tailwindcss/typography` plugin
+- Global styles in `src/routes/layout.css`
+- No styled-components (removed during migration)
 
-### MDX Components
+### Components
 
-Custom component mappings in `src/app/mdxComponets.tsx`:
+Svelte 5 components using `$props()` runes in `src/lib/components/`:
 
-- Code blocks use **Bright** library with `github-dark-dimmed` theme, line numbers, and extensions (focus, collapse, file icons)
-- Links converted to Next.js `<Link>`
-- Custom components available in MDX: `Quotation`, `Canvas`, `Tabs`, `ImageComment`, `TestContainer`
+- `Header/` — site header + navigation
+- `Nav/` — navigation links
+- `Post/PostCard.svelte` — post list card
+- `Post/PostContent.svelte` — post detail view
+- `TOC/` — table of contents
+- `Giscus/` — GitHub Discussions comments
+- `Quotation/`, `Canvas/`, `ImageComment/` — custom MDX components
+- `Section/` — section wrapper
 
 ### Key Libraries
 
-- `bright` for code syntax highlighting (not react-syntax-highlighter, which is also installed but Bright is primary)
-- `framer-motion` for animations
-- `giscus` for GitHub Discussions-based comments
+- `mdsvex` for MDX/MD preprocessing in Svelte
+- `gray-matter` for frontmatter parsing
+- `unified` + `remark-*` + `rehype-*` for markdown processing
 - `dayjs` for date formatting
+- `giscus` for GitHub Discussions-based comments
+
+### Aliases
+
+- `$lib` → `src/lib/` (SvelteKit default)
+- `$content` → `src/content/` (custom alias in svelte.config.js)
+
+### Deployment
+
+- Adapter: `@sveltejs/adapter-auto` (Vercel)
+- Prerender with `handleHttpError: 'warn'`
+- `+layout.server.ts` exports `prerender = true`
 
 ## 계획 문서 관리 규칙
 
 **CRITICAL**: 모든 계획 문서(PRD, 기능 계획, 리팩토링 계획 등)는 **반드시** 프로젝트 경로에 있는 `.claude/plans/` 폴더에 `.md` 파일로 저장하세요.
 **절대 다른 경로(루트, apps/, docs/ 등)에 계획 문서를 생성하지 마세요.**
 
-- 계쇡 문서 작성하고 바로 구현 금지 사용자에게 계획을 검토하고 구현 계획 승인되면 구현 시작하기.
+- 계획 문서 작성하고 바로 구현 금지 사용자에게 계획을 검토하고 구현 계획 승인되면 구현 시작하기.
 - 완료하면 todo check와 완료한 내용 기록하기
   - 어떤 파일을 변경했나.
   - 핵심 변경은 무엇인가?
