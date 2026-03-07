@@ -13,7 +13,7 @@
 	<link rel="canonical" href="https://hyunsu.info/posts/etc/{data.slug}" />
 </svelte:head>
 
-<PostContent title={data.title} date={data.date} tags={data.tags}>
+<PostContent title={data.title} date={data.date} tags={data.tags} relatedPosts={data.relatedPosts}>
 	{#if Content}
 		<Content />
 	{/if}

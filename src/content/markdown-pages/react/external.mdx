@@ -29,7 +29,8 @@ POS나 테이블 오더 같은 기기들의 옵션을 관리하는 어드민과 
 
 ```tsx
 const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
-  const isDisabled = (!isCreator && !isWritePermission) || todoItem.creator !== userId;
+  const isDisabled =
+    (!isCreator && !isWritePermission) || todoItem.creator !== userId;
 
   const handleEdit = () => {
     if (!(isCreator || isWritePermission) || todoItem.creator !== userId) {
@@ -56,16 +57,10 @@ const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
         <TodoTitle>{todoItem.title}</TodoTitle>
         <TodoDate>{todoItem.updatedAt}</TodoDate>
         <TodoStatus onClick={handlStatus}>{todoItem.todoStatus}</TodoStatus>
-        <EditButton
-          onClick={handleEdit}
-          disabled={isDisabled}
-        >
+        <EditButton onClick={handleEdit} disabled={isDisabled}>
           수정
         </EditButton>
-        <DeleteButton
-          onClick={handleDelete}
-          disabled={isDisabled}
-        >
+        <DeleteButton onClick={handleDelete} disabled={isDisabled}>
           삭제
         </DeleteButton>
       </TodoRow>
@@ -97,17 +92,28 @@ todoItem의 생상자와 아이디가 다르면 수정, 삭제를 할 수 없다
 
 ```tsx
 const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
-  const isDisabled = !!todoItem?.external || (!isCreator && !isWritePermission) || todoItem.creator !== userId;
+  const isDisabled =
+    !!todoItem?.external ||
+    (!isCreator && !isWritePermission) ||
+    todoItem.creator !== userId;
 
   const handleEdit = () => {
-    if (!!todoItem?.external || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+    if (
+      !!todoItem?.external ||
+      !(isCreator || isWritePermission) ||
+      todoItem.creator !== userId
+    ) {
       return;
     }
 
     // 실행
   };
   const handleDelete = () => {
-    if (!!todoItem?.external || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+    if (
+      !!todoItem?.external ||
+      !(isCreator || isWritePermission) ||
+      todoItem.creator !== userId
+    ) {
       return;
     }
     // 실행
@@ -130,19 +136,15 @@ const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
         <TodoTitle>{todoItem.title}</TodoTitle>
         <TodoDate>{todoItem.updatedAt}</TodoDate>
         <TodoStatus onClick={handlStatus}>{todoItem.todoStatus}</TodoStatus>
-        <EditButton
-          onClick={handleEdit}
-          disabled={isDisabled}
-        >
+        <EditButton onClick={handleEdit} disabled={isDisabled}>
           수정
         </EditButton>
-        <DeleteButton
-          onClick={handleDelete}
-          disabled={isDisabled}
-        >
+        <DeleteButton onClick={handleDelete} disabled={isDisabled}>
           삭제
         </DeleteButton>
-        {todoItem?.external ? <LikeButton onClick={handleLikeButton}>{todoItem?.like}</LikeButton> : null}
+        {todoItem?.external ? (
+          <LikeButton onClick={handleLikeButton}>{todoItem?.like}</LikeButton>
+        ) : null}
       </TodoRow>
     </TodoContainer>
   );
@@ -151,7 +153,7 @@ const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
 
 팀장님이 코드를 보고 이렇게 코멘트를 해준다.
 
-> "외부 연동이 아마 더 많아 질겁니다. 지금은 급하니까 승인 해드릴께요. 외부 연동을 관리할 수 있는 방안을 생각해보세요."
+> "외부 연동이 아마 더 많아 질겁니다. 외부 연동을 관리할 수 있는 방안을 생각해보세요."
 
 일단 승인 받았으니까 나중에 생각해보기로 한다. 이 코드의 문제는 현재는 잘 모를 수도 있다. 어차피 조건이 하나 더 추가되는 것이니까.
 
@@ -166,25 +168,38 @@ external을 구분해야한다. 그래서 서버에서 enum을 내려주기로 �
 
 ```tsx
 const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
-  const isDisabled = (!isCreator && !isWritePermission) || todoItem.creator !== userId;
+  const isDisabled =
+    (!isCreator && !isWritePermission) || todoItem.creator !== userId;
   const isNoteDisabled = todoItem?.external === "NOTE" || isDisabled;
   const isRoadDisabled = todoItem?.external === "ROAD" || isDisabled;
 
   const handleEdit = () => {
-    if (todoItem?.external === "NOTE" || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+    if (
+      todoItem?.external === "NOTE" ||
+      !(isCreator || isWritePermission) ||
+      todoItem.creator !== userId
+    ) {
       return;
     }
 
     // 실행
   };
   const handleDelete = () => {
-    if (!!todoItem?.external || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+    if (
+      !!todoItem?.external ||
+      !(isCreator || isWritePermission) ||
+      todoItem.creator !== userId
+    ) {
       return;
     }
     // 실행
   };
   const handlStatus = () => {
-    if (todoItem?.external === "ROAD" || !(isCreator || isWritePermission) || todoItem.creator !== userId) {
+    if (
+      todoItem?.external === "ROAD" ||
+      !(isCreator || isWritePermission) ||
+      todoItem.creator !== userId
+    ) {
       return;
     }
     // 실행
@@ -198,7 +213,9 @@ const TodoListItem = ({ isCreator, isWritePermission, todoItem, userId }) => {
   return (
     <>
       // 중략
-      {todoItem?.external === "NOTE" ? <LikeButton onClick={handleLikeButton}>{todoItem?.like}</LikeButton> : null}
+      {todoItem?.external === "NOTE" ? (
+        <LikeButton onClick={handleLikeButton}>{todoItem?.like}</LikeButton>
+      ) : null}
     </>
   );
 };
@@ -235,23 +252,23 @@ const External: ExternalProps[] = [
   {
     name: "노트 읽기 제한",
     modifier: "NOT_ALLOWED_READ_NOTE",
-    blackList: []
+    blackList: [],
   },
   {
     name: "노트 쓰기 제한",
     modifier: "NOT_ALLOWED_CREATE_NOTE",
-    blackList: ["NOTE"]
+    blackList: ["NOTE"],
   },
   {
     name: "노트 수정 제한",
     modifier: "NOT_ALLOWED_UPDATE_NOTE",
-    blackList: []
+    blackList: [],
   },
   {
     name: "노트 삭제 제한",
     modifier: "NOT_ALLOWED_DELETE_NOTE",
-    blackList: []
-  }
+    blackList: [],
+  },
 ];
 ```
 
@@ -404,7 +421,7 @@ describe("", () => {
     render(
       <TestProvider>
         <MyComponent />
-      </TestProvider>
+      </TestProvider>,
     );
     const button = screen.getById("test-button");
     expect(button).toBeInTheDocument("수정");
