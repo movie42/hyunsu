@@ -154,6 +154,7 @@
 		font-size: 1.8rem;
 		line-height: 1.7;
 		color: var(--color-basic);
+		text-align: center;
 	}
 	:global(.post-content blockquote p) {
 		margin: 0;
