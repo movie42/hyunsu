@@ -9,9 +9,9 @@
 
 ### TODO
 
-- [ ] 1-1. `src/routes/layout.css` 컬러 팔레트 변경
-- [ ] 1-2. 폰트 사이즈/웨이트 시스템 조정
-- [ ] 1-3. 여백 시스템 업데이트 (섹션 간 48-80px)
+- [x] 1-1. `src/routes/layout.css` 컬러 팔레트 변경
+- [x] 1-2. 폰트 사이즈/웨이트 시스템 조정
+- [x] 1-3. 여백 시스템 업데이트 (섹션 간 48-80px)
 
 ### 상세
 
@@ -39,12 +39,12 @@
 
 ### TODO
 
-- [ ] 2-1. `src/routes/+page.server.ts` - 최신 글 1개 + 나머지 분리 로딩
-- [ ] 2-2. Hero 컴포넌트 신규 작성 (`src/lib/components/Hero/Hero.svelte`)
-- [ ] 2-3. `src/lib/components/Post/PostCard.svelte` 리디자인 (카드 그리드 스타일)
-- [ ] 2-4. `src/lib/components/Section/Section.svelte` 리디자인 (Past Issues 그리드)
-- [ ] 2-5. `src/lib/components/Nav/Nav.svelte` 디자인 세련화
-- [ ] 2-6. `src/routes/+page.svelte` 전체 레이아웃 재구성
+- [x] 2-1. `src/routes/+page.server.ts` - 최신 글 1개 + 나머지 분리 로딩
+- [x] 2-2. Hero 컴포넌트 신규 작성 (`src/lib/components/Hero/Hero.svelte`)
+- [x] 2-3. `src/lib/components/Post/PostCard.svelte` 리디자인 (카드 그리드 스타일)
+- [x] 2-4. `src/lib/components/Section/Section.svelte` 리디자인 (Past Issues 그리드)
+- [x] 2-5. `src/lib/components/Nav/Nav.svelte` 디자인 세련화
+- [x] 2-6. `src/routes/+page.svelte` 전체 레이아웃 재구성
 
 ### 상세
 
@@ -99,12 +99,12 @@ return {
 
 ### TODO
 
-- [ ] 3-1. `src/lib/components/Post/PostContent.svelte` - Hero 헤더 영역 리디자인
-- [ ] 3-2. 본문 타이포그래피/여백 업데이트
-- [ ] 3-3. 이미지 와이드 표시 스타일링
-- [ ] 3-4. 하단 "Past Issues" 관련 글 섹션 추가
-- [ ] 3-5. 상세 페이지 `[...slug]/+page.server.ts` - 관련 글 데이터 추가
-- [ ] 3-6. TOC 스타일 업데이트
+- [x] 3-1. `src/lib/components/Post/PostContent.svelte` - Hero 헤더 영역 리디자인
+- [x] 3-2. 본문 타이포그래피/여백 업데이트
+- [x] 3-3. 이미지 와이드 표시 스타일링
+- [x] 3-4. 하단 "Past Issues" 관련 글 섹션 추가
+- [x] 3-5. 상세 페이지 `[...slug]/+page.server.ts` - 관련 글 데이터 추가
+- [x] 3-6. TOC 스타일 업데이트
 
 ### 상세
 
@@ -153,11 +153,11 @@ return { ...postData, relatedPosts };
 
 ### TODO
 
-- [ ] 4-1. `+layout.svelte` 전체 배경색 적용
-- [ ] 4-2. Header 스타일 업데이트 (Dia 스타일 헤더)
-- [ ] 4-3. Footer 컴포넌트 추가 (선택)
-- [ ] 4-4. 카테고리 리스트 페이지 (`/posts/programming/` 등) 리디자인
-- [ ] 4-5. MDX frontmatter에 `description` 필드 활용 확인
+- [x] 4-1. `+layout.svelte` 전체 배경색 적용 (layout.css body에 적용)
+- [x] 4-2. Header 스타일 업데이트 (배경색 bg/80으로 통일)
+- [ ] 4-3. Footer 컴포넌트 추가 (선택 - 미구현)
+- [x] 4-4. 카테고리 리스트 페이지 description 데이터 추가
+- [x] 4-5. MDX frontmatter `description` 필드 활용 (Hero, PostCard, 관련글에서 표시)
 
 ### 상세
 
