@@ -34,27 +34,27 @@
 	:global(.post-content h1) {
 		color: var(--color-hl);
 		font-size: 4.2rem;
-		font-weight: 800;
+		font-weight: 900;
 		word-spacing: -2px;
-		margin: 2rem 0;
+		margin: 4rem 0 2rem;
 	}
 	:global(.post-content h2) {
 		font-size: 3.5rem;
-		font-weight: 700;
+		font-weight: 800;
 		word-spacing: -2px;
-		margin: 2rem 0;
+		margin: 4rem 0 2rem;
 	}
 	:global(.post-content h3) {
 		font-size: 3rem;
 		font-weight: 700;
 		word-spacing: -2px;
-		margin: 2rem 0;
+		margin: 3rem 0 1.5rem;
 	}
 	:global(.post-content h4) {
 		font-size: 2.5rem;
 		font-weight: 700;
 		word-spacing: -2px;
-		margin: 2rem 0;
+		margin: 3rem 0 1.5rem;
 	}
 	:global(.post-content a) {
 		display: block;
@@ -114,8 +114,8 @@
 		word-break: keep-all;
 		margin: 3rem 1.2rem;
 		padding: 1rem 4rem;
-		border-radius: 0.2rem;
-		background-color: var(--color-gray-light);
+		border-radius: 0.6rem;
+		background-color: var(--color-cream);
 	}
 	:global(.post-content blockquote p) {
 		margin: 0;
@@ -127,7 +127,8 @@
 		left: 0;
 		width: 0.8rem;
 		height: 100%;
-		background-color: var(--color-hl-light);
+		border-radius: 0.6rem 0 0 0.6rem;
+		background-color: var(--color-comp);
 		content: '';
 	}
 	:global(.post-content p + blockquote) {

@@ -60,7 +60,7 @@
 			<li style="margin-left: {(item.level - 1) * 1.2}rem">
 				<a
 					href="#{item.id}"
-					class="text-[1.4rem] p-2 {currentId === item.id ? 'bg-hl2 text-white' : 'text-gray-dark'}"
+					class="text-[1.4rem] p-2 rounded-sm {currentId === item.id ? 'bg-hl text-white' : 'text-gray-dark'}"
 					onclick={() => handleClick(item.id)}
 				>
 					{item.text}

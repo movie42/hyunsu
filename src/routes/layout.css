@@ -2,24 +2,28 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-	--color-basic: #303030;
+	--color-basic: #1a1a2e;
 	--color-gray-DEFAULT: #E0E0E0;
 	--color-gray-light: #F7F7F7;
 	--color-gray-dark: #C2C2C2;
 	--color-white: #ffffff;
-	--color-hl: #1352ED;
-	--color-hl-dark: #0D37A1;
-	--color-hl-light: #1464FF;
-	--color-sub: #4C3BFA;
-	--color-sub-dark: #6A51FF;
-	--color-sub-light: #41209E;
-	--color-comp: #FA4200;
-	--color-hl2: #ff0000;
+	--color-bg: #faf9f6;
+	--color-cream: #fcf4c4;
+	--color-hl: #2c34fc;
+	--color-hl-dark: #1e24b0;
+	--color-hl-light: #395699;
+	--color-sub: #607caa;
+	--color-sub-dark: #4a6289;
+	--color-sub-light: #8ba3c7;
+	--color-comp: #e28b33;
+	--color-comp-light: #f2a25c;
+	--color-hl2: #2c34fc;
 }
 
 html, body {
 	font-family: 'SUIT Variable', "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 	font-size: 10px;
+	background-color: var(--color-bg);
 }
 
 html, body, a, ul, ol, table, thead, tbody,
@@ -41,4 +45,5 @@ ul, li {
 h1, h2, h3, h4, h5, h6, p {
 	word-spacing: -0.3rem;
 	word-break: keep-all;
+	letter-spacing: -0.02em;
 }
