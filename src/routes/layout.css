@@ -2,22 +2,26 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-	--color-basic: #1a1a2e;
+	--color-basic: #40362e;
+	--color-basic-dark: #1a1a2e;
+	--color-muted: #8f775d;
 	--color-gray-DEFAULT: #E0E0E0;
 	--color-gray-light: #F7F7F7;
 	--color-gray-dark: #C2C2C2;
 	--color-white: #ffffff;
 	--color-bg: #faf9f6;
-	--color-cream: #fcf4c4;
+	--color-cream: #fcf8f1;
 	--color-hl: #2c34fc;
 	--color-hl-dark: #1e24b0;
 	--color-hl-light: #395699;
 	--color-sub: #607caa;
 	--color-sub-dark: #4a6289;
 	--color-sub-light: #8ba3c7;
-	--color-comp: #e28b33;
+	--color-comp: #f2a25c;
 	--color-comp-light: #f2a25c;
 	--color-hl2: #2c34fc;
+	--color-dark-bg: #1c2c67;
+	--color-border: rgba(0,0,0,0.06);
 }
 
 html, body {
@@ -47,3 +51,19 @@ h1, h2, h3, h4, h5, h6, p {
 	word-break: keep-all;
 	letter-spacing: -0.02em;
 }
+
+/* Scroll & load animations */
+@keyframes fadeInUp {
+	from { opacity: 0; transform: translateY(24px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+	opacity: 0;
+	animation: fadeInUp 0.6s ease forwards;
+}
+
+.anim-delay-1 { animation-delay: 100ms; }
+.anim-delay-2 { animation-delay: 200ms; }
+.anim-delay-3 { animation-delay: 300ms; }
+.anim-delay-4 { animation-delay: 400ms; }

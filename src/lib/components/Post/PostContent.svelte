@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { onMount } from 'svelte';
 	import Giscus from '$lib/components/Giscus/Giscus.svelte';
 	import PostCard from '$lib/components/Post/PostCard.svelte';
+	import { reveal } from '$lib/actions/reveal';
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 	interface RelatedPost {
 		slug: string;
@@ -19,37 +23,95 @@
 		children: Snippet;
 	}
 	let { title, date, tags, relatedPosts = [], children }: Props = $props();
+
+	let containerEl: HTMLDivElement;
+	let stickyEl: HTMLDivElement;
+	let titleEl: HTMLHeadingElement;
+
+	onMount(() => {
+		gsap.registerPlugin(ScrollTrigger);
+
+		// Header: 스크롤에 비례해서 위로 밀려남
+		const header = document.querySelector("header");
+		if (header) {
+			const headerH = header.offsetHeight;
+
+			gsap.to(header, {
+				y: -headerH,
+				ease: "none",
+				scrollTrigger: {
+					trigger: containerEl,
+					start: "top top",
+					end: `+=${headerH}`,
+					scrub: true,
+				},
+			});
+		}
+
+		// Title: 스크롤에 비례해서 8rem → 3rem 축소
+		gsap.to(titleEl, {
+			fontSize: "3rem",
+			ease: "none",
+			scrollTrigger: {
+				trigger: containerEl,
+				start: "top top",
+				end: "+=300",
+				scrub: true,
+			},
+		});
+
+		return () => {
+			ScrollTrigger.getAll().forEach((t) => t.kill());
+		};
+	});
 </script>
 
-<div class="post-container max-w-[1200px] mx-auto">
-	<!-- Metadata bar: 날짜 좌측, 태그 우측 -->
-	<div class="flex items-center justify-between px-[2.4rem] sm:px-[4.8rem] pt-[3.2rem] pb-[1.6rem] text-[1.3rem] text-[#999]">
-		<div class="flex items-center gap-[1.6rem]">
-			<time>{date}</time>
+<div bind:this={containerEl} class="post-container mx-auto">
+	<!-- 제목 + 메타 + 구분선: sticky 영역 -->
+	<div
+		bind:this={stickyEl}
+		class="sticky top-0 z-[1040] bg-bg/95 backdrop-blur-md"
+	>
+		<!-- 글 제목: 대형 중앙 정렬, 스크롤 시 축소 -->
+		<div class="flex justify-center px-[2.4rem] sm:px-[4.8rem] py-[1.6rem]">
+			<h1
+				bind:this={titleEl}
+				class="text-basic font-black leading-[1.1] max-w-[900px]"
+				style="word-break: keep-all; letter-spacing: -1px; text-align: center; font-size: 8rem;"
+			>
+				{title}
+			</h1>
 		</div>
-		<div class="flex items-center gap-[1.2rem]">
-			{#each tags as tag}
-				<span>{tag}</span>
-			{/each}
+		<!-- Metadata bar -->
+		<div
+			class="flex items-center justify-between px-[2.4rem] sm:px-[4.8rem] pb-[1.2rem] text-[1.3rem] text-muted"
+		>
+			<div class="flex items-center gap-[1.6rem]">
+				<time>{date}</time>
+			</div>
+			<div class="flex items-center gap-[1.2rem]">
+				{#each tags as tag}
+					<span>{tag}</span>
+				{/each}
+			</div>
 		</div>
+		<!-- 구분선 -->
+		<hr class="border-border" />
 	</div>
-	<!-- 글 제목: 대형 중앙 정렬 -->
-	<div class="text-center px-[2.4rem] sm:px-[4.8rem] py-[4.8rem]">
-		<h1 class="text-basic font-black text-[6rem] sm:text-[8rem] leading-[1.1] max-w-[900px] mx-auto" style="word-break: keep-all; letter-spacing: -1px; text-align: center;">{title}</h1>
-	</div>
-	<!-- 구분선 -->
-	<hr class="mx-[2.4rem] sm:mx-[4.8rem] border-[rgba(0,0,0,0.1)]" />
-	<!-- Content body with Dia max-width -->
+	<!-- Content body -->
 	<div class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]">
 		{@render children()}
 		<Giscus />
 	</div>
 	{#if relatedPosts.length > 0}
-		<section class="px-[2.4rem] sm:px-[4.8rem] pt-[4.8rem] pb-[9.6rem] border-t-[2px] border-[rgba(0,0,0,0.1)]">
-			<h2 class="text-[3.2rem] font-bold text-basic mb-[3.2rem]">다른 글 더 보기</h2>
+		<section class="px-[2.4rem] sm:px-[4.8rem] pt-[4.8rem] pb-[9.6rem] border-t-2 border-border">
+			<h2 use:reveal class="text-[3.2rem] font-bold text-basic mb-[3.2rem]">다른 글 더 보기</h2>
 			<ul class="grid grid-cols-1 md:grid-cols-3 gap-[2.4rem]">
-				{#each relatedPosts as post (post.slug)}
-					<li class="border border-[#e5e5e5] rounded-[1.2rem] overflow-hidden bg-white">
+				{#each relatedPosts as post, i (post.slug)}
+					<li
+						use:reveal={{ delay: i * 100 }}
+						class="border border-border rounded-[1.2rem] overflow-hidden bg-white"
+					>
 						<PostCard
 							href={post.href}
 							title={post.title}
@@ -95,7 +157,7 @@
 	:global(.post-content p) {
 		font-size: 1.8rem;
 		line-height: 1.7;
-		color: #1a1a1a;
+		color: var(--color-basic);
 		margin-bottom: 2.4rem;
 	}
 	:global(.post-content p a) {
