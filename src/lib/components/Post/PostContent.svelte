@@ -26,6 +26,7 @@
 
   let containerEl: HTMLDivElement;
   let stickyEl: HTMLDivElement;
+  let titleWrapEl: HTMLDivElement;
   let titleEl: HTMLHeadingElement;
 
   onMount(() => {
@@ -57,16 +58,24 @@
 
       window.addEventListener("scroll", onScroll, { passive: true });
 
-      // Title: 스크롤에 비례해서 8rem → 3rem 축소
+      // Title: 스크롤에 비례해서 scale 축소 (8rem 고정, 0.375 = 3/8)
+      const titleH = titleWrapEl.offsetHeight;
+      const st = {
+        trigger: containerEl,
+        start: "top top",
+        end: "+=300",
+        scrub: true,
+      };
       gsap.to(titleEl, {
-        fontSize: "3rem",
+        scale: 0.375,
+        transformOrigin: "center top",
         ease: "none",
-        scrollTrigger: {
-          trigger: containerEl,
-          start: "top top",
-          end: "+=300",
-          scrub: true,
-        },
+        scrollTrigger: st,
+      });
+      gsap.to(titleWrapEl, {
+        height: titleH * 0.375,
+        ease: "none",
+        scrollTrigger: { ...st },
       });
 
       return () => {
@@ -78,15 +87,23 @@
     }
 
     // Header가 없는 경우 Title 애니메이션만
+    const titleH = titleWrapEl.offsetHeight;
+    const st = {
+      trigger: containerEl,
+      start: "top top",
+      end: "+=300",
+      scrub: true,
+    };
     gsap.to(titleEl, {
-      fontSize: "3rem",
+      scale: 0.375,
+      transformOrigin: "center top",
       ease: "none",
-      scrollTrigger: {
-        trigger: containerEl,
-        start: "top top",
-        end: "+=300",
-        scrub: true,
-      },
+      scrollTrigger: st,
+    });
+    gsap.to(titleWrapEl, {
+      height: titleH * 0.375,
+      ease: "none",
+      scrollTrigger: { ...st },
     });
 
     return () => {
@@ -102,7 +119,7 @@
     class="sticky -top-px z-[1040] bg-bg/80 backdrop-blur-[20px]"
   >
     <!-- 글 제목: 대형 중앙 정렬, 스크롤 시 축소 -->
-    <div class="flex justify-center px-[2.4rem] sm:px-[4.8rem] py-[1.6rem]">
+    <div bind:this={titleWrapEl} class="flex justify-center px-[2.4rem] sm:px-[4.8rem] py-[1.6rem] overflow-hidden">
       <h1
         bind:this={titleEl}
         class="text-basic font-black leading-[1.1] max-w-[900px]"
