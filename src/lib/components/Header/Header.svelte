@@ -2,7 +2,7 @@
 	import { base } from '$app/paths';
 </script>
 
-<header class="sticky top-0 z-[1050] flex items-center justify-between px-8 py-[1.2rem] bg-white/80 backdrop-blur-[20px]">
+<header class="sticky top-0 z-[1050] flex items-center justify-between px-8 py-[1.2rem] bg-bg/80 backdrop-blur-[20px]">
 	<h1>
 		<a
 			class="text-[2.5rem] font-bold text-hl p-2 hover:text-hl-dark"

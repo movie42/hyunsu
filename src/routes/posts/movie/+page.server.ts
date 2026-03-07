@@ -8,6 +8,7 @@ export function load() {
 			title: post.title,
 			date: post.date,
 			tags: post.tags,
+			description: post.description ?? '',
 			href: `/posts/movie/${post.slug}`
 		}));
 
