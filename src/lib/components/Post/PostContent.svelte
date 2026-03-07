@@ -35,7 +35,7 @@
 	</div>
 	<!-- 글 제목: 대형 중앙 정렬 -->
 	<div class="text-center px-[2.4rem] sm:px-[4.8rem] py-[4.8rem]">
-		<h1 class="text-basic font-black text-[6rem] sm:text-[8rem] leading-[1.1] max-w-[900px] mx-auto" style="word-break: keep-all; letter-spacing: -1px;">{title}</h1>
+		<h1 class="text-basic font-black text-[6rem] sm:text-[8rem] leading-[1.1] max-w-[900px] mx-auto" style="word-break: keep-all; letter-spacing: -1px; text-align: center;">{title}</h1>
 	</div>
 	<!-- 구분선 -->
 	<hr class="mx-[2.4rem] sm:mx-[4.8rem] border-[rgba(0,0,0,0.1)]" />
