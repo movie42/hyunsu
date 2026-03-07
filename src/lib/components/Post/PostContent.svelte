@@ -6,6 +6,7 @@
   import { reveal } from "$lib/actions/reveal";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { toast } from "svelte-sonner";
 
   interface RelatedPost {
     slug: string;
@@ -28,8 +29,19 @@
   let stickyEl: HTMLDivElement;
   let titleWrapEl: HTMLDivElement;
   let titleEl: HTMLHeadingElement;
+  let contentEl: HTMLDivElement;
 
   onMount(() => {
+    // 코드 블록 클릭 시 클립보드 복사 + 토스트
+    function onCodeClick(e: MouseEvent) {
+      const pre = (e.target as HTMLElement).closest("pre");
+      if (!pre) return;
+      const code = pre.querySelector("code");
+      const text = code?.textContent ?? pre.textContent ?? "";
+      navigator.clipboard.writeText(text);
+      toast.success("복사되었습니다.");
+    }
+    contentEl.addEventListener("click", onCodeClick);
     gsap.registerPlugin(ScrollTrigger);
 
     // Header: 스크롤 delta에 비례해서 scrub 방식으로 숨김/표시
@@ -81,6 +93,7 @@
       return () => {
         ScrollTrigger.getAll().forEach((t) => t.kill());
         window.removeEventListener("scroll", onScroll);
+        contentEl.removeEventListener("click", onCodeClick);
         header!.style.transform = "";
         stickyEl.style.top = "";
       };
@@ -108,6 +121,8 @@
 
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
+      contentEl.removeEventListener("click", onCodeClick);
+      toast.remove();
     };
   });
 </script>
@@ -145,7 +160,7 @@
     <hr class="border-border" />
   </div>
   <!-- Content body -->
-  <div class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]">
+  <div bind:this={contentEl} class="post-content max-w-[800px] mx-auto px-[2.4rem] pb-[6.4rem]">
     {@render children()}
     <Giscus />
   </div>
@@ -273,11 +288,17 @@
     font-style: italic;
   }
   :global(.post-content pre) {
+    position: relative;
     padding: 2.4rem;
     border-radius: 1.2rem;
     overflow-x: auto;
     margin-bottom: 3.2rem;
     line-height: 1.7;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  :global(.post-content pre:hover) {
+    opacity: 0.85;
   }
   :global(.post-content pre code) {
     background-color: transparent;

@@ -7,7 +7,7 @@ import { createHighlighter } from 'shiki';
 import { escapeMdsvex } from './src/lib/escape-mdsvex.js';
 
 const highlighter = await createHighlighter({
-	themes: ['github-dark-dimmed'],
+	themes: ['github-light'],
 	langs: [
 		'javascript',
 		'typescript',
@@ -41,7 +41,7 @@ const mdsvexOptions = {
 	highlight: {
 		highlighter(code, lang) {
 			const validLang = lang && highlighter.getLoadedLanguages().includes(lang) ? lang : 'text';
-			const html = highlighter.codeToHtml(code, { lang: validLang, theme: 'github-dark-dimmed' });
+			const html = highlighter.codeToHtml(code, { lang: validLang, theme: 'github-light' });
 			return `{@html \`${html.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`}`;
 		}
 	}
