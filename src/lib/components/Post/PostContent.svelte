@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import TOC from '$lib/components/TOC/TOC.svelte';
 	import Giscus from '$lib/components/Giscus/Giscus.svelte';
 	import PostCard from '$lib/components/Post/PostCard.svelte';
 
@@ -23,7 +22,6 @@
 </script>
 
 <div class="post-container max-w-[1200px] mx-auto">
-	<TOC />
 	<!-- Metadata bar: 날짜 좌측, 태그 우측 -->
 	<div class="flex items-center justify-between px-[2.4rem] sm:px-[4.8rem] pt-[3.2rem] pb-[1.6rem] text-[1.3rem] text-[#999]">
 		<div class="flex items-center gap-[1.6rem]">
