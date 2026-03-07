@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Hero from '$lib/components/Hero/Hero.svelte';
 	import Section from '$lib/components/Section/Section.svelte';
 	import Nav from '$lib/components/Nav/Nav.svelte';
 
@@ -11,6 +12,19 @@
 </svelte:head>
 
 <div>
-	<Section sectionTitle="최근에 쓴 글" posts={data.posts} />
+	{#if data.heroPost}
+		<Hero
+			title={data.heroPost.title}
+			date={data.heroPost.date}
+			tags={data.heroPost.tags}
+			description={data.heroPost.description}
+			wordCount={data.heroPost.wordCount}
+			href={data.heroPost.href}
+		/>
+		<hr class="max-w-[1080px] mx-auto border-gray-DEFAULT" />
+	{/if}
+	{#if data.pastPosts.length > 0}
+		<Section sectionTitle="Past Issues" posts={data.pastPosts} />
+	{/if}
 	<Nav />
 </div>

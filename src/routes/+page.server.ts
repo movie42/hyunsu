@@ -2,13 +2,18 @@ import { getAllPosts, generateUrl } from '$lib/server/posts';
 
 export function load() {
 	const allPosts = getAllPosts();
-	const recentPosts = allPosts.slice(0, 4).map((post) => ({
+	const mapPost = (post: (typeof allPosts)[0]) => ({
 		slug: post.slug,
 		title: post.title,
 		date: post.date,
 		tags: post.tags,
+		description: post.description ?? '',
+		wordCount: post.wordCount,
 		href: generateUrl({ slug: post.slug, tags: post.tags })
-	}));
+	});
 
-	return { posts: recentPosts };
+	return {
+		heroPost: allPosts[0] ? mapPost(allPosts[0]) : null,
+		pastPosts: allPosts.slice(1, 9).map(mapPost)
+	};
 }

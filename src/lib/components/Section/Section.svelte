@@ -6,6 +6,7 @@
 		title?: string;
 		date?: string;
 		tags?: string[];
+		description?: string;
 		href: string;
 	}
 	interface Props {
@@ -15,19 +16,18 @@
 	let { sectionTitle, posts }: Props = $props();
 </script>
 
-<section>
-	<div class="p-8">
-		<h1 class="text-[5rem] font-black text-hl">{sectionTitle}</h1>
-	</div>
-	<ul class="grid">
+<section class="max-w-[1080px] mx-auto px-8 py-16">
+	<h2 class="text-[3rem] font-bold text-basic mb-10">{sectionTitle}</h2>
+	<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 		{#each posts as post (post.slug ?? post.href)}
 			{#if post.slug}
-				<li class="border-b border-gray-DEFAULT first:border-t first:border-gray-DEFAULT">
+				<li class="border border-gray-DEFAULT rounded-lg overflow-hidden">
 					<PostCard
 						href={post.href}
 						title={post.title}
 						date={post.date}
 						tags={post.tags}
+						description={post.description}
 					/>
 				</li>
 			{/if}
