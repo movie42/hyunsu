@@ -22,6 +22,9 @@ const config = {
 		adapter: adapter(),
 		alias: {
 			$content: './src/content'
+		},
+		prerender: {
+			handleHttpError: 'warn'
 		}
 	}
 };

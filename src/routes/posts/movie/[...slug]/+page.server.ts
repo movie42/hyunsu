@@ -1,5 +1,11 @@
-import { getPostBySlug, renderMarkdown } from '$lib/server/posts';
+import { getAllPosts, getPostBySlug, getCategory, renderMarkdown } from '$lib/server/posts';
 import { error } from '@sveltejs/kit';
+
+export function entries() {
+	return getAllPosts()
+		.filter((p) => getCategory(p.tags) === 'movie')
+		.map((p) => ({ slug: p.slug }));
+}
 
 export async function load({ params }) {
 	const slug = params.slug;
