@@ -37,6 +37,8 @@ form, input, select, label, pre, code {
 	padding: 0;
 }
 
+
+
 a {
 	text-decoration: none;
 	color: black;
@@ -46,10 +48,16 @@ ul, li {
 	list-style: none;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1, h2, h3, h4, h5, h6 {
 	word-spacing: -0.3rem;
 	word-break: keep-all;
 	letter-spacing: -0.02em;
+}
+
+p, ul, ol, li, blockquote, span, a {
+	word-spacing: -0.04rem;
+	word-break: keep-all;
+	letter-spacing: -0.01em;
 }
 
 /* Scroll & load animations */
