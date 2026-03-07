@@ -8,10 +8,6 @@
 	let { type, children }: Props = $props();
 </script>
 
-<div class="flex justify-center items-center py-40 pb-48">
-	<blockquote class="m-0 p-0 bg-transparent text-[2.8rem] italic text-basic" style="font-family: 'NotoSerifKR', serif;">
-		<span class="text-gray-dark italic" style="font-family: 'Times New Roman', Times, serif;">{type === 'speak' ? '"' : "'"}</span>
-		{@render children()}
-		<span class="text-gray-dark italic" style="font-family: 'Times New Roman', Times, serif;">{type === 'speak' ? '"' : "'"}</span>
-	</blockquote>
-</div>
+<blockquote class="m-0 py-[1.2rem] px-0 bg-transparent text-[1.8rem] leading-[1.7] text-basic italic inline">
+	<span class="not-italic">{type === 'speak' ? '\u201C' : '\u2018'}</span><em>{@render children()}</em><span class="not-italic">{type === 'speak' ? '\u201D' : '\u2019'}</span>
+</blockquote>
