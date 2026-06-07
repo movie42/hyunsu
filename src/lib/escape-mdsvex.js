@@ -5,13 +5,15 @@
  */
 
 const COMPONENT_LINE_RE =
-	/^\s*<\/?(Quotation|Canvas|ImageComment|Tabs|script|div|iframe|img|br|a\s|a>)/;
+	/^\s*<\/?(Quotation|Canvas|ImageComment|Tabs|CodeTutorial|CodeTutorialDemo|script|div|iframe|img|br|a\s|a>)/;
 
 const COMPONENT_IMPORTS = {
 	Quotation: "import Quotation from '$lib/components/Quotation/Quotation.svelte';",
 	Canvas: "import Canvas from '$lib/components/Canvas/Canvas.svelte';",
 	ImageComment: "import ImageComment from '$lib/components/ImageComment/ImageComment.svelte';",
-	Tabs: "import Tabs from '$lib/components/Tabs/Tabs.svelte';"
+	Tabs: "import Tabs from '$lib/components/Tabs/Tabs.svelte';",
+	CodeTutorial: "import { CodeTutorial } from '$lib/components/CodeTutorial';",
+	CodeTutorialDemo: "import { CodeTutorialDemo } from '$lib/components/CodeTutorial';"
 };
 
 export function escapeMdsvex() {

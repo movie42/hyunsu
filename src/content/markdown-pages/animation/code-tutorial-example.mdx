@@ -1,0 +1,33 @@
+---
+slug: "/posts/programming/code-tutorial-example"
+date: "2026-06-07"
+title: "CodeTutorial 컴포넌트 사용 예시"
+description: "MDX 문서 안에서 코드 변경 애니메이션을 탭과 스크롤 방식으로 보여주는 예시"
+tags: ["programming", "animation", "svelte", "mdx"]
+---
+
+이 문서는 `CodeTutorial` 컴포넌트를 MDX 안에서 어떻게 쓰는지 확인하기 위한 예시입니다.
+
+> 이 글은 프로그래밍 목록에 노출되는 예시 글입니다.
+
+# MDX에서 사용하는 방식
+
+현재 프로젝트의 `escape-mdsvex` 전처리기는 MDX 본문 안의 `{}`를 escape합니다. 그래서 MDX에서 복잡한 배열 prop을 직접 넘기기보다는, 예제 데이터를 Svelte 컴포넌트로 분리하고 MDX에서는 그 컴포넌트만 렌더링하는 방식을 권장합니다.
+
+```svelte
+<script>
+	import { CodeTutorialDemo } from '$lib/components/CodeTutorial';
+</script>
+
+<CodeTutorialDemo />
+```
+
+실제 예제 데이터와 `CodeTutorial` 사용 코드는 아래 파일에 들어 있습니다.
+
+```text
+src/lib/components/CodeTutorial/CodeTutorialDemo.svelte
+```
+
+# 실행 예시
+
+<CodeTutorialDemo />

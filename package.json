@@ -32,6 +32,7 @@
 		"rehype-slug": "^6.0.0",
 		"remark-gfm": "^4.0.1",
 		"shiki": "^4.0.1",
+		"shiki-magic-move": "^1.4.0",
 		"svelte-sonner": "^1.0.8"
 	}
 }
