@@ -9,7 +9,7 @@ export function load() {
 		tags: post.tags,
 		description: post.description ?? '',
 		wordCount: post.wordCount,
-		href: generateUrl({ slug: post.slug, tags: post.tags })
+		href: generateUrl({ slug: post.slug, category: post.category })
 	});
 
 	return {

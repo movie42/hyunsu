@@ -1,16 +1,5 @@
-import { getAllPosts } from '$lib/server/posts';
+import { redirect } from '@sveltejs/kit';
 
 export function load() {
-	const posts = getAllPosts()
-		.filter((post) => post.tags.includes('etc'))
-		.map((post) => ({
-			slug: post.slug,
-			title: post.title,
-			date: post.date,
-			tags: post.tags,
-			description: post.description ?? '',
-			href: `/posts/etc/${post.slug}`
-		}));
-
-	return { posts };
+	redirect(308, '/posts/general');
 }

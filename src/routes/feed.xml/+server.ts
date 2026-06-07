@@ -11,8 +11,8 @@ export function GET() {
 		<item>
 			<title><![CDATA[${post.title}]]></title>
 			<description><![CDATA[${post.content.slice(0, 100)}...]]></description>
-			<link>${SITE_URL}${generateUrl({ tags: post.tags, slug: post.slug })}</link>
-			<guid>${SITE_URL}${generateUrl({ tags: post.tags, slug: post.slug })}</guid>
+			<link>${SITE_URL}${generateUrl({ category: post.category, slug: post.slug })}</link>
+			<guid>${SITE_URL}${generateUrl({ category: post.category, slug: post.slug })}</guid>
 			<pubDate>${new Date(post.date).toUTCString()}</pubDate>
 		</item>`
 		)

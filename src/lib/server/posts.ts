@@ -13,8 +13,11 @@ export interface PostMatter {
 	date: string;
 }
 
+export type PostCategory = 'programming' | 'general' | 'trash';
+
 export interface Post extends PostMatter {
 	slug: string;
+	category: PostCategory;
 	content: string;
 	filePath: string;
 	wordCount: number;
@@ -42,7 +45,9 @@ export function getPost(absPath: string): Post | undefined {
 	if (grayMatter.draft) return undefined;
 
 	const slug = path.basename(absPath).replace(/\.(mdx|md)$/, '');
-	const relativePath = '/src/content/markdown-pages/' + path.relative(POST_PATH, absPath);
+	const relative = path.relative(POST_PATH, absPath);
+	const relativePath = '/src/content/markdown-pages/' + relative;
+	const category = getCategoryFromPath(relative);
 
 	return {
 		...grayMatter,
@@ -50,6 +55,7 @@ export function getPost(absPath: string): Post | undefined {
 		date: dayjs(grayMatter.date).format('YYYY-MM-DD'),
 		content,
 		slug,
+		category,
 		filePath: relativePath,
 		wordCount: content.split(/\s+/gu).length
 	};
@@ -70,20 +76,26 @@ export function getPostBySlug(slug: string): Post | undefined {
 export function generateUrl({
 	slug = '404',
 	baseUrl = '/posts',
-	tags
+	category
 }: {
 	slug?: string;
-	tags?: string[];
+	category?: PostCategory;
 	baseUrl?: string;
 }): string {
-	if (!tags) return '404';
-	if (tags.includes('etc')) return `${baseUrl}/etc/${slug}`;
-	if (tags.includes('movie')) return `${baseUrl}/movie/${slug}`;
-	return `${baseUrl}/programming/${slug}`;
+	if (!category) return '404';
+	return `${baseUrl}/${category}/${slug}`;
 }
 
-export function getCategory(tags: string[]): 'etc' | 'movie' | 'programming' {
-	if (tags.includes('etc')) return 'etc';
-	if (tags.includes('movie')) return 'movie';
-	return 'programming';
+function getCategoryFromPath(relativePath: string): PostCategory {
+	const topLevelDirectory = relativePath.split(path.sep)[0];
+
+	if (
+		topLevelDirectory === 'programming' ||
+		topLevelDirectory === 'general' ||
+		topLevelDirectory === 'trash'
+	) {
+		return topLevelDirectory;
+	}
+
+	return 'trash';
 }

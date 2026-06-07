@@ -9,7 +9,7 @@ export function GET() {
 		.map(
 			(post) => `
 	<url>
-		<loc>${SITE_URL}${generateUrl({ tags: post.tags, slug: post.slug })}</loc>
+		<loc>${SITE_URL}${generateUrl({ category: post.category, slug: post.slug })}</loc>
 		<lastmod>${post.date}</lastmod>
 	</url>`
 		)

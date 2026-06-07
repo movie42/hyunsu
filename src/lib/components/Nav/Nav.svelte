@@ -13,17 +13,17 @@
       <li class="border-b border-border">
         <a
           class="flex items-center justify-between py-[1.6rem] text-[3rem] font-medium text-basic no-underline hover:text-hl transition-colors duration-200"
-          href="/posts/movie"
+          href="/posts/general"
         >
-          영화
+          일반
         </a>
       </li>
       <li class="border-b border-border">
         <a
           class="flex items-center justify-between py-[1.6rem] text-[3rem] font-medium text-basic no-underline hover:text-hl transition-colors duration-200"
-          href="/posts/etc"
+          href="/posts/trash"
         >
-          ETC
+          쓰레기통
         </a>
       </li>
     </ul>

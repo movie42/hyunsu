@@ -10,7 +10,7 @@
 <svelte:head>
 	<title>{data.title} | 현수의 블로그</title>
 	<meta name="description" content={data.description} />
-	<link rel="canonical" href="https://hyunsu.info/posts/programming/{data.slug}" />
+	<link rel="canonical" href="https://hyunsu.info/posts/trash/{data.slug}" />
 </svelte:head>
 
 <PostContent title={data.title} date={data.date} tags={data.tags} relatedPosts={data.relatedPosts}>

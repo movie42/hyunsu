@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 
 export function entries() {
 	return getAllPosts()
-		.filter((p) => p.category === 'programming')
+		.filter((p) => p.category === 'general')
 		.map((p) => ({ slug: p.slug }));
 }
 
@@ -11,7 +11,7 @@ export async function load({ params }) {
 	const slug = params.slug;
 	const post = getPostBySlug(slug);
 
-	if (!post || post.category !== 'programming') {
+	if (!post || post.category !== 'general') {
 		error(404, '페이지를 찾을 수 없습니다.');
 	}
 
