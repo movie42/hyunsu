@@ -1,0 +1,33 @@
+export function Header() {
+	return (
+		<header className="sticky top-0 z-[1050] flex items-center justify-between bg-bg/80 px-8 py-[1.2rem] backdrop-blur-[20px]">
+			<h1>
+				<a className="p-2 text-[2.5rem] font-bold text-hl hover:text-hl-dark" href="/">
+					현수의 블로그
+				</a>
+			</h1>
+			<div className="flex gap-[0.8rem]">
+				<a
+					className="inline-block p-2 text-[1.8rem] font-bold text-hl hover:bg-hl hover:text-white"
+					href="/feed.xml"
+					aria-label="RSS 피드"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+						<path d="M4 11a9 9 0 0 1 9 9" />
+						<path d="M4 4a16 16 0 0 1 16 16" />
+						<circle cx="5" cy="19" r="1" />
+					</svg>
+				</a>
+				<a
+					className="inline-block p-2 text-[1.8rem] font-bold text-basic hover:bg-basic hover:text-white"
+					href="https://github.com/movie42"
+					aria-label="GitHub 프로필"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+						<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+					</svg>
+				</a>
+			</div>
+		</header>
+	);
+}

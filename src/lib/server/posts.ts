@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 
 const POST_PATH = path.join(process.cwd(), 'src/content/markdown-pages');
 
+export type Category = 'etc' | 'movie' | 'programming';
+
 export interface PostMatter {
 	title: string;
 	description?: string;
@@ -15,9 +17,20 @@ export interface PostMatter {
 
 export interface Post extends PostMatter {
 	slug: string;
+	category: Category;
 	content: string;
 	filePath: string;
 	wordCount: number;
+}
+
+export interface PostSummary {
+	slug: string;
+	title: string;
+	date: string;
+	tags: string[];
+	description: string;
+	wordCount?: number;
+	href: string;
 }
 
 function globMdx(dir: string): string[] {
@@ -34,6 +47,12 @@ function globMdx(dir: string): string[] {
 	return results;
 }
 
+export function getCategory(tags: string[]): Category {
+	if (tags.includes('etc')) return 'etc';
+	if (tags.includes('movie')) return 'movie';
+	return 'programming';
+}
+
 export function getPost(absPath: string): Post | undefined {
 	const file = fs.readFileSync(absPath, { encoding: 'utf8' });
 	const { content, data } = matter(file);
@@ -42,11 +61,13 @@ export function getPost(absPath: string): Post | undefined {
 	if (grayMatter.draft) return undefined;
 
 	const slug = path.basename(absPath).replace(/\.(mdx|md)$/, '');
+	const tags = grayMatter.tags?.filter(Boolean) ?? [];
 	const relativePath = '/src/content/markdown-pages/' + path.relative(POST_PATH, absPath);
 
 	return {
 		...grayMatter,
-		tags: grayMatter.tags?.filter(Boolean) ?? [],
+		tags,
+		category: getCategory(tags),
 		date: dayjs(grayMatter.date).format('YYYY-MM-DD'),
 		content,
 		slug,
@@ -63,8 +84,16 @@ export function getAllPosts(): Post[] {
 		.sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
 }
 
+export function getPostsByCategory(category: Category): Post[] {
+	return getAllPosts().filter((post) => post.category === category);
+}
+
 export function getPostBySlug(slug: string): Post | undefined {
 	return getAllPosts().find((p) => p.slug === slug);
+}
+
+export function getPostByCategoryAndSlug(category: Category, slug: string): Post | undefined {
+	return getAllPosts().find((post) => post.category === category && post.slug === slug);
 }
 
 export function generateUrl({
@@ -82,8 +111,14 @@ export function generateUrl({
 	return `${baseUrl}/programming/${slug}`;
 }
 
-export function getCategory(tags: string[]): 'etc' | 'movie' | 'programming' {
-	if (tags.includes('etc')) return 'etc';
-	if (tags.includes('movie')) return 'movie';
-	return 'programming';
+export function toPostSummary(post: Post, options: { includeWordCount?: boolean } = {}): PostSummary {
+	return {
+		slug: post.slug,
+		title: post.title,
+		date: post.date,
+		tags: post.tags,
+		description: post.description ?? '',
+		wordCount: options.includeWordCount ? post.wordCount : undefined,
+		href: generateUrl({ slug: post.slug, tags: post.tags })
+	};
 }

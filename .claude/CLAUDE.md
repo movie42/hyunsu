@@ -47,6 +47,7 @@ Each category has `+page.server.ts` (list) and `[...slug]/+page.server.ts` (deta
 - **Tailwind CSS 4** with `@tailwindcss/typography` plugin
 - Global styles in `src/routes/layout.css`
 - No styled-components (removed during migration)
+- **Tailwind CSS 유틸리티를 컴포넌트 마크업에 인라인(`class="..."`)으로 직접 작성하지 마세요.** 디버깅과 유지보수를 쉽게 하기 위해 컴포넌트별 `*.module.css`(style module)를 반드시 사용하고, 마크업에서는 의미 있는 클래스명만 참조하세요.
 
 ### Components
 
@@ -80,47 +81,10 @@ Svelte 5 components using `$props()` runes in `src/lib/components/`:
 - Prerender with `handleHttpError: 'warn'`
 - `+layout.server.ts` exports `prerender = true`
 
-## 계획 문서 관리 규칙
+## 계획 수립 규칙
 
-**CRITICAL**: 모든 계획 문서(PRD, 기능 계획, 리팩토링 계획 등)는 **반드시** 프로젝트 경로에 있는 `.claude/plans/` 폴더에 `.md` 파일로 저장하세요.
-**절대 다른 경로(루트, apps/, docs/ 등)에 계획 문서를 생성하지 마세요.**
+새로운 기능 구현, 리팩토링, 버그 수정 전략, 아키텍처 변경처럼 구조화된 계획이 필요한 작업은 `/task-plan`을 사용해 계획을 세우세요.
 
-- 계획 문서 작성하고 바로 구현 금지 사용자에게 계획을 검토하고 구현 계획 승인되면 구현 시작하기.
-
-### 계획 문서 작성 시점
-
-- 새로운 기능 구현 계획
-- 리팩토링 계획
-- 버그 수정 전략
-- 아키텍처 변경 제안
-
-### 관리자 기능 계획
-
-관리자 관련 PRD는 `.claude/plans/admin/` 폴더에 저장하며, 새로운 PRD를 추가하면 **반드시** `.claude/plans/admin/index.md` 목차 파일에도 항목을 추가하세요.
-
-### 파일 명명 규칙
-
-```
-.claude/plans/
-├── YYYY-MM-DD-feature-{기능명}.md      # 기능 구현 계획
-├── YYYY-MM-DD-refactor-{대상}.md       # 리팩토링 계획
-├── YYYY-MM-DD-bugfix-{이슈번호}.md     # 버그 수정 계획
-└── YYYY-MM-DD-architecture-{주제}.md   # 아키텍처 결정
-```
-
-### 왜 plans 폴더를 사용하나요?
-
-- `.claude/rules/`는 자동 로드되어 토큰을 소비함
-- `plans/`는 필요할 때만 참조하므로 효율적
-- 세션 재개 시 `/resume`으로 컨텍스트 유지 가능
-- 작업 완료 후 기록으로 보관
-
-### 계획 문서 기반으로 구현할때
-
-- 완료하면 todo check와 완료한 내용 기록하기
-  - 어떤 파일을 변경했나.
-  - 핵심 변경은 무엇인가?
-  - 이 변경으로 어떤 효과가 있는가
-  - 그밖에 기타 전달하고 싶은 내용
-
-- 새로운 브랜치를 생성하고 거기에서 진행하고 진행을 나중에 추적할수 있게 Phase를 변경할때마다 의미있는 변경사항이라고 생각되면 커밋을하고 수정사항을 진행하도록해줘
+- 직접 임의의 계획 문서를 만들지 말고 task-plan 워크플로우를 따릅니다.
+- 계획을 작성한 뒤 바로 구현하지 말고, 사용자가 계획을 검토하고 승인하면 구현을 시작합니다.
+- 계획 기반 구현은 `/implement` 워크플로우를 사용합니다.
