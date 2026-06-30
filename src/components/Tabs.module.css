@@ -1,0 +1,36 @@
+.container {
+	margin-bottom: 3rem;
+}
+
+.header {
+	display: flex;
+	gap: 0;
+	border-bottom: 2px solid var(--color-gray-dark);
+}
+
+.button {
+	padding: 0.8rem 1.6rem;
+	margin-bottom: -2px;
+	border: none;
+	border-bottom: 2px solid transparent;
+	background: transparent;
+	color: var(--color-basic);
+	font-size: 1.4rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.15s;
+}
+
+.button:hover,
+.active {
+	color: var(--color-hl);
+}
+
+.active {
+	border-bottom-color: var(--color-hl);
+}
+
+.content pre {
+	border-radius: 0 0 0.8rem 0.8rem !important;
+	margin-bottom: 0 !important;
+}

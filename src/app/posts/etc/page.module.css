@@ -1,0 +1,19 @@
+.main {
+	color: var(--color-basic);
+}
+
+.header {
+	padding: 3rem 2.4rem 0;
+}
+
+.title {
+	margin-bottom: 3.2rem;
+	font-size: 3.2rem;
+	font-weight: 700;
+}
+
+@media (min-width: 640px) {
+	.header {
+		padding-inline: 4.8rem;
+	}
+}
