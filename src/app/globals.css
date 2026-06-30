@@ -210,38 +210,6 @@
 		width: 100%;
 		height: 100%;
 	}
-	.tabs-container {
-		margin-bottom: 3rem;
-	}
-	.tabs-header {
-		display: flex;
-		gap: 0;
-		border-bottom: 2px solid var(--color-gray-dark);
-	}
-	.tab-button {
-		padding: 0.8rem 1.6rem;
-		font-size: 1.4rem;
-		font-weight: 600;
-		border: none;
-		background: transparent;
-		cursor: pointer;
-		color: var(--color-basic);
-		border-bottom: 2px solid transparent;
-		margin-bottom: -2px;
-		transition: all 0.15s;
-	}
-	.tab-button:hover,
-	.tab-button.active {
-		color: var(--color-hl);
-	}
-	.tab-button.active {
-		border-bottom-color: var(--color-hl);
-	}
-	.tabs-content pre {
-		border-radius: 0 0 0.8rem 0.8rem !important;
-		margin-bottom: 0 !important;
-	}
-
 	@media (max-width: 450px) {
 		.post-content h1 { font-size: 2.8rem; line-height: 1.2; }
 		.post-content h2 { font-size: 2.4rem; line-height: 1.2; }

@@ -1,0 +1,14 @@
+.quote {
+	display: inline;
+	margin: 0;
+	padding: 1.2rem 0;
+	background-color: transparent;
+	font-size: 1.8rem;
+	font-style: italic;
+	line-height: 1.7;
+	color: var(--color-basic);
+}
+
+.mark {
+	font-style: normal;
+}

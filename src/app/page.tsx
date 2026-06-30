@@ -3,6 +3,7 @@ import { Nav } from '@/components/Nav';
 import { SITE_DESCRIPTION, SITE_NAME } from '@/lib/site';
 import { Section } from '@/components/Section';
 import { getAllPosts, toPostSummary } from '@/lib/server/posts';
+import styles from './page.module.css';
 
 export const metadata: Metadata = {
 	title: SITE_NAME,
@@ -18,15 +19,15 @@ export default function HomePage() {
 	const pastPosts = allPosts.slice(1, 9).map((post) => toPostSummary(post));
 
 	return (
-		<main className="text-basic">
+		<main className={styles.main}>
 			{heroPost ? (
-				<section className="mx-auto border-b border-border px-[2.4rem] py-12 sm:px-[4.8rem]">
-					<p className="text-[1.4rem] uppercase tracking-[0.2em] text-muted">Latest Post</p>
-					<a href={heroPost.href} className="mt-4 block hover:text-hl">
-						<h1 className="text-[4rem] font-bold leading-tight">{heroPost.title}</h1>
+				<section className={styles.hero}>
+					<p className={styles.eyebrow}>Latest Post</p>
+					<a href={heroPost.href} className={styles.heroLink}>
+						<h1 className={styles.heroTitle}>{heroPost.title}</h1>
 					</a>
-					<p className="mt-4 text-[1.4rem] text-muted">{heroPost.date}</p>
-					{heroPost.description ? <p className="mt-6 text-[1.8rem] leading-8">{heroPost.description}</p> : null}
+					<p className={styles.date}>{heroPost.date}</p>
+					{heroPost.description ? <p className={styles.description}>{heroPost.description}</p> : null}
 				</section>
 			) : null}
 			<Nav />

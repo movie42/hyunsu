@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import styles from './TOC.module.css';
 
 interface TocItem {
 	id: string;
@@ -62,11 +63,11 @@ export function TOC() {
 	if (toc.length === 0) return null;
 
 	return (
-		<nav className="fixed top-[7rem] right-[calc((100vw-1080px)/2-320px)] max-w-[300px] max-[1400px]:hidden" aria-label="글 목차">
-			<ul className="flex flex-col gap-[0.7rem]">
+		<nav className={styles.nav} aria-label="글 목차">
+			<ul className={styles.list}>
 				{toc.map((item) => (
 					<li key={item.id} style={{ marginLeft: `${(item.level - 1) * 1.2}rem` }}>
-						<a href={`#${item.id}`} data-toc-link={item.id} className={`rounded-sm p-2 text-[1.4rem] ${currentId === item.id ? 'bg-hl text-white' : 'text-gray-dark'}`}>
+						<a href={`#${item.id}`} data-toc-link={item.id} className={`${styles.link} ${currentId === item.id ? styles.active : styles.inactive}`}>
 							{item.text}
 						</a>
 					</li>

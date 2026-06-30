@@ -1,14 +1,16 @@
+import styles from './Header.module.css';
+
 export function Header() {
 	return (
-		<header className="sticky top-0 z-[1050] flex items-center justify-between bg-bg/80 px-8 py-[1.2rem] backdrop-blur-[20px]">
+		<header className={styles.header}>
 			<h1>
-				<a className="p-2 text-[2.5rem] font-bold text-hl hover:text-hl-dark" href="/">
+				<a className={styles.logoLink} href="/">
 					현수의 블로그
 				</a>
 			</h1>
-			<div className="flex gap-[0.8rem]">
+			<div className={styles.actions}>
 				<a
-					className="inline-block p-2 text-[1.8rem] font-bold text-hl hover:bg-hl hover:text-white"
+					className={`${styles.actionLink} ${styles.rssLink}`}
 					href="/feed.xml"
 					aria-label="RSS 피드"
 				>
@@ -19,7 +21,7 @@ export function Header() {
 					</svg>
 				</a>
 				<a
-					className="inline-block p-2 text-[1.8rem] font-bold text-basic hover:bg-basic hover:text-white"
+					className={`${styles.actionLink} ${styles.githubLink}`}
 					href="https://github.com/movie42"
 					aria-label="GitHub 프로필"
 				>

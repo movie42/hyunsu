@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { PostContent } from '@/components/PostContent';
 import { renderMdx } from '@/lib/server/mdx';
 import { getAllPosts, getPostByCategoryAndSlug, getPostsByCategory, toPostSummary } from '@/lib/server/posts';
+import styles from './page.module.css';
 
 type PageProps = { params: Promise<{ slug: string[] }> };
 
@@ -49,7 +50,7 @@ export default async function MoviePostPage({ params }: PageProps) {
 	const content = await renderMdx(post.content);
 
 	return (
-		<main className="text-basic">
+		<main className={styles.main}>
 			<PostContent title={post.title} date={post.date} tags={post.tags} relatedPosts={relatedPosts}>
 				{content}
 			</PostContent>

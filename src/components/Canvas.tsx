@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import styles from './Canvas.module.css';
 
 export function Canvas() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -46,8 +47,8 @@ export function Canvas() {
 	}, []);
 
 	return (
-		<div className="w-full">
-			<canvas className="bg-white" ref={canvasRef} />
+		<div className={styles.wrapper}>
+			<canvas className={styles.canvas} ref={canvasRef} />
 		</div>
 	);
 }

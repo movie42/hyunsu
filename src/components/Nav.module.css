@@ -1,0 +1,36 @@
+.section {
+	margin-inline: auto;
+	padding: 4.8rem 3rem;
+}
+
+.title {
+	margin-bottom: 2.4rem;
+	font-size: 3.2rem;
+	font-weight: 700;
+	color: var(--color-basic);
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+}
+
+.item {
+	border-bottom: 1px solid var(--color-border);
+}
+
+.link {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-block: 1.6rem;
+	font-size: 3rem;
+	font-weight: 500;
+	color: var(--color-basic);
+	text-decoration: none;
+	transition: color 200ms;
+}
+
+.link:hover {
+	color: var(--color-hl);
+}

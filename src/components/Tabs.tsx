@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
+import styles from './Tabs.module.css';
 
 interface TabItem {
 	title: string;
@@ -29,7 +30,7 @@ export function Tabs({ children }: { children: ReactNode }) {
 			return 'Code';
 		}
 
-		const pres = Array.from(container.querySelectorAll<HTMLElement>(':scope > pre, :scope > :not(.tabs-header) pre'));
+		const pres = Array.from(container.querySelectorAll<HTMLElement>(':scope > pre, :scope > [data-tabs-content] pre'));
 		const seen = new Set<HTMLElement>();
 		const result: TabItem[] = [];
 		for (const pre of pres) {
@@ -51,17 +52,17 @@ export function Tabs({ children }: { children: ReactNode }) {
 	};
 
 	return (
-		<div className="tabs-container" ref={containerRef}>
+		<div className={styles.container} ref={containerRef}>
 			{tabs.length > 0 ? (
-				<div className="tabs-header">
+				<div className={styles.header}>
 					{tabs.map((tab, index) => (
-						<button key={`${tab.title}-${index}`} className={`tab-button ${activeIndex === index ? 'active' : ''}`} type="button" onClick={() => updateVisibility(index)}>
+						<button key={`${tab.title}-${index}`} className={`${styles.button} ${activeIndex === index ? styles.active : ''}`} type="button" onClick={() => updateVisibility(index)}>
 							{tab.title}
 						</button>
 					))}
 				</div>
 			) : null}
-			<div className="tabs-content">{children}</div>
+			<div className={styles.content} data-tabs-content>{children}</div>
 		</div>
 	);
 }

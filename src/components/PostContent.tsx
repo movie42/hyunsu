@@ -8,6 +8,7 @@ import type { PostSummary } from '@/lib/server/posts';
 import { Giscus } from './Giscus';
 import { PostCard } from './PostCard';
 import { TOC } from './TOC';
+import styles from './PostContent.module.css';
 
 interface PostContentProps {
 	title: string;
@@ -85,35 +86,35 @@ export function PostContent({ title, date, tags, relatedPosts = [], children }: 
 	}, []);
 
 	return (
-		<div ref={containerRef} className="post-container mx-auto">
+		<div ref={containerRef} className={styles.container}>
 			<TOC />
-			<div ref={stickyRef} className="sticky -top-px z-[1040] bg-bg/80 backdrop-blur-[20px]">
-				<div ref={titleWrapRef} className="flex justify-center overflow-hidden px-[2.4rem] py-[1.6rem] sm:px-[4.8rem]">
-					<h1 ref={titleRef} className="max-w-[900px] text-center text-[8rem] font-black leading-[1.1] text-basic" style={{ wordBreak: 'keep-all', letterSpacing: '-1px' }}>
+			<div ref={stickyRef} className={styles.stickyHeader}>
+				<div ref={titleWrapRef} className={styles.titleWrapper}>
+					<h1 ref={titleRef} className={styles.title}>
 						{title}
 					</h1>
 				</div>
-				<div className="flex items-center justify-between px-[2.4rem] pb-[1.2rem] text-[1.3rem] text-muted sm:px-[4.8rem]">
-					<div className="flex items-center gap-[1.6rem]"><time>{date}</time></div>
-					<div className="flex items-center gap-[1.2rem]">{tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+				<div className={styles.meta}>
+					<div className={styles.metaGroup}><time>{date}</time></div>
+					<div className={styles.tags}>{tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
 				</div>
-				<hr className="border-border" />
+				<hr className={styles.divider} />
 			</div>
-			<div ref={contentRef} className="post-content mx-auto max-w-[800px] px-[2.4rem] pb-[6.4rem]">
+			<div ref={contentRef} className={`post-content ${styles.content}`}>
 				{children}
 				<Giscus />
 			</div>
 			{relatedPosts.length > 0 ? (
-				<section className="border-t-2 border-border px-[2.4rem] pt-[4.8rem] pb-[9.6rem] sm:px-[4.8rem]">
-					<h2 className="mb-[3.2rem] text-[3.2rem] font-bold text-basic">다른 글 더 보기</h2>
-					<ul className="grid grid-cols-1 gap-[2.4rem] md:grid-cols-3">
+				<section className={styles.related}>
+					<h2 className={styles.relatedTitle}>다른 글 더 보기</h2>
+					<ul className={styles.relatedGrid}>
 						{relatedPosts.map((post) => (
-							<li key={post.href} className="overflow-hidden rounded-[1.2rem] border border-border bg-white"><PostCard {...post} /></li>
+							<li key={post.href} className={styles.relatedItem}><PostCard {...post} /></li>
 						))}
 					</ul>
 				</section>
 			) : null}
-			{toastMessage ? <div className="fixed right-6 bottom-6 z-[2000] rounded-md bg-basic px-5 py-3 text-[1.4rem] text-white shadow-lg">{toastMessage}</div> : null}
+			{toastMessage ? <div className={styles.toast}>{toastMessage}</div> : null}
 		</div>
 	);
 }
