@@ -1,0 +1,142 @@
+/* 스크롤 진행 거리를 확보하는 세로로 긴 영역. sticky 카드가 이 안에서 머문다. */
+.wrapper {
+	/* 컴포넌트 색 팔레트 (크림 배경 + 블루/그린/레드로 단계 구분) */
+	--bz-blue: #607caa; /* 1차 보조: E·F·G, EF·FG (파스텔 블루) */
+	--bz-green-deep: #356647; /* 2차 보조: K·L, KL */
+	--bz-red: #c0392b; /* 곡선 + 곡선 위의 점 Z */
+
+	position: relative;
+	width: 100%;
+	height: 480vh;
+	margin: 2rem 0;
+}
+
+/* 뷰포트에 붙어 애니메이션이 재생되는 동안 화면에 머무는 층. GSAP pin 대신 사용. */
+.sticky {
+	position: sticky;
+	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.2rem;
+	width: 100%;
+	padding: 2.4rem 1.6rem;
+	background-color: var(--color-cream);
+	border: 1px solid var(--color-border);
+	border-radius: 1.6rem;
+}
+
+.svg {
+	width: 100%;
+	max-width: 560px;
+	height: auto;
+	overflow: visible;
+}
+
+/* 제어점 다각형 (뼈대) */
+.skeleton {
+	fill: none;
+	stroke: var(--color-muted);
+	stroke-width: 1;
+	stroke-dasharray: 5 5;
+	opacity: 0.5;
+}
+
+/* 그려진 곡선 = Z 의 궤적 */
+.curve {
+	fill: none;
+	stroke: var(--bz-red);
+	stroke-width: 3;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* 1차 보조선 EF·FG */
+.level1Line {
+	stroke: var(--bz-blue);
+	stroke-width: 1.5;
+}
+
+/* 2차 보조선 KL */
+.level2Line {
+	stroke: var(--bz-green-deep);
+	stroke-width: 1.5;
+}
+
+/* 고정 제어점 A·B·C·D */
+.control {
+	r: 5;
+	fill: var(--color-basic);
+}
+
+.controlLabel {
+	fill: var(--color-basic);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+/* 1차 보간점 E·F·G (반지름은 JS 에서 애니메이션한다) */
+.level1Dot {
+	fill: var(--bz-blue);
+}
+
+.level1Label {
+	fill: var(--bz-blue);
+	font-size: 12px;
+}
+
+/* 2차 보간점 K·L (반지름은 JS 에서 애니메이션한다) */
+.level2Dot {
+	fill: var(--bz-green-deep);
+}
+
+.level2Label {
+	fill: var(--bz-green-deep);
+	font-size: 12px;
+}
+
+/* 곡선 위의 점 Z (반지름은 JS 에서 애니메이션한다) */
+.pointZ {
+	fill: var(--bz-red);
+	stroke: var(--color-white);
+	stroke-width: 2;
+}
+
+.pointZLabel {
+	fill: var(--bz-red);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.readout {
+	font-variant-numeric: tabular-nums;
+	font-size: 1.8rem;
+	font-weight: 600;
+	color: var(--color-basic);
+}
+
+.caption {
+	margin: 0;
+	min-height: 2.6em;
+	max-width: 40rem;
+	/* 본문 글자 크기(1.8rem)를 최소로 유지한다. */
+	font-size: 1.8rem;
+	font-weight: 500;
+	line-height: 1.4;
+	color: var(--color-basic);
+	text-align: center;
+}
+
+.hint {
+	margin: 0;
+	font-size: 1.5rem;
+	color: var(--color-muted);
+	text-align: center;
+}
