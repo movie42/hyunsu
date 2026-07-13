@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './TOC.module.css';
 
 interface TocItem {
@@ -12,6 +12,7 @@ interface TocItem {
 export function TOC() {
 	const [currentId, setCurrentId] = useState('');
 	const [toc, setToc] = useState<TocItem[]>([]);
+	const navRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
 		const headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('h1,h2,h3,h4,h5')).slice(1).filter((heading) => heading.id);
@@ -60,10 +61,40 @@ export function TOC() {
 		};
 	}, []);
 
+	useEffect(() => {
+		const nav = navRef.current;
+		const stickyHeader = document.querySelector<HTMLElement>('[data-sticky-header]');
+		if (!nav || !stickyHeader) return;
+
+		const GAP = 16;
+		let frame = 0;
+
+		const update = () => {
+			frame = 0;
+			const bottom = stickyHeader.getBoundingClientRect().bottom;
+			nav.style.top = `${Math.max(bottom + GAP, GAP)}px`;
+		};
+
+		const requestUpdate = () => {
+			if (frame) return;
+			frame = window.requestAnimationFrame(update);
+		};
+
+		update();
+		window.addEventListener('scroll', requestUpdate, { passive: true });
+		window.addEventListener('resize', requestUpdate);
+
+		return () => {
+			window.removeEventListener('scroll', requestUpdate);
+			window.removeEventListener('resize', requestUpdate);
+			if (frame) window.cancelAnimationFrame(frame);
+		};
+	}, [toc]);
+
 	if (toc.length === 0) return null;
 
 	return (
-		<nav className={styles.nav} aria-label="글 목차">
+		<nav ref={navRef} className={styles.nav} aria-label="글 목차">
 			<ul className={styles.list}>
 				{toc.map((item) => (
 					<li key={item.id} style={{ marginLeft: `${(item.level - 1) * 1.2}rem` }}>
