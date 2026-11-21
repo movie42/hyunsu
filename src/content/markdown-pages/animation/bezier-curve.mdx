@@ -16,7 +16,7 @@ draft: false
 
 # 베지어 곡선이란
 
-베지어 곡선은 컴퓨터가 곡선을 그릴때 사용할 수 있는 수학적 함수이다[^1]. **여러 개의 제어점을 기준으로, 시작점에서 끝점까지 부드럽게 이어지는 곡선을 만들수 있다.** 베지어 곡선은 벡터 그래픽에 곡선을 모델링하고, 애니메이션, 사용자 인터페이스 디자인, 시선 추적 기반 인터페이스에서 커서의 움직임을 부드럽게 만드는데 사용되기도 한다.
+베지어 곡선은 컴퓨터가 곡선을 그릴때 사용할 수 있는 수학적 <Footnote note="베지어 곡선 — The Modern JavaScript Tutorial, https://ko.javascript.info/bezier-curve">함수이다</Footnote>. **여러 개의 제어점을 기준으로, 시작점에서 끝점까지 부드럽게 이어지는 곡선을 만들수 있다.** 베지어 곡선은 벡터 그래픽에 곡선을 모델링하고, 애니메이션, 사용자 인터페이스 디자인, 시선 추적 기반 인터페이스에서 커서의 움직임을 부드럽게 만드는데 사용되기도 한다.
 
 ## 베지어 곡선 특징
 
@@ -26,7 +26,7 @@ draft: false
 
 특히 컨벡스 헐 안에 있다라는 특징이 있어 점을 무작위로 겹치지 않게 N개를 찍어도 곡선은 N개의 점을 이은 면 안에 반드시 그려진다.
 
-## 카스텔조 알고리즘[^2]
+## 카스텔조 <Footnote note="카스텔조 알고리즘 — The Modern JavaScript Tutorial, https://ko.javascript.info/bezier-curve#ref-847">알고리즘</Footnote>
 
 어떻게 점 4개로부터 베지어곡선을 그릴 수 있을까?
 
@@ -53,15 +53,15 @@ draft: false
 cubic-bezier(x1, y1, x2, y2)
 ```
 
-조절점 두개로 곡선의 모양을 결정할 수 있다. x는 반드시 0-1 사이 값이어야하고 그 이상, 이하가 되면 css는 이 값을 무시한다. y는 값이 어떻게 되든 상관 없는 것 같다. 참고로 y는 음수도 들어갈 수 있다[^3].
+조절점 두개로 곡선의 모양을 결정할 수 있다. x는 반드시 0-1 사이 값이어야하고 그 이상, 이하가 되면 css는 이 값을 무시한다. y는 값이 어떻게 되든 상관 없는 것 같다. 참고로 y는 음수도 들어갈 수 <Footnote note="cubic-bezier() — MDN Web Docs, https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/cubic-bezier">있다</Footnote>.
 
 ### 베지어 곡선은 어떻게 같은 시간 값을 가진 애니메이션의 속도를 느리거나 빠르게 보이게 할수 있을까?
 
 큐빅 베지어가 그린 베지어 곡선과 duration은 어떤 관계가 있는 것일까? 왜 똑같은 duration이지만 베지어 곡선의 모양에 따라 애니메이션이 진행되는 모양이 다른걸까?
 
-베지어 곡선의 x는 애니메이션이 진행되는 시간이다. 이건 duration과 1대1로 매칭되는 시간이 아니라 정규화된 시간이다[^4]. duration이 얼마이건간에 관계 없이 x는 0-1의 값을 가진다. duration이 빠르면 x가 0에서 1로 가는 시간도 빠르다. 그리고 y는 애니메이션의 진행률이다. x위치에 애니메이션 대상이 어디까지 진행되는지는 y를 보면 알수 있다. 예를 들어 오른쪽으로 200px만큼 움직이는 애니메이션인데 x가 0.1인데 y가 0.9이면 180px만큼 움직였다고 보면 된다. 이 애니메이션은 매우 빠르게 느껴질 것이다. 그런데 x가 0.2인데 y가 갑자기 0.2가 되면 애니메이션은 다시 뒤로 이동하게 된다. 만약 y가 1.4라면 매우 과장되게 280px만큼 이동할 것이다. 기울기는 애니메이션의 순간 속도로 본다.(물리에서 위치-시간 그래프의 기울기가 속도인 것과 같다. 기울기가 가파를수록 그 순간 빠르게 움직인다.) 그래서 베지어 곡선을 직선으로 만들면 애니메이션의 속도가 일정하고, 위로 볼록하게 만들면 초반 애니메이션의 진행이 빨라지고 아래로 볼록하면 초반 진행이 느려진다.
+베지어 곡선의 x는 애니메이션이 진행되는 시간이다. 이건 duration과 1대1로 매칭되는 시간이 아니라 정규화된 <Footnote note='Josh Collinsworth, "Understanding easing and cubic-bezier curves in CSS", https://joshcollinsworth.com/blog/easing-curves'>시간이다</Footnote>. duration이 얼마이건간에 관계 없이 x는 0-1의 값을 가진다. duration이 빠르면 x가 0에서 1로 가는 시간도 빠르다. 그리고 y는 애니메이션의 진행률이다. x위치에 애니메이션 대상이 어디까지 진행되는지는 y를 보면 알수 있다. 예를 들어 오른쪽으로 200px만큼 움직이는 애니메이션인데 x가 0.1인데 y가 0.9이면 180px만큼 움직였다고 보면 된다. 이 애니메이션은 매우 빠르게 느껴질 것이다. 그런데 x가 0.2인데 y가 갑자기 0.2가 되면 애니메이션은 다시 뒤로 이동하게 된다. 만약 y가 1.4라면 매우 과장되게 280px만큼 이동할 것이다. 기울기는 애니메이션의 순간 속도로 본다.(물리에서 위치-시간 그래프의 기울기가 속도인 것과 같다. 기울기가 가파를수록 그 순간 빠르게 움직인다.) 그래서 베지어 곡선을 직선으로 만들면 애니메이션의 속도가 일정하고, 위로 볼록하게 만들면 초반 애니메이션의 진행이 빨라지고 아래로 볼록하면 초반 진행이 느려진다.
 
-이 원리를 알면 대충 어떻게 점을 찍으면 애니메이션이 어떤식으로 될것 같다는 상상을 하는 것도 가능하다고 생각한다. 특히 AI에게 내가 원하는 custom easing을 설명할때 좋은 것 같다. 하지만 가장 빠르고 정환한건 애니메이션이 어떻게 동작하는지 예시를 찾아서 그 베지어 곡선을 적용하는 것이 가장 빠르다는 생각도 든다. 예시 사이트에서 직접 동작해보고 감을 익혀보자.[^5]
+이 원리를 알면 대충 어떻게 점을 찍으면 애니메이션이 어떤식으로 될것 같다는 상상을 하는 것도 가능하다고 생각한다. 특히 AI에게 내가 원하는 custom easing을 설명할때 좋은 것 같다. 하지만 가장 빠르고 정환한건 애니메이션이 어떻게 동작하는지 예시를 찾아서 그 베지어 곡선을 적용하는 것이 가장 빠르다는 생각도 든다. 예시 사이트에서 직접 동작해보고 감을 <Footnote note="Gallery Carousel(예시 사이트) https://easings.co/">익혀보자.</Footnote>
 
 ## 예시
 
@@ -87,20 +87,6 @@ cubic-bezier(x1, y1, x2, y2)
 
 결과적으로 500ms짜리인데도 200ms짜리와 거의 같은 타이밍에 "휙" 하고 도착한 뒤 살짝 정착하는 느낌을 준다. 시간(duration)은 그대로 두고 곡선만으로 체감 속도를 이렇게까지 바꿀 수 있다는 것이 cubic-bezier의 핵심이다. 실제로 오른쪽이 훨씬 더 부드럽고 자연스럽게 느껴진다.
 
-그동안 애니메이션을 적용할때 단순하게 애니메이션 duration이 느리면 앱이 느리게 느껴진다는 공식을 가지고 애니메이션을 적용해왔다. 하지만 애니메이션을 공부하면서 easing function이 어떻게 적용되었느냐에 따라 250ms보다 더 느리지만 심리적으로 빠르고 부드럽게 보이는 애니메이션을 적용할수 있다는 것을 알게 되었다. 베지어 곡선이 무엇이고 원리도 알게 되었고 베지어 곡선이 컴퓨터 그래픽스에서 곡선을 그릴때 아주 유용한 이론이라는 것도 알게 되었다.[^6]
+그동안 애니메이션을 적용할때 단순하게 애니메이션 duration이 느리면 앱이 느리게 느껴진다는 공식을 가지고 애니메이션을 적용해왔다. 하지만 애니메이션을 공부하면서 easing function이 어떻게 적용되었느냐에 따라 250ms보다 더 느리지만 심리적으로 빠르고 부드럽게 보이는 애니메이션을 적용할수 있다는 것을 알게 되었다. 베지어 곡선이 무엇이고 원리도 알게 되었고 베지어 곡선이 컴퓨터 그래픽스에서 곡선을 그릴때 아주 유용한 이론이라는 것도 알게 <Footnote note='Wikipedia, "Bezier curve" , https://en.wikipedia.org/wiki/B%C3%A9zier_curve#'>되었다.</Footnote>
 
-'cubic-bezier 말고 다른 종류의 css easing 함수가 있을까'하는 궁금점도 있었는데 찾아보니 종류가 단축어와 cubic-bezier를 제외하고 linear()와 steps()이 있다. 본문의 주제와는 조금 달라서 예시는 링크만 첨부한다.[^7].
-
-[^1]: 베지어 곡선 — The Modern JavaScript Tutorial, https://ko.javascript.info/bezier-curve
-
-[^2]: 카스텔조 알고리즘 — The Modern JavaScript Tutorial, https://ko.javascript.info/bezier-curve#ref-847
-
-[^3]: cubic-bezier() — MDN Web Docs, https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/cubic-bezier
-
-[^4]: Josh Collinsworth, "Understanding easing and cubic-bezier curves in CSS", https://joshcollinsworth.com/blog/easing-curves
-
-[^5]: Gallery Carousel(예시 사이트) https://easings.co/
-
-[^6]: Wikipedia, "Bezier curve" , https://en.wikipedia.org/wiki/B%C3%A9zier_curve#
-
-[^7]: Easing Wizard — CSS easing function 예시, https://easingwizard.com/
+'cubic-bezier 말고 다른 종류의 css easing 함수가 있을까'하는 궁금점도 있었는데 찾아보니 종류가 단축어와 cubic-bezier를 제외하고 linear()와 steps()이 있다. 본문의 주제와는 조금 달라서 예시는 링크만 <Footnote note="Easing Wizard — CSS easing function 예시, https://easingwizard.com/">첨부한다.</Footnote>.

@@ -241,6 +241,26 @@
               ]
             },
             {
+              "id": "P1-6",
+              "title": "본문 에디터가 짧은 글에서도 화면 높이를 채우게",
+              "done": true,
+              "by": "inferred",
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/app/keystatic/keystatic.css</code>, <code>src/app/keystatic/layout.tsx</code>"
+                ],
+                [
+                  "결정",
+                  "Keystatic 에디터 본문을 감싸는 요소를 세로 flex로 늘리고 폭을 100%로 고정했어요. 사용자 요청: 글이 짧아도 에디터 영역만큼 높이가 잡히고, 넘치면 스크롤"
+                ],
+                [
+                  "결과",
+                  "짧은 글 800×886(툴바 아래 전체), 긴 글은 스크롤 영역 1396>935로 스크롤 유지"
+                ]
+              ]
+            },
+            {
               "id": "P1-V",
               "title": "검증: <code>bun run build</code> 통과, 로컬 /keystatic에서 글 77개 목록과 글 하나 열기 확인",
               "done": true,

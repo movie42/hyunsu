@@ -1,0 +1,319 @@
+{
+  "id": "footnote",
+  "title": "에디터에서 각주 달기",
+  "type": "기능 개발",
+  "branch": "fix/keystatic-editor-height",
+  "links": [],
+  "stages": {
+    "tasks": {
+      "status": "ask",
+      "summary": "구현 완료 · 링크 칸 화면 확인 대기",
+      "conclusion": [
+        "빌드 단계에서 <code>&lt;Footnote note=\"…\" /&gt;</code>를 기존 GFM 각주와 같은 구조로 바꿔요. 번호, 글 끝 참고자료 목록, CSS가 기존과 같아요 [[P1]].",
+        "에디터에서 글을 드래그하고 '각주 (Footnote)' 버튼을 누른 뒤, 그 글을 클릭해 연필 버튼으로 출처와 링크를 넣어요. 번호는 드래그한 글 뒤에 붙어요 [[P4]] [[P5]].",
+        "베지어 곡선 글의 각주 7개를 새 형식으로 바꿨고, 렌더링 결과는 바꾸기 전과 같아요 [[P3]].",
+        "출처가 빈 각주는 에디터에 '출처 입력 필요'로 보이고, 블로그에서는 번호 없이 글만 나와요 [[P5-2]]."
+      ],
+      "blocks": [
+        {
+          "type": "checklist",
+          "id": "P1",
+          "title": "Phase 1 · 빌드 단계 변환",
+          "items": [
+            {
+              "id": "P1-1",
+              "title": "<code>Footnote</code> 요소를 GFM 각주 노드로 바꾸는 remark 플러그인",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/lib/server/remark-footnote.ts</code> (새 파일), <code>package.json</code>, <code>bun.lock</code>"
+                ],
+                [
+                  "동작",
+                  "글에 나온 순서대로 번호를 매기고, 본문 자리에는 각주 번호 노드를, 글 끝에는 각주 정의 노드를 넣어요. 기존 <code>[^n]</code> 각주와 섞여도 번호가 겹치지 않아요."
+                ],
+                [
+                  "결정",
+                  "<code>note</code> 문자열은 GFM 마크다운으로 파싱해서 넣어요. URL은 자동 링크가 되고 <code>**굵게**</code>, <code>`코드`</code>도 쓸 수 있어요."
+                ],
+                [
+                  "재사용",
+                  "<code>mdast-util-from-markdown</code> + <code>mdast-util-gfm</code> + <code>micromark-extension-gfm</code> (지금은 remark-gfm의 하위 의존성이라 <code>package.json</code>에 직접 추가), <code>unist-util-visit</code>"
+                ],
+                [
+                  "패턴",
+                  "<code>src/lib/server/mdx.tsx</code>의 <code>rehypeShiki</code>처럼 같은 폴더에 플러그인 함수로 둬요"
+                ]
+              ]
+            },
+            {
+              "id": "P1-2",
+              "title": "<code>renderMdx</code>에 플러그인 연결",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/lib/server/mdx.tsx</code>"
+                ],
+                [
+                  "결정",
+                  "<code>remarkPlugins: [remarkGfm, remarkFootnote]</code>. 노드를 빌드 때 없애므로 <code>mdx-components.tsx</code>에 React 컴포넌트는 필요 없어요."
+                ]
+              ]
+            },
+            {
+              "id": "P1-V",
+              "title": "검증: 임시 글에 <code>&lt;Footnote&gt;</code>와 <code>[^1]</code>을 섞어 렌더링해서 번호·목록·되돌아가기 링크 확인, <code>bun run check</code> 통과",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "<code>[^1]</code>과 섞인 글에서 번호 1~4가 등장 순서대로 붙고, URL 자동 링크·따옴표·단독 줄 각주가 정상 렌더링됨. <code>bun run check</code> 통과"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "checklist",
+          "id": "P2",
+          "title": "Phase 2 · 에디터 등록",
+          "items": [
+            {
+              "id": "P2-1",
+              "title": "Keystatic <code>postComponents</code>에 <code>Footnote</code> inline 요소 등록",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>keystatic.config.ts</code>"
+                ],
+                [
+                  "결정",
+                  "라이브러리 함수 <code>inline</code>(커서 위치에 넣는 인라인 요소)을 써요. 입력 칸은 '출처' 하나(<code>fields.text</code>, 필수, 여러 줄 아님)."
+                ],
+                [
+                  "패턴",
+                  "같은 파일의 <code>YouTube</code> 블록 등록 방식, 아이콘은 <code>@keystar/ui</code> 아이콘"
+                ],
+                [
+                  "결정",
+                  "에디터 안에서는 출처 문장을 그대로 보여 줘요(<code>ContentView</code>)."
+                ]
+              ]
+            },
+            {
+              "id": "P2-V",
+              "title": "검증: <code>bun dev</code>의 <code>/keystatic</code>에서 각주를 넣고 저장 → 파일에 <code>&lt;Footnote note=\"…\" /&gt;</code>가 생기고, 따옴표가 들어간 출처도 깨지지 않는지 확인",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "커서 삽입 방식은 [[P4]]에서 드래그 방식으로 바뀌어 이 확인은 [[P4-V]]로 옮겼어요."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "checklist",
+          "id": "P3",
+          "title": "Phase 3 · 기존 글 변환",
+          "items": [
+            {
+              "id": "P3-1",
+              "title": "베지어 곡선 글의 <code>[^1]</code>~<code>[^7]</code>을 <code>&lt;Footnote&gt;</code>로 변환",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/content/markdown-pages/animation/bezier-curve.mdx</code>"
+                ],
+                [
+                  "결정",
+                  "각주를 쓰는 글이 이 글 하나뿐이라 변환해요. 변환 뒤에는 에디터에서 열어도 각주가 깨지지 않아요."
+                ]
+              ]
+            },
+            {
+              "id": "P3-2",
+              "title": "<code>.claude/CLAUDE.md</code>의 '에디터가 표현 못 하는 것' 목록에서 각주를 <code>Footnote</code> 안내로 바꾸고 MDX 컴포넌트 목록에 추가",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>.claude/CLAUDE.md</code>"
+                ]
+              ]
+            },
+            {
+              "id": "P3-V",
+              "title": "검증: 변환 전과 후 베지어 글의 빌드 HTML 본문이 같은지 비교, <code>bun run build</code> 통과",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "변환 전후 렌더링 HTML이 바이트 단위로 같아요. 목차는 렌더된 DOM에서 제목을 읽어서 영향 없어요. <code>bun run build</code> 통과"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "checklist",
+          "id": "P4",
+          "title": "Phase 4 · 드래그 후 버튼으로 바꾸기",
+          "items": [
+            {
+              "id": "P4-1",
+              "title": "<code>Footnote</code>를 커서 삽입 요소(<code>inline</code>)에서 선택한 글에 입히는 서식(<code>mark</code>)으로 변경",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>keystatic.config.ts</code>, <code>src/app/keystatic/keystatic.css</code>"
+                ],
+                [
+                  "결정",
+                  "사용자 피드백: 커서 삽입이 직관적이지 않고, 글을 드래그한 뒤 각주 버튼을 누르는 방식을 기대함. 각주 번호는 드래그한 글 바로 뒤에 붙어요. 에디터에서는 드래그한 글에 점선 밑줄과 <code>*</code> 표시가 보여요."
+                ]
+              ]
+            },
+            {
+              "id": "P4-2",
+              "title": "플러그인이 감싼 글을 그대로 두고 그 뒤에 각주 번호를 넣도록 변경",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/lib/server/remark-footnote.ts</code>"
+                ]
+              ]
+            },
+            {
+              "id": "P4-3",
+              "title": "베지어 곡선 글의 각주 7개가 앞 단어를 감싸도록 변환",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/content/markdown-pages/animation/bezier-curve.mdx</code>"
+                ],
+                [
+                  "결과",
+                  "렌더링 HTML이 처음 버전과 바이트 단위로 같아요. <code>bun run check</code> 통과"
+                ]
+              ]
+            },
+            {
+              "id": "P4-V",
+              "title": "검증: 에디터에서 글 드래그 → 각주 버튼 → 출처 입력 → 저장 후 파일 확인",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "로컬 모드 에디터에서 드래그 → 각주 버튼 → 글 클릭 → 연필 → 출처 입력 → 저장하면 <code>&lt;Footnote note=\"…\"&gt;함수이다&lt;/Footnote&gt;</code>로 저장되고 각주가 렌더링돼요. 사용자도 직접 확인했어요."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "checklist",
+          "id": "P5",
+          "title": "Phase 5 · 출처 링크 칸과 빈 출처 처리",
+          "items": [
+            {
+              "id": "P5-1",
+              "title": "출처 창에 선택 입력 '링크' 칸 추가",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>keystatic.config.ts</code>, <code>src/lib/server/remark-footnote.ts</code>"
+                ],
+                [
+                  "결정",
+                  "사용자 피드백: 출처 글(예: 저자·책 이름) 전체에 링크를 걸고 싶음. 링크를 넣으면 출처 글 전체가 그 주소로 연결되고, 비워 두면 출처 안의 URL만 링크가 돼요."
+                ]
+              ]
+            },
+            {
+              "id": "P5-2",
+              "title": "출처가 빈 각주 처리",
+              "done": true,
+              "rows": [
+                [
+                  "파일",
+                  "<code>src/lib/server/remark-footnote.ts</code>, <code>keystatic.config.ts</code>, <code>src/app/keystatic/keystatic.css</code>"
+                ],
+                [
+                  "결정",
+                  "Keystatic 각주 버튼은 누를 때 입력 창을 띄울 수 없어요(글 클릭 → 연필 버튼으로 입력). 그래서 출처가 빈 각주는 에디터에 빨간 '출처 입력 필요'로 보이고, 블로그에서는 페이지를 깨뜨리지 않고 번호 없이 글만 보여요."
+                ]
+              ]
+            },
+            {
+              "id": "P5-V",
+              "title": "검증: 링크 있음·없음·null·출처 없음·빈 출처 5가지 렌더링 확인, 베지어 글 HTML 동일, <code>bun run check</code> 통과",
+              "done": true,
+              "rows": []
+            }
+          ]
+        }
+      ]
+    },
+    "done": {
+      "status": "wait",
+      "summary": "리뷰 전",
+      "conclusion": [],
+      "blocks": [
+        {
+          "type": "checklist",
+          "title": "PR 전",
+          "items": [
+            {
+              "id": "D1",
+              "title": "SOT 맵 근거를 실제 코드 파일:줄로 바꿈",
+              "done": false
+            },
+            {
+              "id": "D2",
+              "title": "남은 Computed · 계산 행을 서버 · 기획 요청으로 정리",
+              "done": false
+            },
+            {
+              "id": "D3",
+              "title": "<code>/code-review</code> — 크리티컬한 지적을 고침",
+              "done": false
+            },
+            {
+              "id": "D4",
+              "title": "고친 뒤 typecheck · lint · test 다시 통과 (04 검증이 있으면 그것도 완료)",
+              "done": false
+            },
+            {
+              "id": "D5",
+              "title": "PR — <code>/git-pr</code>로 만들거나, 안 만들면 결론에 기록",
+              "done": false
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "title": "서버 · 기획에 요청할 것",
+          "html": "없어요"
+        }
+      ]
+    }
+  },
+  "intent": [
+    {
+      "text": "글에 출처를 달 때 파일을 직접 고치지 않고 Keystatic 에디터 안에서 각주를 넣을 수 있게 해요.",
+      "state": "confirmed",
+      "basis": "대화 2026-11-21"
+    }
+  ],
+  "base": "ca4cffc"
+}
