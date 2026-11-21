@@ -7,3 +7,25 @@
 [data-keystatic-editor='root'][data-layout='main'] [data-keystatic-editor='content'] {
 	width: 100%;
 }
+
+.keystatic-footnote {
+	text-decoration: underline dotted;
+	text-underline-offset: 0.2em;
+}
+
+.keystatic-footnote::after {
+	content: '*';
+	vertical-align: super;
+	font-size: 0.75em;
+}
+
+.keystatic-footnote-empty {
+	text-decoration-color: var(--kui-color-foreground-critical, currentColor);
+}
+
+.keystatic-footnote-empty::after {
+	content: ' 출처 입력 필요';
+	vertical-align: super;
+	font-size: 0.7em;
+	color: var(--kui-color-foreground-critical, currentColor);
+}

@@ -31,7 +31,7 @@ draft: false # true hides the post from lists, RSS and sitemap; the page still b
 - Loader: `src/lib/server/posts.ts`. `getAllPosts()` returns published posts only; `getAllPostsIncludingDrafts()` and `getPostByCategoryAndSlug()` include drafts.
 - The URL slug is the file name without the topic folder. `sourcePath` (`topic/file`) is what Keystatic calls the slug.
 - MDX rendering: `src/lib/server/mdx.tsx` (`@mdx-js/mdx` evaluate + remark-gfm + rehype-slug + Shiki).
-- MDX components available in posts: `src/mdx-components.tsx`. Every component there must also be registered in `keystatic.config.ts` (`postComponents`), or the editor cannot open posts that use it.
+- MDX components available in posts: `src/mdx-components.tsx`. Every component there must also be registered in `keystatic.config.ts` (`postComponents`), or the editor cannot open posts that use it. `Footnote` is the one entry in `postComponents` without a matching component (see Keystatic Editor).
 
 ### Keystatic Editor
 
@@ -39,7 +39,8 @@ draft: false # true hides the post from lists, RSS and sitemap; the page still b
 - Storage is `local` under `next dev` and `github` (`movie42/hyunsu`) in production. `NEXT_PUBLIC_KEYSTATIC_STORAGE=github bun dev` runs dev against GitHub (needed once to create the GitHub App). Saving in production commits to the repository and Vercel redeploys.
 - Production needs `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`. Without the first three the API route answers 404 so the build still passes.
 - The preview button opens `/preview/<topic>/<file>`, which redirects to the post's category URL.
-- Keystatic rewrites a file in its own format on save and cannot represent: GFM footnotes, task lists, table column alignment, and raw HTML elements (`<img>`, `<a>`, `<div>`, `<details>` ...). Posts using these must be edited as files, not in the editor.
+- Keystatic rewrites a file in its own format on save and cannot represent: GFM footnotes (`[^1]`), task lists, table column alignment, and raw HTML elements (`<img>`, `<a>`, `<div>`, `<details>` ...). Posts using these must be edited as files, not in the editor.
+- Footnotes in editor-friendly form are `<Footnote note="...">anchor text</Footnote>` (a Keystatic mark: select text, press the footnote button, enter the note; the number renders right after the anchor text). `src/lib/server/remark-footnote.ts` turns them into GFM footnote nodes at build time, so they render exactly like `[^1]` (numbering is shared when both appear in one post). The note is parsed as GFM markdown, so URLs become links; an optional `link` attribute instead links the whole note text. A `Footnote` with an empty or missing note renders as plain text (the editor flags it with "출처 입력 필요"). There is no React component for it in `src/mdx-components.tsx`.
 
 ### Routing & Categories
 
@@ -56,7 +57,7 @@ draft: false # true hides the post from lists, RSS and sitemap; the page still b
 
 ### Components
 
-React components in `src/components/`, each with its own `*.module.css`: `Header`, `Nav`, `PostCard`, `PostContent`, `TOC`, `Giscus` (GitHub Discussions comments), `Section`, and the MDX components `Quotation`, `ImageComment`, `Tabs`, `Canvas`, `BezierCasteljau`, `EasingShowcase`, `YouTube`.
+React components in `src/components/`, each with its own `*.module.css`: `Header`, `Nav`, `PostCard`, `PostContent`, `TOC`, `Giscus` (GitHub Discussions comments), `Section`, and the MDX components `Quotation`, `ImageComment`, `Tabs`, `Canvas`, `BezierCasteljau`, `EasingShowcase`, `YouTube`. `Footnote` is also an MDX element but is handled by a remark plugin, not a component.
 
 ### Aliases
 

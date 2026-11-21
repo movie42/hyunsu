@@ -6,6 +6,7 @@ import { paintbrushIcon } from '@keystar/ui/icon/icons/paintbrushIcon';
 import { panelTopIcon } from '@keystar/ui/icon/icons/panelTopIcon';
 import { quoteIcon } from '@keystar/ui/icon/icons/quoteIcon';
 import { splineIcon } from '@keystar/ui/icon/icons/splineIcon';
+import { superscriptIcon } from '@keystar/ui/icon/icons/superscriptIcon';
 import { youtubeIcon } from '@keystar/ui/icon/icons/youtubeIcon';
 import { Icon } from '@keystar/ui/icon';
 
@@ -22,6 +23,23 @@ export const postComponents = {
 					{ label: '생각 (think)', value: 'think' }
 				],
 				defaultValue: 'speak'
+			})
+		}
+	}),
+	Footnote: mark({
+		label: '각주 (Footnote)',
+		icon: createElement(Icon, { src: superscriptIcon }),
+		tag: 'span',
+		className: ({ value }) => (value.note.trim() ? 'keystatic-footnote' : 'keystatic-footnote keystatic-footnote-empty'),
+		schema: {
+			note: fields.text({
+				label: '출처',
+				description: '드래그한 글 뒤에 각주 번호가 붙고, 이 내용이 글 끝 참고자료에 들어가요.',
+				validation: { length: { min: 1 } }
+			}),
+			link: fields.url({
+				label: '링크',
+				description: '넣으면 출처 글 전체가 이 주소로 연결돼요. 비워 두면 출처 안에 쓴 URL만 링크가 돼요.'
 			})
 		}
 	}),

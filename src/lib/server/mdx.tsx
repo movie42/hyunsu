@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { codeToHtml } from 'shiki';
 import { mdxComponents } from '@/mdx-components';
+import { remarkFootnote } from './remark-footnote';
 
 const SUPPORTED_LANGUAGE_ALIASES: Record<string, string> = {
 	'choose-workspace.js': 'js',
@@ -76,7 +77,7 @@ export async function renderMdx(source: string) {
 	const { default: MDXContent } = await evaluate(source, {
 		...runtime,
 		baseUrl: import.meta.url,
-		remarkPlugins: [remarkGfm],
+		remarkPlugins: [remarkGfm, remarkFootnote],
 		rehypePlugins: [rehypeSlug, rehypeShiki]
 	});
 
