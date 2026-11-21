@@ -74,7 +74,7 @@ export const postContentOptions = {
 
 export default config({
 	storage:
-		process.env.NODE_ENV === 'development'
+		process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE !== 'github'
 			? { kind: 'local' }
 			: { kind: 'github', repo: { owner: 'movie42', name: 'hyunsu' } },
 	ui: {

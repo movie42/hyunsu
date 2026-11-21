@@ -36,7 +36,7 @@ draft: false # true hides the post from lists, RSS and sitemap; the page still b
 ### Keystatic Editor
 
 - Config: `keystatic.config.ts`. Admin UI: `src/app/keystatic/`. API: `src/app/api/keystatic/[...params]/route.ts`.
-- Storage is `local` under `next dev` and `github` (`movie42/hyunsu`) in production. Saving in production commits to the repository and Vercel redeploys.
+- Storage is `local` under `next dev` and `github` (`movie42/hyunsu`) in production. `NEXT_PUBLIC_KEYSTATIC_STORAGE=github bun dev` runs dev against GitHub (needed once to create the GitHub App). Saving in production commits to the repository and Vercel redeploys.
 - Production needs `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`. Without the first three the API route answers 404 so the build still passes.
 - The preview button opens `/preview/<topic>/<file>`, which redirects to the post's category URL.
 - Keystatic rewrites a file in its own format on save and cannot represent: GFM footnotes, task lists, table column alignment, and raw HTML elements (`<img>`, `<a>`, `<div>`, `<details>` ...). Posts using these must be edited as files, not in the editor.
