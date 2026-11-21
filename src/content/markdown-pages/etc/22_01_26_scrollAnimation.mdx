@@ -1,10 +1,11 @@
 ---
-slug: "/scroll-animation-velog"
-date: "2022-01-26"
-title: "스크롤 애니메이션으로 velog 메뉴 흉내내기"
-tags: ["javascript", "animation"]
+title: 스크롤 애니메이션으로 velog 메뉴 흉내내기
+date: 2022-01-26
+tags:
+  - javascript
+  - animation
+draft: false
 ---
-
 스크롤 애니메이션은 말 그대로 인터넷 브라우저의 스크롤을 사용하여 타이밍을 설계해서 유저에게 컨텐츠를 보여주는 애니메이션이다. 스크롤 애니메이션은 사용자에게 시각적으로 보다 더 다양한 경험을 제공할 수 있다. 화면이 로딩 됨과 동시에 컨텐츠가 보여지는 것이 아니고 동영상 플레이어를 재생할 때, 타임 라인을 탐색 하는 듯한 경험을 제공할 수 있다. 나는 [애플 클론 수업](https://www.inflearn.com/course/%EC%95%A0%ED%94%8C-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EC%9D%B8%ED%84%B0%EB%9E%99%EC%85%98-%ED%81%B4%EB%A1%A0/dashboard)을 수강하면서 배운 스크롤 애니메이션을 메뉴바에 적용하기로 했다.
 
 ## UX
@@ -21,12 +22,10 @@ tags: ["javascript", "animation"]
    스크롤의 위치에 따라 css의 display 속성을 none, block으로 바꾸는 방법을 사용한다.
    장점 : 스크롤에 위치에 따라 자바스크립트로 class 속성을 추가하는 방법으로 애니메이션을 컨트롤 할 수 있기 떄문에 구현하기 매우 쉽다.
    단점 : transfomr 속성이 적용되지 않아서 뜬금없이 '뙇'하고 메뉴가 튀어나온다. opacity를 컨트롤 할 수 없다.
-
 2. visiable
    transform을 통해 부드러운 애니메이션을 제공할 수 있다.
    장점 : 스크롤 위치에 따라 class 속성을 추가하여 visialbe을 조정할 수 있다 position을 fixed로 하여 메뉴를 보이게 할 수 있다.
    단점 : 스크롤에 따라 세부적으로 조정할 수 없다.
-
 3. opacity와 margin
    html에 미리 header를 하나 더 만들어서 애니메이션을 제공할 수 있다.
    장점 : 스크롤의 위치와 값의 양에 따라 opacity와 margin을 조정하여 스크롤 애니메이션을 제공할 수 있다.
@@ -62,7 +61,7 @@ tags: ["javascript", "animation"]
 }
 ```
 
-### #fixed_header에 display :none 을 추가한 이유
+### #fixed\_header에 display :none 을 추가한 이유
 
 display none을 추가한 이유는 모바일에서 상단으로 pull up을 할 경우 상단에 숨겨져있는 메뉴가 보이기 때문이었다. 내가 의도하지 않았기 때문에 display :none을 추가하여서 pull up을 하더라도 상단 메뉴가 보이지 않게 하였다.
 
@@ -120,7 +119,7 @@ preveHeight와 top 변수가 전역으로 선언되어있는데 ES6 module을 �
 브라우저 화면은 좌표 평면으로 따지면 +,+에 속해있다. 일반적인 좌표 평면과 방향이 180도 뒤집혀있다. 그래서 스크롤을 아래로 내리면 scrollY의 값은 점차 커진다. 그래서 스크롤을 아래로 내릴 때는 prevHeight - scrollY값이 prevHeight보다 scrollY 값이 더 커지기 때문에 -가 된다. 위로 올릴 때는 반대로 +가 된다. 이것으로 스크롤이 위로 올라가고 내려가는 것을 알 수 있게 된다. 방향에 따라 보여주고자 하는 header의 top 값을 자바스크립트로 제어할 수 있다.
 
 > 참조
-> [[자바스크립트] 스크롤 이벤트에서 스크롤 방향 알아내는 방법](https://webisfree.com/2019-12-16/[%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8]-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%97%90%EC%84%9C-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EB%B0%A9%ED%96%A5-%EC%95%8C%EC%95%84%EB%82%B4%EB%8A%94-%EB%B0%A9%EB%B2%95)
+> [\[자바스크립트\] 스크롤 이벤트에서 스크롤 방향 알아내는 방법](https://webisfree.com/2019-12-16/[%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8]-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%97%90%EC%84%9C-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EB%B0%A9%ED%96%A5-%EC%95%8C%EC%95%84%EB%82%B4%EB%8A%94-%EB%B0%A9%EB%B2%95)
 
 ### 한번에 많은 양의 스크롤 제어하기
 
@@ -142,5 +141,5 @@ preveHeight와 top 변수가 전역으로 선언되어있는데 ES6 module을 �
 
 > 참조
 >
-> [[자바스크립트] 스크롤 이벤트에서 스크롤 방향 알아내는 방법](https://webisfree.com/2019-12-16/[%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8]-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%97%90%EC%84%9C-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EB%B0%A9%ED%96%A5-%EC%95%8C%EC%95%84%EB%82%B4%EB%8A%94-%EB%B0%A9%EB%B2%95)  
+> [\[자바스크립트\] 스크롤 이벤트에서 스크롤 방향 알아내는 방법](https://webisfree.com/2019-12-16/[%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8]-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%97%90%EC%84%9C-%EC%8A%A4%ED%81%AC%EB%A1%A4-%EB%B0%A9%ED%96%A5-%EC%95%8C%EC%95%84%EB%82%B4%EB%8A%94-%EB%B0%A9%EB%B2%95)\
 > [애플 클론 수업](https://www.inflearn.com/course/%EC%95%A0%ED%94%8C-%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8-%EC%9D%B8%ED%84%B0%EB%9E%99%EC%85%98-%ED%81%B4%EB%A1%A0/dashboard)

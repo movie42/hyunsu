@@ -17,6 +17,8 @@ export interface PostMatter {
 
 export interface Post extends PostMatter {
 	slug: string;
+	draft: boolean;
+	sourcePath: string;
 	category: Category;
 	content: string;
 	filePath: string;
@@ -53,12 +55,10 @@ export function getCategory(tags: string[]): Category {
 	return 'programming';
 }
 
-export function getPost(absPath: string): Post | undefined {
+export function getPost(absPath: string): Post {
 	const file = fs.readFileSync(absPath, { encoding: 'utf8' });
 	const { content, data } = matter(file);
 	const grayMatter = data as PostMatter;
-
-	if (grayMatter.draft) return undefined;
 
 	const slug = path.basename(absPath).replace(/\.(mdx|md)$/, '');
 	const tags = grayMatter.tags?.filter(Boolean) ?? [];
@@ -66,6 +66,8 @@ export function getPost(absPath: string): Post | undefined {
 
 	return {
 		...grayMatter,
+		draft: Boolean(grayMatter.draft),
+		sourcePath: path.relative(POST_PATH, absPath).replace(/\.(mdx|md)$/, ''),
 		tags,
 		category: getCategory(tags),
 		date: dayjs(grayMatter.date).format('YYYY-MM-DD'),
@@ -76,16 +78,23 @@ export function getPost(absPath: string): Post | undefined {
 	};
 }
 
-export function getAllPosts(): Post[] {
-	const files = globMdx(POST_PATH);
-	return files
+export function getAllPostsIncludingDrafts(): Post[] {
+	return globMdx(POST_PATH)
 		.map((f) => getPost(f))
-		.filter((p): p is Post => p !== undefined)
 		.sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
 }
 
-export function getPostsByCategory(category: Category): Post[] {
-	return getAllPosts().filter((post) => post.category === category);
+export function getAllPosts(): Post[] {
+	return getAllPostsIncludingDrafts().filter((post) => !post.draft);
+}
+
+export function getPostsByCategory(category: Category, { includeDrafts = false } = {}): Post[] {
+	const posts = includeDrafts ? getAllPostsIncludingDrafts() : getAllPosts();
+	return posts.filter((post) => post.category === category);
+}
+
+export function getPostBySourcePath(sourcePath: string): Post | undefined {
+	return getAllPostsIncludingDrafts().find((post) => post.sourcePath === sourcePath);
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
@@ -93,7 +102,7 @@ export function getPostBySlug(slug: string): Post | undefined {
 }
 
 export function getPostByCategoryAndSlug(category: Category, slug: string): Post | undefined {
-	return getAllPosts().find((post) => post.category === category && post.slug === slug);
+	return getAllPostsIncludingDrafts().find((post) => post.category === category && post.slug === slug);
 }
 
 export function generateUrl({

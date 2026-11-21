@@ -1,10 +1,13 @@
 ---
-slug: "/form-validation"
-date: "2021-11-12"
-title: "Form Validation"
-tags: ["ajax", "javascript", "validation", "form"]
+title: Form Validation
+date: 2021-11-12
+tags:
+  - ajax
+  - javascript
+  - validation
+  - form
+draft: false
 ---
-
 폼을 검증하는 것은 사용자 경험에 좋은 영향을 준다. 회원가입이나 로그인을 할 때, 서식 쓰기를 거부하거나 회원 인증을 거부하면 왜 그런지 이유를 알려주어야한다. 그러지 않을 경우 사용자는 미궁속에 빠지게 될 것이다.
 
 이전에 서식 검증 코드를 만들었지만 코드가 작동만 할 뿐이었다. 그래서 서식 검증 코드를 조금 손봐서 다시 작성하기로 했다.
@@ -92,7 +95,7 @@ function isTrue(name, value) {
 정규 표현식을 사용해서 검증을 했다. 정규 표현식은 아직도 낮설고 어렵다. 일단 구글에서 검색해서 붙여넣기를 했다.
 
 > 정규 표현식 참고
-> [이메일 정규표현식](https://webisfree.com/2016-05-12/%EC%9D%B4%EB%A9%94%EC%9D%BC-%EC%A3%BC%EC%86%8C-%EA%B2%80%EC%A6%9D-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D)  
+> [이메일 정규표현식](https://webisfree.com/2016-05-12/%EC%9D%B4%EB%A9%94%EC%9D%BC-%EC%A3%BC%EC%86%8C-%EA%B2%80%EC%A6%9D-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D)\
 > [비밀번호 정규 표현식](https://beagle-dev.tistory.com/114)
 
 각 node의 이름을 객체에 넣어서 넘어온 이름에 해당하는 값을 정규표현식에서 검증한 다음에 true와 false를 리턴하게 하였다.
@@ -142,11 +145,11 @@ fetch로 get을 할 때, body로 json 값이 넘어가지 않았는데 이유를
 
 유튜브에서 XSS를 검색하자마자 공격 방법에 대해서 똭 나왔다.
 
-[7~8강 XSS 공격의 개요와 실습 - 동빈나 웹 해킹 강좌](https://youtube.com/playlist?list=PLRx0vPvlEmdDQxb41uc1G4ecjV-hklFDM)
+[7\~8강 XSS 공격의 개요와 실습 - 동빈나 웹 해킹 강좌](https://youtube.com/playlist?list=PLRx0vPvlEmdDQxb41uc1G4ecjV-hklFDM)
 
 마지막으로 공부를 하면서 찾아봤던 유튜브 자료를 공유한다. Form Validation을 공부하는 사람들에게 도움이 됐으면 좋겠다.
 
-> [[10분 테코톡] 🍎 그루밍의 Form Validation](https://www.youtube.com/watch?v=Z2YJvBw3pPI)  
-> [[병맛코딩만화] 웹 공격과 방어와 미친토끼 (보안, 파라미터 변조, XSS, SQL 인젝션, 비밀번호 암호화)](https://www.youtube.com/watch?v=dHcjwTvrxTk)
+> [\[10분 테코톡\] 🍎 그루밍의 Form Validation](https://www.youtube.com/watch?v=Z2YJvBw3pPI)\
+> [\[병맛코딩만화\] 웹 공격과 방어와 미친토끼 (보안, 파라미터 변조, XSS, SQL 인젝션, 비밀번호 암호화)](https://www.youtube.com/watch?v=dHcjwTvrxTk)
 
 [전체 코드는 깃에서](https://github.com/movie42/tubeClone/blob/main/src/assets/js/validation.js)

@@ -1,10 +1,10 @@
 ---
-slug: "/losing-my-git"
-date: "2021-11-09"
-title: "잔디 잃고 git 사용법 익힌다"
-tags: ["git"]
+title: 잔디 잃고 git 사용법 익힌다
+date: 2021-11-09
+tags:
+  - git
+draft: false
 ---
-
 WTF...
 
 ## 잔디가 전부 뽑혀 날아가버렸다.
@@ -24,7 +24,7 @@ WTF...
 ## git 사용법 다시 익히기
 
 > 참고한 블로그 또는 튜토리얼
-> [Lean Git Branching](https://learngitbranching.js.org/?locale=ko)  
+> [Lean Git Branching](https://learngitbranching.js.org/?locale=ko)\
 > [좋은 git 커밋 메시지를 작성하기 위한 7가지 약속](https://meetup.toast.com/posts/106)
 
 나는 깃허브를 사용하기 때문에 원격 저장소를 처음 만들었을 때 부터 저장, 충돌 등의 상황을 정리해보려고한다.
@@ -52,7 +52,7 @@ $ git checkout -b work-editor
 
 브랜치의 이름을 변경하고 싶다면 git branch -m 명령어를 사용해서 변경할 수 있다.
 
-> 출처  
+> 출처\
 > [GitHub 저장소의 브랜치 이름을 변경하는 방법](https://www.lainyzine.com/ko/article/how-to-rename-local-github-branch/)
 
 ```
@@ -100,9 +100,9 @@ HEAD가 work-editor를 가리키고 있다. push를 하면 origin/work-editor
 ### 새로운 코딩 작업이 끝났다 이제 main과 합쳐주고 싶다.
 
 > 참고
-> [Git Merge와 Rebase의 차이, 아름다운고 깔끔한 Git History 만들기.](https://firework-ham.tistory.com/12)  
-> [[GIT] Merge vs Rebase 차이](https://dongminyoon.tistory.com/9)  
-> [git merge와 rebase의 차이: rebase의 이해](https://gigibean.tistory.com/2)  
+> [Git Merge와 Rebase의 차이, 아름다운고 깔끔한 Git History 만들기.](https://firework-ham.tistory.com/12)\
+> [\[GIT\] Merge vs Rebase 차이](https://dongminyoon.tistory.com/9)\
+> [git merge와 rebase의 차이: rebase의 이해](https://gigibean.tistory.com/2)\
 > [Git Rebase 활용하기](https://velog.io/@godori/Git-Rebase)
 
 #### merge
@@ -132,8 +132,8 @@ $ git merge work-eidtor
 
 ### stash
 
-> 참조  
-> [[Git] git stash 명령어 사용하기](https://gmlwjd9405.github.io/2018/05/18/git-stash.html)  
+> 참조\
+> [\[Git\] git stash 명령어 사용하기](https://gmlwjd9405.github.io/2018/05/18/git-stash.html)\
 > [git stash 사용법: 커밋하지 않고 변경사항 저장하는 방법](https://www.lainyzine.com/ko/article/git-stash-usage-saving-changes-without-commit/)
 
 stash는 지금 내가 하고 있는 것을 임시로 저장하는 방법이고 commit 없이 나중에 다시 꺼내서 작업할 수 있다. 지금까지 나는 new-git-tutorial이라는 브랜치를 만들어서 이 글을 작성하고 있는데, branch를 바꿀 때마다 commit을 하였다. 하지만 아직 작업이 다 끝나지 않았는데 쓸데없이 commit을 한다는 생각이 들었다. 그럴때는 stash를 사용해서 해결하는 방법이 있다.
@@ -144,7 +144,7 @@ $ git stash
 
 stash를 하게 되면 스테이지 상태에 있는 파일과 그렇지 않은 파일 모두를 저장한다.
 
-> 스테이지 상태란?  
+> 스테이지 상태란?\
 > git add를 한 상태의 모든 파일
 > 읽어보기 : [Git 3가지 상태 정리](https://medium.com/sjk5766/git-3%EA%B0%80%EC%A7%80-%EC%83%81%ED%83%9C%EC%99%80-%EA%B0%84%EB%8B%A8-%EB%AA%85%EB%A0%B9%EC%96%B4-%EC%A0%95%EB%A6%AC-a80161aacec1)
 

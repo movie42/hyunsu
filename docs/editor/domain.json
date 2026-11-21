@@ -1,0 +1,11 @@
+{
+  "title": "글쓰기 에디터",
+  "kind": "screens",
+  "figma": "",
+  "nodes": [],
+  "paths": [
+    "src/app/keystatic",
+    "keystatic.config.ts"
+  ],
+  "links": []
+}

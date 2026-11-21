@@ -1,8 +1,8 @@
 ---
-slug: "/react/custom-hook-useFetch"
 date: "2022-03-31"
 title: "useFetch 만들기"
 tags: ["javascript", "react", "custom hook", "useFetch"]
+draft: false
 ---
 
 useFetch는 만들어 놓으면 사용할 때가 많아서 편리하다. React에서 서버와 비동기로 데이터를 주고 받는 경우가 많기 때문이다. useFetch가 없다면 비동기로 데이터를 주고 받을 때마다 복잡한 코드를 계속 작성해야한다. 불필요한 반복을 제거하기 위해서 useFetch를 만들었다. 처음에는 GET만 됐다. 하지만 POST, DELETE같은 다른 method에서도 사용이 가능해야했다. useFetch를 범용으로 만든 과정을 기록한다. 아울러 Typescript를 함께 사용하면서 오류를 해결한 과정도 함께 기록한다.

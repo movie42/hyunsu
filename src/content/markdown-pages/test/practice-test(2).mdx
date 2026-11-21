@@ -1,17 +1,21 @@
 ---
-slug: "/test/test-practice-2-recoil"
-date: "2022-06-04"
-title: "React Testing Library 연습(2) - Recoil과 테스트"
-tags: ["test", "basic", "summary", "react", "front-end"]
+title: React Testing Library 연습(2) - Recoil과 테스트
+date: 2022-06-04
+tags:
+  - test
+  - basic
+  - summary
+  - react
+  - front-end
+draft: false
 ---
-
 Test 코드를 작성하는 방법은 [velopert의 TDD 개발 흐름으로 투두리스트 만들기](https://velog.io/@velopert/tdd-with-react-testing-library)와 [The Net Nija의 React Testing Library](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gm4_-5UsNmLqMosM-dzuvQ) 튜토리얼을 따라하면서 작성하는 방법을 익혔다.
 
 React로 개발을 하다보면 다양한 library를 사용하게 된다. 대표적으로 상태 관리 도구를 사용하는 환경에서 React 상태를 관리하게 된다. 나는 Recoil을 사용하는 상태 관리 도구로 사용하는 환경에서 TDD를 하는 방법을 연습하였다.
 
 ## Recoil 테스트
 
-> 코드 참조  
+> 코드 참조\
 > [https://codesandbox.io/s/testing-recoil-fctje?file=/src/Message.tsx](https://codesandbox.io/s/testing-recoil-fctje?file=/src/Message.tsx)
 
 Recoil은 atom으로 개발자가 관리하려는 상태 값을 생성한다. 원자 단위로 상태를 관리한다는 의미에서 atom이라고 이름을 짓지 않았나 생각해본다.
@@ -159,8 +163,8 @@ export default TodoItemContainer;
 
 하지만 터미널에 출력된 스냅샷을 보면 item이 출력되지 않았다. 아마도 test 환경에서 todos가 무엇인지 잘 모르는 것 같았다. 처음에 beforeAll을 사용해서 renderHook을 사용해 값을 넣어주면 todos가 어떤 것인지 이해할 수 있을 줄 알았지만 여전히 계속 실패했다. 그러던 와중에 깃헙에서 [saseungmin](https://github.com/saseungmin)의 코드를 보게 되었다.
 
-> 코드 참조  
-> [saseungmin/Recoil_ToDo](https://github.com/saseungmin/Recoil_ToDo)
+> 코드 참조\
+> [saseungmin/Recoil\_ToDo](https://github.com/saseungmin/Recoil_ToDo)
 
 코드를 보니 상태 값을 Injection하는 컴포넌트를 먼저 넣고 테스트를 하는 것을 발견했다. 그래서 나도 똑같이 따라 만들었다.
 
@@ -237,5 +241,5 @@ describe(`TodoItemContainer`, () => {
 
 1. [velopert의 TDD 개발 흐름으로 투두리스트 만들기](https://velog.io/@velopert/tdd-with-react-testing-library)
 2. [The Net Nija의 React Testing Library](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gm4_-5UsNmLqMosM-dzuvQ)
-3. [saseungmin/Recoil_ToDo](https://github.com/saseungmin/Recoil_ToDo)
+3. [saseungmin/Recoil\_ToDo](https://github.com/saseungmin/Recoil_ToDo)
 4. [https://codesandbox.io/s/testing-recoil-fctje?file=/src/Message.tsx](https://codesandbox.io/s/testing-recoil-fctje?file=/src/Message.tsx)

@@ -1,10 +1,11 @@
 ---
-slug: "/front-end-and-web-sequrity"
-date: "2021-11-21"
-title: "프론트 앤드 개발자가 알아야할 웹 보안은 무엇이 있을까?"
-tags: ["front-end", "security"]
+title: 프론트 앤드 개발자가 알아야할 웹 보안은 무엇이 있을까?
+date: 2021-11-21
+tags:
+  - front-end
+  - security
+draft: false
 ---
-
 돈을 받고 일을 하고 있던 그렇지 않던지 간에 어쨌든 개발을 시작하게 되면 누구나 웹 어플리케이션을 만들게 되고 한 명 이상의 사용자가 생긴다. 어플리케이션을 베포하게되면 웹 보안에 대해서 자연스럽게 관심이 가게된다.
 
 나는 위지윅 텍스트 에디터를 커스텀으로 만들어 적용시키려다가 XSS를 알게 되고 토스트 UI 에디터를 뜯어보면서 원대한 꿈을 잠시 접어두게 되었다. XSS 공격에 노출된 텍스트 에디터도 많아서 무엇을 적용시키지 라는 고민으로 시작되어 여기까지 오게 되었다. 물론 공부를 하면서 '내가 지금 뭘하고 있는거지...?'라는 생각에 한, 두 번 빠진게 아니다.
@@ -14,7 +15,7 @@ tags: ["front-end", "security"]
 ## 읽기 전에 알려드립니다.
 
 1. [Front-End-Checklist : thedaviddias, 깃헙](https://github.com/thedaviddias/Front-End-Checklist)에서 제공하는 보안 항목을 기준으로 공부했다.
-2. 웹 보안에 대해 공부하기 전에 HTTP가 무엇인지 알고 있어야 한다. 그래야 편하다. MDN의 HTTP 자습서도 훌륭하다. [HTTP 완벽 가이드](http://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9788966261208)를 사서 보는 것도 좋다. 하지만 나는 둘다 보는걸 추천한다.(한 가지만 보다보면 이게 뭐지 하는게 많다.)
+2. 웹 보안에 대해 공부하기 전에 HTTP가 무엇인지 알고 있어야 한다. 그래야 편하다. MDN의 HTTP 자습서도 훌륭하다. [HTTP 완벽 가이드](http://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR\&ejkGb=KOR\&barcode=9788966261208)를 사서 보는 것도 좋다. 하지만 나는 둘다 보는걸 추천한다.(한 가지만 보다보면 이게 뭐지 하는게 많다.)
 3. 백앤드 개발 환경은 NodeJS다. 자바스크립트 외의 다른 환경의 개발자들에게 예제 코드가 도움이 되지 않을 수 있다.
 4. HTTPS와 HSTS, XSS, CSP, CSRF, CORS에 대해서 다루고 있다.
 5. 참고로 난 취준생이기 때문에 최대한 개념과 실재 적용 방법을 사례로 찾아 정리했다. 불안하면 참고하지 않아도 된다. 내가 생각하는 기준으로 '프론트 앤드 개발자라면 이정도는 알아야하지 않을까?'라고 생각해서 쓴 글이기 때문에 과할 수도 있고 부족할 수도 있다.
@@ -38,9 +39,9 @@ HTTPS는 CA 인증을 받은 회사에서 SSL 인증을 발급해준다. 브라�
 개인정보에 민감한 곳일 수록 SSL 인증은 아주 기본적인 사항이면서 필수 사항이라고 볼 수 있다. SSL 인증은 도메인 주소를 판매하는 곳에서 함께 구매할 수 있으며 그외에 SSL 인증을 해주는 CA에서 구매하여 나의 도메인에 적용할 수 있다.
 
 > 참고한 글
-> [네트워크 - HTTP/HTTPS 차이점, HTTPS란? : 코딩스타트](https://coding-start.tistory.com/208)  
-> [How is HTTPS different from HTTP? : SSL.com](https://www.ssl.com/faqs/what-is-https/)  
-> [HTTPS란? (동작방식, 장단점) : EunJeong Kwak](https://rachel-kwak.github.io/2021/03/08/HTTPS.html)  
+> [네트워크 - HTTP/HTTPS 차이점, HTTPS란? : 코딩스타트](https://coding-start.tistory.com/208)\
+> [How is HTTPS different from HTTP? : SSL.com](https://www.ssl.com/faqs/what-is-https/)\
+> [HTTPS란? (동작방식, 장단점) : EunJeong Kwak](https://rachel-kwak.github.io/2021/03/08/HTTPS.html)\
 > [HTTPS가 뭐고 왜 쓰나요? (Feat. 대칭키 vs. 비대칭키) : 얄팍한 코딩사전](https://youtu.be/H6lpFRpyl14)
 
 ### HTTPS로 강제 접속하게 하기
@@ -119,7 +120,7 @@ CSP로 넘어가기 전에 동일 출처 정책을 알아야한다.
 
 > [URL](https://developer.mozilla.org/ko/docs/Learn/Common_questions/What_is_a_URL)
 
-http://example.com과 동일 출처로 볼 수 있는 출처는 http://example.com/api/write-document다. 다른 출처로 보는 것은 https://example.com(프로토콜이 다른 경우)이나 http://example2.com(호스트가 다른 경우) 등이 있다.
+[http://example.com과](http://example.com과) 동일 출처로 볼 수 있는 출처는 [http://example.com/api/write-document다](http://example.com/api/write-document다). 다른 출처로 보는 것은 [https://example.com(프로토콜이](https://example.com\(프로토콜이) 다른 경우)이나 [http://example2.com(호스트가](http://example2.com\(호스트가) 다른 경우) 등이 있다.
 
 동일 출처 정책은 이렇게 A라는 출처에서 B라는 출처의 리소스가 동작하는 것을 차단하는 것이다. 그래서 외부 공격으로부터 나의 웹 어플리케이션이 안전 할 수 있다.
 
@@ -154,11 +155,11 @@ app.use(helmet.xssFilter());
 
 [helmetjs/helmet](https://github.com/helmetjs/helmet) helmetjs 깃헙 사이트에서 xssFilter 옵션 사용 방법을 알 수 있다. helmet 이슈 #230에서 [X-XSS-Protection](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection) 헤더를 기본적으로 비활성화 해야한다고 한다. [X-XSS-Protection: header should be disabled by default #230](https://github.com/helmetjs/helmet/issues/230) 이슈에서 X-XSS-Protection을 비활성화를 하라고 권장하는 이유는 [X-XSS-Protection block 설정하는 것이 효과 없음이 발견됐기](https://github.com/helmetjs/helmet/issues/230#issuecomment-611904252) 때문인 것 같다. 크롬은 XSS Auditor를 삭제했고, 다른 많은 브라우저도 지원하지 않는다.
 
-[Update: Cross_Site_Scripting_Prevention_Cheat_Sheet #376](https://github.com/OWASP/CheatSheetSeries/issues/376)
+[Update: Cross\_Site\_Scripting\_Prevention\_Cheat\_Sheet #376](https://github.com/OWASP/CheatSheetSeries/issues/376)
 
 '아니 그럼 도데체 어떻게 막으라고?'라는 생각을 하다가 위에 이슈에서 공유해준 아티클을 읽으면서 그 궁금증을 해소할 수 있었다. 아래는 아티클의 원문을 그대로 인용했다.
 
-> Microsoft confirmed it is removing XSS Filter in Edge. “We are retiring the XSS Filter in Microsoft Edge beginning in today’s [Windows 10 Insider Preview] build,” the company said. **“Our customers remain protected thanks to modern standards like Content Security Policy, which provide more powerful, performant, and secure mechanisms to protect against content injection attacks, with high compatibility across modern browsers.”**
+> Microsoft confirmed it is removing XSS Filter in Edge. “We are retiring the XSS Filter in Microsoft Edge beginning in today’s \[Windows 10 Insider Preview] build,” the company said. **“Our customers remain protected thanks to modern standards like Content Security Policy, which provide more powerful, performant, and secure mechanisms to protect against content injection attacks, with high compatibility across modern browsers.”**
 > 출처 : [XSS protection disappears from Microsoft Edge : James Walker, the daily-swig ](https://portswigger.net/daily-swig/xss-protection-disappears-from-microsoft-edge)
 
 결론적으로 CSP로 연결된다.
@@ -168,7 +169,7 @@ app.use(helmet.xssFilter());
 > 이 개요는 최신 브라우저에서 XSS 공격의 위험과 영향을 현저히 줄일 수 있는 방어책인 콘텐츠 보안 정책(CSP)에 중점을 두고 있습니다.
 > [콘텐츠 보안 정책 : 구글](https://developers.google.com/web/fundamentals/security/csp?hl=ko)
 
-SOP는 www.example.com에서는 www.example.com의 소스만 읽을 수 있고 www.attack.com의 소스를 사용할 수 없도록 한다. 동일 출처 정책을 하는 이유는 외부의 신뢰성이 불분명한 소스를 사용하지 않도록 하고 외부 공격을 막기 위해서다. 하지만 XSS 공격으로 실재로 SOP가 제대로 작동하지 않을 수 있다.
+SOP는 [www.example.com에서는](http://www.example.com에서는) [www.example.com의](http://www.example.com의) 소스만 읽을 수 있고 [www.attack.com의](http://www.attack.com의) 소스를 사용할 수 없도록 한다. 동일 출처 정책을 하는 이유는 외부의 신뢰성이 불분명한 소스를 사용하지 않도록 하고 외부 공격을 막기 위해서다. 하지만 XSS 공격으로 실재로 SOP가 제대로 작동하지 않을 수 있다.
 
 > 참고
 > [SOP, CORS, CSP 개념과 우회방법(Concept & Bypass) : Dyrandy](https://w01fgang.tistory.com/147#recentComments)
@@ -224,9 +225,9 @@ form
   input(type="hidden", name="_csrf", value="csrfToken")
 ```
 
-> 참고  
-> [CSRF란?](https://brownbears.tistory.com/251)  
-> [웹 해킹 강좌 ⑩ - CSRF(Cross Site Request Forgery) 공격 기법 (Web Hacking Tutorial #10)](https://www.youtube.com/watch?v=nzoUgKPwn_A)  
+> 참고\
+> [CSRF란?](https://brownbears.tistory.com/251)\
+> [웹 해킹 강좌 ⑩ - CSRF(Cross Site Request Forgery) 공격 기법 (Web Hacking Tutorial #10)](https://www.youtube.com/watch?v=nzoUgKPwn_A)\
 > [csurf](https://www.npmjs.com/package/csurf)
 
 ## CORS - Cross-Origin Resource Sharing
@@ -240,9 +241,9 @@ SOP의 존재는 나를 매우 불편하게 만든다. 하지만 SOP가 존재�
 찾아보면서 이 해결책이 맞는지는 모르겠지만 @font-face에 대해서 [리스폰스 헤더 값을 와일드 카드로 설정하도록 권장하고 있었다.](https://www.w3.org/TR/css-fonts-3/#font-fetching-requirements) 하지만 이렇게 설정하게 되면 **CORS가 무슨 소용이지** 싶다. Access-Control-Allow-Origin을 전부 허용하는 건데, 특정 접근에만 와일드 카드를 적용하는 것인지 아닌지를 모르겠다. ~~(스텍 오버 플로우에 질문을 남겼는데 해결할 수 있을까?)~~
 
 > 참고
-> [CORS는 왜 이렇게 우리를 힘들게 하는걸까? : Evans Libary](https://evan-moon.github.io/2020/05/21/about-cors/#cors%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B8%B0%EB%B3%B8%EC%A0%81%EC%9D%B8-%EB%82%B4%EC%9A%A9)  
-> [@font-face속성에서 url()로 폰트 리소스 호출 시 만난 CORS에러](https://sustainable-dev.tistory.com/166)  
-> [@font-face](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face) > [Cross Domain Fonts CORS](https://www.hirehop.com/blog/cross-domain-fonts-cors-font-face-issue/) > [cors : npm](https://www.npmjs.com/package/cors#simple-usage-enable-all-cors-requests)  
+> [CORS는 왜 이렇게 우리를 힘들게 하는걸까? : Evans Libary](https://evan-moon.github.io/2020/05/21/about-cors/#cors%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B8%B0%EB%B3%B8%EC%A0%81%EC%9D%B8-%EB%82%B4%EC%9A%A9)\
+> [@font-face속성에서 url()로 폰트 리소스 호출 시 만난 CORS에러](https://sustainable-dev.tistory.com/166)\
+> [@font-face](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face) > [Cross Domain Fonts CORS](https://www.hirehop.com/blog/cross-domain-fonts-cors-font-face-issue/) > [cors : npm](https://www.npmjs.com/package/cors#simple-usage-enable-all-cors-requests)\
 > [SOP(Same Origin Policy)](https://dongwooklee96.github.io/post/2021/03/23/sopsame-origin-policy-%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%BC%EA%B9%8C/)
 
 ## 마무리

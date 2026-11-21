@@ -5,6 +5,7 @@ import { EasingShowcase } from '@/components/EasingShowcase';
 import { ImageComment } from '@/components/ImageComment';
 import { Quotation } from '@/components/Quotation';
 import { Tabs } from '@/components/Tabs';
+import { YouTube } from '@/components/YouTube';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
 	return {
@@ -14,6 +15,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 		ImageComment,
 		Quotation,
 		Tabs,
+		YouTube,
 		...components
 	};
 }

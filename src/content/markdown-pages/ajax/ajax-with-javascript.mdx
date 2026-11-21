@@ -1,10 +1,11 @@
 ---
-slug: "/ajax-with-javascript"
-date: "2021-11-19"
-title: "자바스크립트로 비동기를 처리하는 방법"
-tags: ["ajax", "javascript"]
+title: 자바스크립트로 비동기를 처리하는 방법
+date: 2021-11-19
+tags:
+  - ajax
+  - javascript
+draft: false
 ---
-
 자바스크립트 공부하다 비동기를 처리하는 방법에 XMLHttpRequest라는 것을 만나게 됐다. 나는 async/awiat을 써왔기 때문에 이게 뭔가 싶었다. 갑자기 fetch는 무엇이고 Promise는 무엇인지 햇갈렸다.
 
 1. fetch가 있는데 갑자기 XMLHttpRequest는 뭐지?
@@ -20,8 +21,8 @@ tags: ["ajax", "javascript"]
 ## 비동기
 
 > 참조
-> [어쨌든 이벤트 루프는 무엇입니까? | Philip Roberts | JSConf EU](https://youtu.be/8aGhZQkoFbQ)  
-> [[10분 테코톡] 🍗 피터의 이벤트루프](https://youtu.be/wcxWlyps4Vg)  
+> [어쨌든 이벤트 루프는 무엇입니까? | Philip Roberts | JSConf EU](https://youtu.be/8aGhZQkoFbQ)\
+> [\[10분 테코톡\] 🍗 피터의 이벤트루프](https://youtu.be/wcxWlyps4Vg)\
 > [자바스크립에서 동기와 비동기](https://velog.io/@open_h/javascriptasync)
 
 비동기 실행이 필요한 이유는 동기로 코드를 실행하는 동안 특정 요청으로 인해 **블로킹**이 된다면 사용자는 동기가 진행되는 동안 블로킹이 끝날 때까지 웹 브라우저에서 아무것도 할 수 없다. 그래서 비동기 콜백을 받아서 요청이 처리되는 동안 다른 일을 할 수 있도록 비동기 실행을 필요로 하게 된다.
@@ -48,7 +49,7 @@ console.log("bye");
 
 결국 자바스크립트가 싱글 스레드 언어임에도 불구하고 비동기 실행이 가능한 이유는 콜 스택과 테스크 큐 그리고 이벤트 루프 덕분이라고 할 수 있다.
 
-> Web APIs  
+> Web APIs\
 > Web APIs는 전부 비동기 메서드 들이다.
 > DOM(document), AJAX(XMLHttpRequest), Timeout(setTimeout)
 
@@ -63,7 +64,7 @@ console.log("bye");
 ### [Promise](https://ko.javascript.info/promise-basics)
 
 > 참고
-> [Promise](https://ko.javascript.info/promise-basics)  
+> [Promise](https://ko.javascript.info/promise-basics)\
 > 예시와 함께 코드를 실행해보면서 프러미스를 공부하는게 좋다.
 > [자바스크립트 Promise 쉽게 이해하기](https://joshua1988.github.io/web-development/javascript/promise-for-beginners/)
 
@@ -274,9 +275,6 @@ promise를 반환하기 때문에 then이나 catch로 결과 값을 처리할 �
 XMLHttpRequest, fetch, Promise, async/awiat에 대해서 간략하게 정리해보자.
 
 1. XMLHttpRequest는 네트워크 요청을 위한 객체이며 요즘에는 거의 사용하지 않는다. 이름과 다르게 여러가지 데이터를 처리할 수 있다.
-
 2. fetch도 XMLHttpRequest와 같이 네트워크 요청을 위한 메서드이며 오늘날에는 fetch를 사용해서 네트워크 요청을 하게 된다. fetch는 Promise 기반이며 결과로 Promise를 리턴한다.
-
 3. Promise는 비동기 처리를 위한 객체이며 콜백 지옥(?)과 같은 불상사를(콜백 패턴을) 해결하기 위해 등장한 객체이다. Promise 객체가 나오기 이전보다 더 쉽게 데이터 요청을 처리할 수 있다.
-
 4. async/await은 try/catch와 함께 비동기 처리를 위한 키워드이며 결국 Promise를 반환하지만 Promise를 사용하는 것보다 더 간략하게 네트워크 요청을 처리할 수 있다.

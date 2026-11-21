@@ -5,86 +5,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-bun dev           # Dev server (vite dev)
-bun run build     # Production build (vite build)
-bun run preview   # Preview production build
-bun run check     # svelte-kit sync + svelte-check
+bun dev                          # Dev server (next dev); /keystatic edits files locally
+bun run build                    # Production build (next build)
+bun run start                    # Serve the production build
+bun run check                    # tsc --noEmit
+node scripts/compare-mdx.mjs [ref]  # Compare every post's parsed MDX tree and frontmatter with a git ref (default HEAD)
 ```
 
 ## Architecture
 
-SvelteKit blog with Svelte 5, TypeScript, Tailwind CSS 4, and mdsvex for MDX content.
+Next.js 16 App Router blog with React 19, TypeScript, Tailwind CSS 4, and MDX content rendered at build time. Posts are written either in the Keystatic editor at `/keystatic` or directly as files.
 
 ### Content Pipeline
 
-Blog posts are MDX/MD files in `src/content/markdown-pages/[topic]/` with gray-matter frontmatter:
+Posts are `.mdx` files in `src/content/markdown-pages/[topic]/` with frontmatter:
 
 ```yaml
-title: "Post Title"
-date: "YYYY-MM-DD"
-tags: ["javascript", "react"] # Tags determine routing category
-draft: false # Optional, hides post when true
+title: Post Title
+date: 2026-11-21
+tags:
+  - react
+draft: false # true hides the post from lists, RSS and sitemap; the page still builds with noindex
 ```
 
-**Post resolution flow:** `getAllPosts()` recursively globs `.mdx`/`.md` files → `getPost()` parses each with gray-matter → slug derived from filename → sorted by date descending.
+- Loader: `src/lib/server/posts.ts`. `getAllPosts()` returns published posts only; `getAllPostsIncludingDrafts()` and `getPostByCategoryAndSlug()` include drafts.
+- The URL slug is the file name without the topic folder. `sourcePath` (`topic/file`) is what Keystatic calls the slug.
+- MDX rendering: `src/lib/server/mdx.tsx` (`@mdx-js/mdx` evaluate + remark-gfm + rehype-slug + Shiki).
+- MDX components available in posts: `src/mdx-components.tsx`. Every component there must also be registered in `keystatic.config.ts` (`postComponents`), or the editor cannot open posts that use it.
 
-- Posts module: `src/lib/server/posts.ts`
-- MDX preprocessing: `mdsvex` in `svelte.config.js` with remark-gfm + rehype-slug
-- MDX layout wrapper: `src/lib/components/mdsvex/Layout.svelte`
+### Keystatic Editor
+
+- Config: `keystatic.config.ts`. Admin UI: `src/app/keystatic/`. API: `src/app/api/keystatic/[...params]/route.ts`.
+- Storage is `local` under `next dev` and `github` (`movie42/hyunsu`) in production. `NEXT_PUBLIC_KEYSTATIC_STORAGE=github bun dev` runs dev against GitHub (needed once to create the GitHub App). Saving in production commits to the repository and Vercel redeploys.
+- Production needs `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`. Without the first three the API route answers 404 so the build still passes.
+- The preview button opens `/preview/<topic>/<file>`, which redirects to the post's category URL.
+- Keystatic rewrites a file in its own format on save and cannot represent: GFM footnotes, task lists, table column alignment, and raw HTML elements (`<img>`, `<a>`, `<div>`, `<details>` ...). Posts using these must be edited as files, not in the editor.
 
 ### Routing & Categories
 
-Posts route to one of three categories based on tags (see `generateUrl()` in `src/lib/server/posts.ts`):
+`src/app/(site)/` holds the blog pages and their layout (header, `globals.css`); `src/app/keystatic/` has no blog chrome. Posts route by tags (`generateUrl()` in `src/lib/server/posts.ts`):
 
 - Tags include "etc" → `/posts/etc/[slug]`
 - Tags include "movie" → `/posts/movie/[slug]`
 - Everything else → `/posts/programming/[slug]`
 
-Each category has `+page.server.ts` (list) and `[...slug]/+page.server.ts` (detail).
-
 ### Styling
 
-- **Tailwind CSS 4** with `@tailwindcss/typography` plugin
-- Global styles in `src/routes/layout.css`
-- No styled-components (removed during migration)
-- **Tailwind CSS 유틸리티를 컴포넌트 마크업에 인라인(`class="..."`)으로 직접 작성하지 마세요.** 디버깅과 유지보수를 쉽게 하기 위해 컴포넌트별 `*.module.css`(style module)를 반드시 사용하고, 마크업에서는 의미 있는 클래스명만 참조하세요.
+- Tailwind CSS 4 with `@tailwindcss/typography`; global styles in `src/app/globals.css`.
+- Do not write Tailwind utilities inline in component markup (`class="..."`). Use a per-component `*.module.css` and reference meaningful class names only, so styles stay easy to debug and maintain.
 
 ### Components
 
-Svelte 5 components using `$props()` runes in `src/lib/components/`:
-
-- `Header/` — site header + navigation
-- `Nav/` — navigation links
-- `Post/PostCard.svelte` — post list card
-- `Post/PostContent.svelte` — post detail view
-- `TOC/` — table of contents
-- `Giscus/` — GitHub Discussions comments
-- `Quotation/`, `Canvas/`, `ImageComment/` — custom MDX components
-- `Section/` — section wrapper
-
-### Key Libraries
-
-- `mdsvex` for MDX/MD preprocessing in Svelte
-- `gray-matter` for frontmatter parsing
-- `unified` + `remark-*` + `rehype-*` for markdown processing
-- `dayjs` for date formatting
-- `giscus` for GitHub Discussions-based comments
+React components in `src/components/`, each with its own `*.module.css`: `Header`, `Nav`, `PostCard`, `PostContent`, `TOC`, `Giscus` (GitHub Discussions comments), `Section`, and the MDX components `Quotation`, `ImageComment`, `Tabs`, `Canvas`, `BezierCasteljau`, `EasingShowcase`, `YouTube`.
 
 ### Aliases
 
-- `$lib` → `src/lib/` (SvelteKit default)
-- `$content` → `src/content/` (custom alias in svelte.config.js)
+- `@/*` → `src/*`
 
 ### Deployment
 
-- Adapter: `@sveltejs/adapter-auto` (Vercel)
-- Prerender with `handleHttpError: 'warn'`
-- `+layout.server.ts` exports `prerender = true`
+Vercel. Pages are statically generated; only `/keystatic` and `/api/keystatic` are dynamic.
 
-## 계획 수립 규칙
+## Planning Rules
 
-새로운 기능 구현, 리팩토링, 버그 수정 전략, 아키텍처 변경처럼 구조화된 계획이 필요한 작업은 `/task-plan`을 사용해 계획을 세우세요.
+Use `/task-plan` for work that needs a structured plan: new features, refactors, bug-fix strategies, architecture changes.
 
-- 직접 임의의 계획 문서를 만들지 말고 task-plan 워크플로우를 따릅니다.
-- 계획을 작성한 뒤 바로 구현하지 말고, 사용자가 계획을 검토하고 승인하면 구현을 시작합니다.
-- 계획 기반 구현은 `/implement` 워크플로우를 사용합니다.
+- Do not create ad-hoc plan documents; follow the task-plan workflow.
+- Do not implement right after writing a plan; start once the user has reviewed and approved it.
+- Use the `/implement` workflow for plan-based implementation.
