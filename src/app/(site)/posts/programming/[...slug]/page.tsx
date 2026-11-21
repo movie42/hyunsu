@@ -10,7 +10,7 @@ type PageProps = { params: Promise<{ slug: string[] }> };
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-	return getPostsByCategory('programming').map((post) => ({ slug: [post.slug] }));
+	return getPostsByCategory('programming', { includeDrafts: true }).map((post) => ({ slug: [post.slug] }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	return {
 		title: post.title,
 		description: post.description,
+		robots: post.draft ? { index: false, follow: false } : undefined,
 		alternates: {
 			canonical: `/posts/programming/${post.slug}`
 		},

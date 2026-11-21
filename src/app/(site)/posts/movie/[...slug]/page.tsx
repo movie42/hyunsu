@@ -10,36 +10,37 @@ type PageProps = { params: Promise<{ slug: string[] }> };
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-	return getPostsByCategory('etc').map((post) => ({ slug: [post.slug] }));
+	return getPostsByCategory('movie', { includeDrafts: true }).map((post) => ({ slug: [post.slug] }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug: slugParts } = await params;
 	const slug = slugParts.join('/');
-	const post = getPostByCategoryAndSlug('etc', slug);
+	const post = getPostByCategoryAndSlug('movie', slug);
 	if (!post) return {};
 
 	return {
 		title: post.title,
 		description: post.description,
+		robots: post.draft ? { index: false, follow: false } : undefined,
 		alternates: {
-			canonical: `/posts/etc/${post.slug}`
+			canonical: `/posts/movie/${post.slug}`
 		},
 		openGraph: {
 			type: 'article',
 			title: post.title,
 			description: post.description,
-			url: `/posts/etc/${post.slug}`,
+			url: `/posts/movie/${post.slug}`,
 			publishedTime: post.date,
 			tags: post.tags
 		}
 	};
 }
 
-export default async function EtcPostPage({ params }: PageProps) {
+export default async function MoviePostPage({ params }: PageProps) {
 	const { slug: slugParts } = await params;
 	const slug = slugParts.join('/');
-	const post = getPostByCategoryAndSlug('etc', slug);
+	const post = getPostByCategoryAndSlug('movie', slug);
 
 	if (!post) notFound();
 

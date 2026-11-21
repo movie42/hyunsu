@@ -291,17 +291,6 @@
     font-size: 1.4rem;
     letter-spacing: -0.01rem;
   }
-  .post-content .embeded-video {
-    width: 100%;
-    margin: 0 auto 3.2rem;
-    aspect-ratio: 16 / 9;
-    border-radius: 1.2rem;
-    overflow: hidden;
-  }
-  .post-content .embeded-video iframe {
-    width: 100%;
-    height: 100%;
-  }
   /* GFM footnotes: 본문 위첨자 각주 마커 [1] */
   .post-content sup {
     line-height: 0;
