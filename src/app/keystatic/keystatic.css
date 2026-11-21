@@ -1,0 +1,9 @@
+[data-keystatic-editor='root'][data-layout='main'] > div:has(> [data-keystatic-editor='content']) {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+}
+
+[data-keystatic-editor='root'][data-layout='main'] [data-keystatic-editor='content'] {
+	width: 100%;
+}
