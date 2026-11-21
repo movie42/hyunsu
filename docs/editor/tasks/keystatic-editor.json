@@ -547,6 +547,71 @@
           "items": []
         }
       ]
+    },
+    "done": {
+      "status": "ask",
+      "summary": "GitHub 연결 · PR 결정 대기",
+      "conclusion": [
+        "리뷰 지적 1건을 고쳤고 타입 검사와 빌드가 다시 통과했어요.",
+        "배포 환경 확인(V2, V5)과 PR 여부가 남았어요."
+      ],
+      "blocks": [
+        {
+          "type": "checklist",
+          "title": "PR 전",
+          "items": [
+            {
+              "id": "D1",
+              "title": "SOT 맵 근거를 실제 코드 파일:줄로 바꿈",
+              "done": true,
+              "unknown": "이 작업에는 SOT 맵(화면 stage)이 없어요"
+            },
+            {
+              "id": "D2",
+              "title": "남은 Computed · 계산 행을 서버 · 기획 요청으로 정리",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "서버·기획 요청 없음. 사용자 작업은 GitHub App 등록과 Vercel 환경 변수 입력 [[P4-2]]"
+                ]
+              ]
+            },
+            {
+              "id": "D3",
+              "title": "<code>/code-review</code> — 크리티컬한 지적을 고침",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "/code-review low: 지적 1건(nit) — <code>YouTube</code> 영상 ID를 URL 인코딩하도록 고침"
+                ]
+              ]
+            },
+            {
+              "id": "D4",
+              "title": "고친 뒤 typecheck · lint · test 다시 통과 (04 검증이 있으면 그것도 완료)",
+              "done": true,
+              "rows": [
+                [
+                  "결과",
+                  "<code>bun run check</code>, <code>bun run build</code> 통과, compare-mdx 의도한 1건 외 차이 없음"
+                ]
+              ]
+            },
+            {
+              "id": "D5",
+              "title": "PR — <code>/git-pr</code>로 만들거나, 안 만들면 결론에 기록",
+              "done": false
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "title": "서버 · 기획에 요청할 것",
+          "html": "없어요"
+        }
+      ]
     }
   },
   "intent": [
