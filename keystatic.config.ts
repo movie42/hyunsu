@@ -92,7 +92,16 @@ export default config({
 			schema: {
 				title: fields.slug({
 					name: { label: '제목' },
-					slug: { label: '주소', description: '폴더/파일이름 형식이에요. 예: react/my-post' }
+					slug: {
+						label: '주소',
+						description: '폴더/파일이름 형식이에요. 예: react/my-post',
+						validation: {
+							pattern: {
+								regex: /^[^/\s]+(\/[^/\s]+)*$/,
+								message: '/로 시작하거나 끝날 수 없고, /를 두 번 이어 쓸 수 없어요. 예: react/my-post'
+							}
+						}
+					}
 				}),
 				date: fields.date({ label: '날짜', validation: { isRequired: true } }),
 				tags: fields.array(fields.text({ label: '태그' }), {
