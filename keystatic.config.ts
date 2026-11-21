@@ -105,7 +105,7 @@ export default config({
 			slugField: 'title',
 			format: { contentField: 'content' },
 			entryLayout: 'content',
-			previewUrl: '/preview/{slug}',
+			previewUrl: '/api/preview?branch={branch}&slug={slug}',
 			columns: ['title', 'date'],
 			schema: {
 				title: fields.slug({
