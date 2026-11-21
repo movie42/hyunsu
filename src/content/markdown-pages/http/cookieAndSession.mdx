@@ -1,10 +1,12 @@
 ---
-slug: "/http/cooki-and-session"
-date: "2022-01-02"
-title: "쿠키와 세션"
-tags: ["web", "cookie", "session"]
+title: 쿠키와 세션
+date: 2022-01-02
+tags:
+  - web
+  - cookie
+  - session
+draft: false
 ---
-
 기본적인 웹 보안을 공부하다가 갑자기 쿠키로 다시 오게 되었다. 내가 알고 있는 지식이 하나의 파편 조각처럼 흩어져 있을 뿐 연결이 제대로 되지 않는 기분이다. 어쨌든 쿠키와 세션이 무엇인지 역할은 무엇인지 기능적으로 어떻게 작동하는지 등을 이참에 정리하기로 마음먹었다.
 
 ## 쿠키
@@ -123,11 +125,11 @@ app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 쿠키를 굽고나서 크롬 개발자 도구로 들어가서 어플리케이션에서 쿠키를 확인할 수 있다. 쿠키는 name, value, domain, path, Expires/Max-Age, HttpOnly, Secure 등을 옵션으로 설정할 수 있다.
 
 > 참조
-> [HTTP 쿠키 : 위키백과](https://ko.wikipedia.org/wiki/HTTP_%EC%BF%A0%ED%82%A4#cite_note-2)  
-> [인터넷사이트 쿠키(Cookie)의 주요 이슈 및 취약점 분석 : 한국인터넷진흥원](https://www.kisa.or.kr/public/library/IS_View.jsp?mode=view&p_No=158&b_No=158&d_No=203)  
-> [쿠키란 무엇인가요? : BINANCE-academy](https://academy.binance.com/ko/articles/what-are-cookies)  
-> [쿠키와 세션 : 강준현](https://junhyunny.github.io/information/cookie-and-session/)  
-> [왜 “HTTP는 상태 비 저장 프로토콜”이라고되어 ​​있습니까? : 리뷰나라](http://daplus.net/http-%EC%99%9C-http%EB%8A%94-%EC%83%81%ED%83%9C-%EB%B9%84-%EC%A0%80%EC%9E%A5-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C%EC%9D%B4%EB%9D%BC%EA%B3%A0%EB%90%98%EC%96%B4-%E2%80%8B%E2%80%8B%EC%9E%88/)  
+> [HTTP 쿠키 : 위키백과](https://ko.wikipedia.org/wiki/HTTP_%EC%BF%A0%ED%82%A4#cite_note-2)\
+> [인터넷사이트 쿠키(Cookie)의 주요 이슈 및 취약점 분석 : 한국인터넷진흥원](https://www.kisa.or.kr/public/library/IS_View.jsp?mode=view\&p_No=158\&b_No=158\&d_No=203)\
+> [쿠키란 무엇인가요? : BINANCE-academy](https://academy.binance.com/ko/articles/what-are-cookies)\
+> [쿠키와 세션 : 강준현](https://junhyunny.github.io/information/cookie-and-session/)\
+> [왜 “HTTP는 상태 비 저장 프로토콜”이라고되어 ​​있습니까? : 리뷰나라](http://daplus.net/http-%EC%99%9C-http%EB%8A%94-%EC%83%81%ED%83%9C-%EB%B9%84-%EC%A0%80%EC%9E%A5-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C%EC%9D%B4%EB%9D%BC%EA%B3%A0%EB%90%98%EC%96%B4-%E2%80%8B%E2%80%8B%EC%9E%88/)\
 > [인증 방식 : Cookie & Session vs JWT](https://tecoble.techcourse.co.kr/post/2021-05-22-cookie-session-jwt/) > [express - res.cookie()](http://expressjs.com/ko/api.html#res.cookie)
 
 ## 세션
@@ -178,6 +180,6 @@ app.get("/", (req, res) => {
 
 세션과 쿠키의 뭔지 알아보고 Express에서 어떻게 사용하는지 알아보았다. 세션과 쿠키를 활용하여 사용자 로그인을 유지시킬 수 있고, session.destory를 이용해 로그아웃도 가능하다.
 
-처음에는 간단하게 SOP, CORS, CSP를 알아볼 생각으로 보안 공부를 했지만 결국 다시 HTTP로 돌아가고 인터넷은 뭐고, 브라우저는 어떻게 동작하고, 쿠키와 세션은 무엇인지까지 돌아오게 되었다. 지식이라는게 파면 팔수록 간단하지가 않은것 같다. 특히 **'올바른 사용법'**은 더더욱이 어려운것 같다.
+처음에는 간단하게 SOP, CORS, CSP를 알아볼 생각으로 보안 공부를 했지만 결국 다시 HTTP로 돌아가고 인터넷은 뭐고, 브라우저는 어떻게 동작하고, 쿠키와 세션은 무엇인지까지 돌아오게 되었다. 지식이라는게 파면 팔수록 간단하지가 않은것 같다. 특히 \*\*'올바른 사용법'\*\*은 더더욱이 어려운것 같다.
 
 그래도 조금 위안이 되는건 몇 주일간 계속 머리 싸매고 공부한 덕분에 친구와 함께 웹 어플리케이션을 만들면서 서버 요청을 주고 받을 수 있는 기회가 있었는데, CORS 에러를 만나게 되었고 친구에게 이게 뭔지 설명하면서 내가 알고 있는 지식을 다시 확인하는 시간을 가질 수 있었다. 게다가 Express 문서도 읽어보고 내가 사용하고 있는 패키지가 어떤 역할을 하는지 천천히 뜯어보고 없애보고 추가해보고 하면서 동작을 어떻게 하는지 다시 복습해볼 수 있었다.

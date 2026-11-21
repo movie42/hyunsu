@@ -1,17 +1,19 @@
 ---
-slug: "/typescript/basic-summary"
-date: "2022-05-20"
-title: "Typescript 기본 정리"
-tags: ["typescript", "basic", "summary"]
+title: Typescript 기본 정리
+date: 2022-05-20
+tags:
+  - typescript
+  - basic
+  - summary
+draft: false
 ---
-
-> 참고한 글과 강의  
-> [노마드 코더 타입스크립트로 블록체인 만들기](https://nomadcoders.co/typescript-for-beginners/lobby)  
-> [타입스크립트 핸드북(joshua1988) 타입추론](https://joshua1988.github.io/ts/guide/type-inference.html#%EB%AC%B8%EB%A7%A5%EC%83%81%EC%9D%98-%ED%83%80%EC%9D%B4%ED%95%91-contextual-typing)  
-> [타입스크립트 도큐멘테이션](https://www.typescriptlang.org/ko/docs/handbook/intro.html)  
-> [기록의 힘 [TypeScript] 타입스크립트 함수 오버로딩 : Function Overloading](https://lakelouise.tistory.com/194)  
-> [토스트 UI 타입스크립트의 Never 타입 완벽 가이드](https://ui.toast.com/weekly-pick/ko_20220323)  
-> [Types vs. interfaces in TypeScript](https://blog.logrocket.com/types-vs-interfaces-in-typescript/)  
+> 참고한 글과 강의\
+> [노마드 코더 타입스크립트로 블록체인 만들기](https://nomadcoders.co/typescript-for-beginners/lobby)\
+> [타입스크립트 핸드북(joshua1988) 타입추론](https://joshua1988.github.io/ts/guide/type-inference.html#%EB%AC%B8%EB%A7%A5%EC%83%81%EC%9D%98-%ED%83%80%EC%9D%B4%ED%95%91-contextual-typing)\
+> [타입스크립트 도큐멘테이션](https://www.typescriptlang.org/ko/docs/handbook/intro.html)\
+> [기록의 힘 \[TypeScript\] 타입스크립트 함수 오버로딩 : Function Overloading](https://lakelouise.tistory.com/194)\
+> [토스트 UI 타입스크립트의 Never 타입 완벽 가이드](https://ui.toast.com/weekly-pick/ko_20220323)\
+> [Types vs. interfaces in TypeScript](https://blog.logrocket.com/types-vs-interfaces-in-typescript/)\
 > [Type vs Interface, 언제 어떻게?](https://medium.com/humanscape-tech/type-vs-interface-%EC%96%B8%EC%A0%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-f36499b0de50)
 
 ## 타입스크립트를 쓰는 이유
@@ -65,21 +67,14 @@ const tuple:[string, number] = ["스파이더맨", 2]
 
 타입스크립트에서 타입을 정의하는 방법은 매우 다양하다. 기본적으로 변수 뒤에 :를 쓰고 내가 정의하고자 하는 타입을 붙일 수 있다. 타입은 원시 타입(string, number, boolean), any, array, object, tuple, enum, function, union, void, null, undefined, never, unknown이 있다.
 
-- **string**은 문자열이다. number는 숫자다. boolean은 true false이다.
-
-- **any**는 아무거나 다 괜찮다는 것이다. 타입스크립트는 명시적으로 데이터 유형을 지정해 사용하는 것을 권장하고 있어서 any를 지정하는 것은 좋지 않다. 그러나 어떤 타입을 할당해야하는지 알지 못할 때가 있는데 그때 사용하면 좋다.
-
-- **array**는 내가 원하는 타입 다음에 []를 써서 정의한다. 예제 코드처럼 string[]이라고 정의하면 배열에는 string만 요소로 가질 수 있다. 하지만 array가 string만 받는다거나 number만 받지 않을 때도 있다. 그럴 때는 Generic을 사용해서 Type을 정의하면 타입 추론을 통해서 array의 요소를 자동으로 지정해준다.
-
-- **void**는 함수가 아무것도 return하지 않는다는 것을 알려준다.
-
-- **union**은 의미상 합집합을 의미한다.
-
-- **null**은 null이다. undefined는 undefined이다.
-
-- **unknown**은 타입이 무엇인지 알려지지 않았다는 의미다. 타입을 미리 정하지 못했을 때 사용한다. any는 모든 타입을 받는 반면에 unknown으로 선언되면 type을 재정의할 수 있고 지정된 위치에서 재정의된 type으로 사용할 수 있다. 타입을 다시 정해주지 않으면 에러가 발생한다.
-
-- **never**는 항상 오류를 출력하거나 리턴값을 절대로 내보내지 않는다. 아직 왜 있는지는 잘 모르겠다. 부록에 아티클을 읽고 간단하게 정리한 것을 남긴다.
+* **string**은 문자열이다. number는 숫자다. boolean은 true false이다.
+* **any**는 아무거나 다 괜찮다는 것이다. 타입스크립트는 명시적으로 데이터 유형을 지정해 사용하는 것을 권장하고 있어서 any를 지정하는 것은 좋지 않다. 그러나 어떤 타입을 할당해야하는지 알지 못할 때가 있는데 그때 사용하면 좋다.
+* **array**는 내가 원하는 타입 다음에 \[]를 써서 정의한다. 예제 코드처럼 string\[]이라고 정의하면 배열에는 string만 요소로 가질 수 있다. 하지만 array가 string만 받는다거나 number만 받지 않을 때도 있다. 그럴 때는 Generic을 사용해서 Type을 정의하면 타입 추론을 통해서 array의 요소를 자동으로 지정해준다.
+* **void**는 함수가 아무것도 return하지 않는다는 것을 알려준다.
+* **union**은 의미상 합집합을 의미한다.
+* **null**은 null이다. undefined는 undefined이다.
+* **unknown**은 타입이 무엇인지 알려지지 않았다는 의미다. 타입을 미리 정하지 못했을 때 사용한다. any는 모든 타입을 받는 반면에 unknown으로 선언되면 type을 재정의할 수 있고 지정된 위치에서 재정의된 type으로 사용할 수 있다. 타입을 다시 정해주지 않으면 에러가 발생한다.
+* **never**는 항상 오류를 출력하거나 리턴값을 절대로 내보내지 않는다. 아직 왜 있는지는 잘 모르겠다. 부록에 아티클을 읽고 간단하게 정리한 것을 남긴다.
 
 ## 타입 추론
 
@@ -114,7 +109,7 @@ window.onmousedown = function (mouseEvent) {
 };
 ```
 
-window.onmousedown 함수의 타입을 사용하여 오른쪽 함수 표현식의 타입을 추론했다. mouseEvent에 kangaroo가 없기 때문에 에러가 발생한다.
+window\.onmousedown 함수의 타입을 사용하여 오른쪽 함수 표현식의 타입을 추론했다. mouseEvent에 kangaroo가 없기 때문에 에러가 발생한다.
 
 문맥상 타이핑은 함수 호출에 대한 인수, 오른쪽에 할당된 것, 타입 어셜션, 개체 및 배열 리터럴의 멤버, 반환문이 포함된다. 컨텍스트 타입은 가장 일반적인 타입에서 후보 타입으로 작동한다.
 
@@ -484,8 +479,8 @@ type Universe = Human | Alien;
 
 무엇을 만드는지에 따라 다르다. interface는 object를 정의할 때 사용하고 types alias는 새로운 함수를 생성할 때(call signatures를 이야기하는듯) 사용하는 것이 좋다.
 
-- interface 사용 예) 리액트 컴포넌트에서 Props를 정의할 때.
-- 외부에 공개해야하는 API를 만들 때.
+* interface 사용 예) 리액트 컴포넌트에서 Props를 정의할 때.
+* 외부에 공개해야하는 API를 만들 때.
 
 ```tsx
 import React from "react";
@@ -511,8 +506,8 @@ const UserList: React.FC<IUserListProps> = ({ state }) => {
 };
 ```
 
-- type 사용 예) 함수를 만들 때(콜 시그니처를 말하는 것 같다.)
-- 유니언, 튜플 타입.
+* type 사용 예) 함수를 만들 때(콜 시그니처를 말하는 것 같다.)
+* 유니언, 튜플 타입.
 
 ```ts
 interface Person {
@@ -623,15 +618,15 @@ $ touch tsconfig.json
 }
 ```
 
-- include는 ts가 포함된 곳의 위치를 알려주는 역할을 한다. 이곳에 적힌 경로를 보고 컴파일을 실행한다.
-- complierOptions는 어떻게 컴파일 할 것인지 정하는 역할을 한다.
-  - outDir : 컴파일을 했을 때, 컴파일 된 파일이 생성되는 곳이다.
-  - target : 어느 버전의 자바스크립트로 컴파일 할지 컴퓨터에게 알려주는 역할을 한다. 여러 버전이 있는데, ES6는 모던 브라우저에서 무리없이 자바스크립트를 실행시킬 수 있다.
-  - lib : library declaration 파일을 정해주는 역할을 한다. 여러 옵션이 있다. 여기에 적으면 lib.\*.d.ts 파일을 참조해서 개발 환경을 조성해준다. 편하게 말하면 vscode에서 자동 완성 기능을 제공해주는 역할을 한다.
-  - strict : 엄격한 타입 체킹 옵션을 활성화 할지 경정할수 있다.
-  - allowJs : 자바스크립트 파일 컴파일 허용 여부
-  - esModuleInterop : CommonJS 모듈을 ES6 모듈 코드 베이스로 가져오려고 할 때 문제가 발생하는데 해당 옵션을 true로 주면 ES6 모듈 사양을 지키면서 CommonJS 모듈을 가져올 수 있게 된다.
-  - module : import/export 코드가 어떤 방식의 코드로 컴파일 될지 결정한다.
+* include는 ts가 포함된 곳의 위치를 알려주는 역할을 한다. 이곳에 적힌 경로를 보고 컴파일을 실행한다.
+* complierOptions는 어떻게 컴파일 할 것인지 정하는 역할을 한다.
+  * outDir : 컴파일을 했을 때, 컴파일 된 파일이 생성되는 곳이다.
+  * target : 어느 버전의 자바스크립트로 컴파일 할지 컴퓨터에게 알려주는 역할을 한다. 여러 버전이 있는데, ES6는 모던 브라우저에서 무리없이 자바스크립트를 실행시킬 수 있다.
+  * lib : library declaration 파일을 정해주는 역할을 한다. 여러 옵션이 있다. 여기에 적으면 lib.\*.d.ts 파일을 참조해서 개발 환경을 조성해준다. 편하게 말하면 vscode에서 자동 완성 기능을 제공해주는 역할을 한다.
+  * strict : 엄격한 타입 체킹 옵션을 활성화 할지 경정할수 있다.
+  * allowJs : 자바스크립트 파일 컴파일 허용 여부
+  * esModuleInterop : CommonJS 모듈을 ES6 모듈 코드 베이스로 가져오려고 할 때 문제가 발생하는데 해당 옵션을 true로 주면 ES6 모듈 사양을 지키면서 CommonJS 모듈을 가져올 수 있게 된다.
+  * module : import/export 코드가 어떤 방식의 코드로 컴파일 될지 결정한다.
 
 [더 많은 옵션이 있다.](https://geonlee.tistory.com/214) 필요할때 마다 살펴보기로 하자.
 
@@ -705,7 +700,7 @@ $ npm install ts-node nodemon -D
 
 참조 : [타입스크립트의 never 타입 완벽 가이드](https://ui.toast.com/weekly-pick/ko_20220323#never-%ED%83%80%EC%9E%85%EC%9D%80-%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%9D%BD%EC%9D%84%EA%B9%8C-%EC%98%A4%EB%A5%98-%EB%A9%94%EC%8B%9C%EC%A7%80%EB%A1%9C%EB%B6%80%ED%84%B0)
 
-never가 뭔지는 잘 모르지만 가끔 never[]에는 할당할 수 없다는 에러를 만난다. 그래서 우연하게 발견한 아티클을 읽고 never에 대한 대략적인 것을 정리하였다.
+never가 뭔지는 잘 모르지만 가끔 never\[]에는 할당할 수 없다는 에러를 만난다. 그래서 우연하게 발견한 아티클을 읽고 never에 대한 대략적인 것을 정리하였다.
 
 타입은 가능한 값의 집합이다. 타입스크립트에서 never타입은 값의 공집합이다. 집합에 어떠한 값도 없기 때문에, never 타입은 any 타입의 값을 포함해 어떤 값도 가질 수 없다.
 
@@ -720,16 +715,16 @@ const never:never = any //error
 
 타입스크립트에서 나타내고 있는 불가능
 
-- 값을 포함할 수 없는 빈 타입
-- 실행이 끝날 때 호출자에게 제어를 반환하지 않는 함수의 반환 타입
-- 절대로 도달할 수 없을 else 분기의 조건 타입
-- 거부된 프로미스에서 처리된 값의 타입
+* 값을 포함할 수 없는 빈 타입
+* 실행이 끝날 때 호출자에게 제어를 반환하지 않는 함수의 반환 타입
+* 절대로 도달할 수 없을 else 분기의 조건 타입
+* 거부된 프로미스에서 처리된 값의 타입
 
 ### 유니언 교차 타입과 never의 동작
 
-- 숫자에 0을 더하면 동일한 숫자가 나오는 것 같이, never 타입은 유니언 타입에서 없어진다.
-- 숫자에 0을 곱하면 0이 나오는 것 같이, never 타입은 교차 타입을 덮어쓴다.
-- 도달할 수 없는 분기를 나타내는 것 외에도 never 타입은 조건부 타입에서 원하지 않는 타입을 필터링할 수 있다.
+* 숫자에 0을 더하면 동일한 숫자가 나오는 것 같이, never 타입은 유니언 타입에서 없어진다.
+* 숫자에 0을 곱하면 0이 나오는 것 같이, never 타입은 교차 타입을 덮어쓴다.
+* 도달할 수 없는 분기를 나타내는 것 외에도 never 타입은 조건부 타입에서 원하지 않는 타입을 필터링할 수 있다.
 
 타입 필터링을 할 때 never를 사용하는 예제는 어쩌면 유용할지도 모른다는 생각이 든다. 나의 코드에 한번 정도 적용하기 위해서 노력해봐야겠다.
 

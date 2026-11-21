@@ -1,10 +1,12 @@
 ---
-slug: "/fsd/review"
-date: "2025-12-21"
-title: "FSD를 사용하며 생각한 것"
-tags: ["fsd", "review", "approach"]
+title: FSD를 사용하며 생각한 것
+date: 2025-12-21
+tags:
+  - fsd
+  - review
+  - approach
+draft: false
 ---
-
 # FSD란?
 
 FSD는 [Feature Slice Design](https://feature-sliced.design/kr)의 줄임말이다.
@@ -26,7 +28,7 @@ model을 서로 참조하도록 했다.
 
 Segment는 표준 segment가 존재한다. 그러나 Layer처럼 이름이 강제되어있지는 않다.
 api, ui, lib, model, config가 있다.
-shared 내부에서 segment 이름을 type, queries 같은 이름으로 만드는 것은 안티 패턴으로 지정하고 있다.  
+shared 내부에서 segment 이름을 type, queries 같은 이름으로 만드는 것은 안티 패턴으로 지정하고 있다.\
 예를들어 product type을 만들고 싶다면 type이라는 폴더를 만들고 그 안에 product.ts나 아니면 types.ts를 만들고자 할 것이다. 그러나 FSD 공식 문서는 반드시 목적을 설명하는 이름을 만들어 폴더를 열어 탐색하게 하지 말라고 한다.
 예를 들면 model이라는 세그먼트 내부에 productType이라 폴더나 파일을 명명해서 파일 이름만 보고 상품 타입 관련된 집합이라는 것을 나타내야한다.
 
@@ -147,8 +149,8 @@ pages는 역할이 거의 없다. feautre나 widget에서 조합해서 pages에�
 그런데 시간이 지나면서 코드 양이 많아지면서 레이어에서 복잡하게 횡단하며 개발하는게 상당히 피로해졌다. 그러다 보니 FSD의 효용성에 대해 의심하게 되었다.
 하지만 [v2.1](https://feature-sliced.design/kr/docs/guides/migration/from-v2-0)에서는 pages 레이어의 역할을 강화했다.
 
-> - Page 내부에 주요 UI와 비즈니스 로직을 두고 Shared layer는 순수 재사용 요소만 관리
-> - 공통 로직이 실제로 여러 Page에서 쓰일 때만 하위 layer(Feature·Entity)로 분리
+> * Page 내부에 주요 UI와 비즈니스 로직을 두고 Shared layer는 순수 재사용 요소만 관리
+> * 공통 로직이 실제로 여러 Page에서 쓰일 때만 하위 layer(Feature·Entity)로 분리
 >
 > [FSD Docs Migration 가이드 중](https://feature-sliced.design/kr/docs/guides/migration/from-v2-0)
 

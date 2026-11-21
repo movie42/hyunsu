@@ -1,10 +1,12 @@
 ---
-slug: "/learn-about-toast-ui-editor"
-date: "2021-11-08"
-title: "TOAST UI EDITOR를 붙이면서 배운것들"
-tags: ["toast ui editor", "how to", "etc"]
+title: TOAST UI EDITOR를 붙이면서 배운것들
+date: 2021-11-08
+tags:
+  - toast ui editor
+  - how to
+  - etc
+draft: false
 ---
-
 ## 에디터를 붙이면서 도움이 됐던 글들
 
 ### 토스트 에디터 관련
@@ -26,7 +28,7 @@ tags: ["toast ui editor", "how to", "etc"]
 
 월간 토스트 UI 2021년 10월호를 보면 XSS 취약점을 개선하기 위해서[DOMPurify를 적용](https://github.com/nhn/tui.editor/pull/1813)했다고 한다.
 
-> [DOMPuryfiy](https://github.com/cure53/DOMPurify)  
+> [DOMPuryfiy](https://github.com/cure53/DOMPurify)\
 > [DOMPuryfiy는 XSS 라이브러리다.](https://jade-kim.github.io/hybrid-app/XSS-Libraries-dompurify/)
 
 어쨌든 이틀동안 이리저리 헤매면서 이슈를 리포트 해주는 개발자들이 있고, 그것에 대응하고 업데이트로 대응하는 개발 생태계를 보게 되었다. 나도 뭔가 기여할 수 있는게 없을까 하고 tui를 포크로 찍었지만 지금 이 코드를 본다고 해도 어떻게 해야할지 잘 모르겠다.
@@ -161,7 +163,7 @@ Expressjs에서 pug 템플리트 엔진으로 사용할 수 있다. 문제는 #v
 
 데이터 베이스의 파일은 정상이다. 그럼 api를 만들어서 fetch로 api에 데이터를 요청해서 화면에 출력할 수 밖에 없었다.
 
-프론트에서 REST API에 GET 요청을 보낸다. id 값은 window.location에서 얻을 수 있다. 백엔드에서는 프론트에서 요청한 동일한 id의 게시물을 받아오는 것이기 때문에 데이터를 어렵지 않게 불러올 수 있다.
+프론트에서 REST API에 GET 요청을 보낸다. id 값은 window\.location에서 얻을 수 있다. 백엔드에서는 프론트에서 요청한 동일한 id의 게시물을 받아오는 것이기 때문에 데이터를 어렵지 않게 불러올 수 있다.
 
 **프론트**
 
